@@ -77,8 +77,15 @@ export function PriceEditDialog({
         return
       }
     } else {
-      if (isNaN(discount) || discount < 0 || discount > 100) {
-        toast.error('Please enter a valid discount percentage (0-100)')
+      if (isNaN(discount) || discount < -100 || discount > 100) {
+        toast.error('Please enter a valid percentage (-100 to 100)')
+        return
+      }
+      // Check if the resulting price would be below base price
+      const resultingPrice = Number(product.base_price_usd) * (1 - discount / 100)
+      if (resultingPrice < Number(product.base_price_usd) && discount > 0) {
+        // This shouldn't happen with proper percentage, but just in case
+        toast.error('Resulting price cannot be below base price')
         return
       }
     }
@@ -131,9 +138,10 @@ export function PriceEditDialog({
       const price = parseFloat(customPrice)
       return isNaN(price) ? 0 : price
     } else {
-      const discount = parseFloat(discountPercentage)
-      if (isNaN(discount)) return Number(product.base_price_usd)
-      return Number(product.base_price_usd) * (1 - discount / 100)
+      const percentage = parseFloat(discountPercentage)
+      if (isNaN(percentage)) return Number(product.base_price_usd)
+      // Negative percentage increases price, positive decreases
+      return Number(product.base_price_usd) * (1 - percentage / 100)
     }
   }
 
@@ -190,7 +198,7 @@ export function PriceEditDialog({
                 <RadioGroupItem value="discount" id="discount" className="mt-1" />
                 <div className="flex-1 space-y-2">
                   <Label htmlFor="discount" className="font-medium cursor-pointer">
-                    Apply Discount Percentage
+                    Apply Percentage
                   </Label>
                   {priceType === 'discount' && (
                     <div className="relative">
@@ -199,10 +207,10 @@ export function PriceEditDialog({
                         type="number"
                         value={discountPercentage}
                         onChange={(e) => setDiscountPercentage(e.target.value)}
-                        placeholder="Enter discount percentage"
+                        placeholder="Enter percentage (use negative for discount)"
                         className="pl-9"
                         step="0.1"
-                        min="0"
+                        min="-100"
                         max="100"
                       />
                     </div>
@@ -219,11 +227,11 @@ export function PriceEditDialog({
                 ${calculateFinalPrice().toFixed(2)}
               </span>
             </div>
-            {calculateSavings() > 0 && (
-              <div className="flex justify-between items-center text-emerald-600">
-                <span className="text-sm">Savings:</span>
+            {calculateSavings() !== 0 && (
+              <div className={`flex justify-between items-center ${calculateSavings() > 0 ? 'text-emerald-600' : 'text-orange-600'}`}>
+                <span className="text-sm">{calculateSavings() > 0 ? 'Savings:' : 'Markup:'}</span>
                 <span className="font-medium">
-                  ${calculateSavings().toFixed(2)} ({((calculateSavings() / Number(product.base_price_usd)) * 100).toFixed(1)}%)
+                  ${Math.abs(calculateSavings()).toFixed(2)} ({((Math.abs(calculateSavings()) / Number(product.base_price_usd)) * 100).toFixed(1)}%)
                 </span>
               </div>
             )}

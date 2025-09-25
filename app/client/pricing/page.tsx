@@ -113,7 +113,8 @@ export default function ClientPricingPage() {
         throw new Error(error.error || 'Failed to apply adjustment')
       }
 
-      toast.success(`Applied ${percentage > 0 ? '+' : ''}${percentage}% adjustment to all prices`)
+      const action = percentage > 0 ? 'discount' : 'markup'
+      toast.success(`Applied ${Math.abs(percentage)}% ${action} to all prices`)
       setGlobalAdjustment('')
       await fetchPricingData()
     } catch (error) {
@@ -249,7 +250,7 @@ export default function ClientPricingPage() {
         <CardContent>
           <div className="flex items-end gap-4">
             <div className="flex-1 max-w-sm">
-              <Label htmlFor="global-adjustment">Adjust all prices by percentage</Label>
+              <Label htmlFor="global-adjustment">Bulk adjust all prices by percentage</Label>
               <div className="flex gap-2 mt-2">
                 <div className="relative flex-1">
                   <Input
@@ -257,7 +258,7 @@ export default function ClientPricingPage() {
                     type="number"
                     value={globalAdjustment}
                     onChange={(e) => setGlobalAdjustment(e.target.value)}
-                    placeholder="e.g., 10 for +10% or -5 for -5%"
+                    placeholder="e.g., -10 for 10% increase or 5 for 5% discount"
                     className="pr-8"
                   />
                   <Percent className="absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -270,7 +271,7 @@ export default function ClientPricingPage() {
                 </Button>
               </div>
               <p className="text-sm text-muted-foreground mt-2">
-                Enter a positive number to increase prices or negative to decrease
+                Enter a negative number to increase prices (markup) or positive to decrease (discount)
               </p>
             </div>
           </div>
