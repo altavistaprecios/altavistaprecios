@@ -1,8 +1,7 @@
 'use client'
 
 import * as React from 'react'
-import { DataTable } from '@/components/data-table'
-import { ClientInviteDialog } from '@/components/clients/invite-dialog'
+import { ClientsTable } from '@/components/clients/clients-table'
 import { toast } from 'sonner'
 
 interface Client {
@@ -18,23 +17,9 @@ interface Client {
   active?: boolean
 }
 
-// Transform clients to match the DataTable schema
-function transformClientsToTableData(clients: Client[]) {
-  return clients.map((client, index) => ({
-    id: index + 1,
-    header: client.company_name,
-    type: client.role || 'Client',
-    status: client.active ? 'Active' : 'Invited',
-    target: (client.discount_tier || 0).toString(),
-    limit: (client.total_orders || 0).toString(),
-    reviewer: client.contact_name,
-  }))
-}
-
 export default function AdminClientsPage() {
   const [clients, setClients] = React.useState<Client[]>([])
   const [loading, setLoading] = React.useState(true)
-  const [inviteDialogOpen, setInviteDialogOpen] = React.useState(false)
 
   React.useEffect(() => {
     fetchClients()
@@ -46,7 +31,7 @@ export default function AdminClientsPage() {
       const response = await fetch('/api/auth/clients')
 
       if (!response.ok) {
-        // Create dummy data if endpoint doesn't exist yet
+        // Create dummy data if endpoint doesn't exist yet - showing only active clients
         setClients([
           {
             id: '1',
@@ -54,7 +39,8 @@ export default function AdminClientsPage() {
             company_name: 'Acme Optics',
             contact_name: 'John Smith',
             role: 'client',
-            created_at: new Date().toISOString(),
+            created_at: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString(), // 90 days ago
+            last_sign_in_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 days ago
             discount_tier: 10,
             total_orders: 25,
             active: true,
@@ -65,9 +51,46 @@ export default function AdminClientsPage() {
             company_name: 'Vision Plus',
             contact_name: 'Jane Doe',
             role: 'client',
-            created_at: new Date().toISOString(),
+            created_at: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString(), // 60 days ago
+            last_sign_in_at: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(), // 1 day ago
             discount_tier: 15,
             total_orders: 42,
+            active: true,
+          },
+          {
+            id: '3',
+            email: 'client3@example.com',
+            company_name: 'LensCrafters Pro',
+            contact_name: 'Michael Johnson',
+            role: 'client',
+            created_at: new Date(Date.now() - 120 * 24 * 60 * 60 * 1000).toISOString(), // 120 days ago
+            last_sign_in_at: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(), // 5 days ago
+            discount_tier: 20,
+            total_orders: 87,
+            active: true,
+          },
+          {
+            id: '4',
+            email: 'client4@example.com',
+            company_name: 'Optical Solutions Inc',
+            contact_name: 'Sarah Williams',
+            role: 'client',
+            created_at: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days ago
+            last_sign_in_at: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(), // 3 days ago
+            discount_tier: 5,
+            total_orders: 12,
+            active: true,
+          },
+          {
+            id: '5',
+            email: 'client5@example.com',
+            company_name: 'Clear View Optics',
+            contact_name: 'Robert Brown',
+            role: 'client',
+            created_at: new Date(Date.now() - 180 * 24 * 60 * 60 * 1000).toISOString(), // 180 days ago
+            last_sign_in_at: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days ago
+            discount_tier: 25,
+            total_orders: 156,
             active: true,
           },
         ])
@@ -75,7 +98,9 @@ export default function AdminClientsPage() {
       }
 
       const data = await response.json()
-      setClients(data.data || [])
+      // Filter to show only active/approved clients
+      const activeClients = (data.data || []).filter((client: Client) => client.active === true)
+      setClients(activeClients)
     } catch (error) {
       console.error('Failed to fetch clients:', error)
       toast.error('Failed to load clients')
@@ -95,7 +120,6 @@ export default function AdminClientsPage() {
       if (!response.ok) throw new Error('Failed to send invitation')
 
       toast.success('Invitation sent successfully')
-      setInviteDialogOpen(false)
       fetchClients() // Refresh the list
     } catch (error) {
       console.error('Failed to invite client:', error)
@@ -121,25 +145,40 @@ export default function AdminClientsPage() {
     }
   }
 
-  if (loading) {
-    return (
-      <div className="flex h-96 items-center justify-center px-4 lg:px-6">
-        <p className="text-muted-foreground">Loading clients...</p>
-      </div>
-    )
+  const handleExport = async () => {
+    toast.info('Exporting client data...')
+    // Implement CSV export logic here
+    const csv = [
+      ['Company', 'Contact', 'Email', 'Discount', 'Orders', 'Status', 'Joined'].join(','),
+      ...clients.map(c => [
+        c.company_name,
+        c.contact_name,
+        c.email,
+        `${c.discount_tier || 0}%`,
+        c.total_orders || 0,
+        c.active ? 'Active' : 'Invited',
+        new Date(c.created_at).toLocaleDateString()
+      ].join(','))
+    ].join('\n')
+
+    const blob = new Blob([csv], { type: 'text/csv' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `clients-${new Date().toISOString().split('T')[0]}.csv`
+    a.click()
+    URL.revokeObjectURL(url)
+    toast.success('Client data exported')
   }
 
-  // Transform clients to match the DataTable format
-  const tableData = transformClientsToTableData(clients)
-
   return (
-    <div className="flex flex-1 flex-col gap-6">
-      <DataTable data={tableData} />
-
-      <ClientInviteDialog
-        open={inviteDialogOpen}
-        onOpenChange={setInviteDialogOpen}
+    <div className="flex flex-1 flex-col">
+      <ClientsTable
+        clients={clients}
+        loading={loading}
         onInvite={handleInviteClient}
+        onResendInvite={handleResendInvite}
+        onExport={handleExport}
       />
     </div>
   )
