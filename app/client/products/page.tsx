@@ -44,69 +44,73 @@ export default function ClientProductsPage() {
 
   if (loading) {
     return (
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Product Catalog</h1>
+      <div className="flex flex-1 flex-col">
+        <div className="px-4 lg:px-6 pb-4">
+          <h1 className="text-2xl font-bold">Product Catalog</h1>
           <p className="text-muted-foreground">
             Browse available products and view your custom pricing
           </p>
         </div>
-        <DataTableSkeleton />
+        <div className="px-4 lg:px-6">
+          <DataTableSkeleton />
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Product Catalog</h1>
+    <div className="flex flex-1 flex-col">
+      <div className="px-4 lg:px-6 pb-4">
+        <h1 className="text-2xl font-bold">Product Catalog</h1>
         <p className="text-muted-foreground">
           Browse available products and view your custom pricing
         </p>
       </div>
 
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle>Available Products</CardTitle>
-              <CardDescription>
-                {products.length} products available for ordering
-              </CardDescription>
+      <div className="px-4 lg:px-6">
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle>Available Products</CardTitle>
+                <CardDescription>
+                  {products.length} products available for ordering
+                </CardDescription>
+              </div>
+              <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as 'grid' | 'list')}>
+                <TabsList>
+                  <TabsTrigger value="grid">
+                    <Grid className="h-4 w-4 mr-2" />
+                    Grid
+                  </TabsTrigger>
+                  <TabsTrigger value="list">
+                    <List className="h-4 w-4 mr-2" />
+                    List
+                  </TabsTrigger>
+                </TabsList>
+              </Tabs>
             </div>
-            <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as 'grid' | 'list')}>
-              <TabsList>
-                <TabsTrigger value="grid">
-                  <Grid className="h-4 w-4 mr-2" />
-                  Grid
-                </TabsTrigger>
-                <TabsTrigger value="list">
-                  <List className="h-4 w-4 mr-2" />
-                  List
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
-          </div>
-        </CardHeader>
-        <CardContent>
-          {viewMode === 'grid' ? (
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {products.map((product) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  onView={handleViewProduct}
-                  isAdmin={false}
-                />
-              ))}
-            </div>
-          ) : (
-            <ProductTable
-              products={products}
-            />
-          )}
-        </CardContent>
-      </Card>
+          </CardHeader>
+          <CardContent>
+            {viewMode === 'grid' ? (
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {products.map((product) => (
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    onView={handleViewProduct}
+                    isAdmin={false}
+                  />
+                ))}
+              </div>
+            ) : (
+              <ProductTable
+                products={products}
+              />
+            )}
+          </CardContent>
+        </Card>
+      </div>
     </div>
   )
 }

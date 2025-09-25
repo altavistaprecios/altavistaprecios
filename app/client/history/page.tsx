@@ -87,72 +87,83 @@ export default function ClientHistoryPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-96">
-        <p className="text-muted-foreground">Loading price history...</p>
+      <div className="flex flex-1 flex-col">
+        <div className="px-4 lg:px-6 pb-4">
+          <h1 className="text-2xl font-bold">Price History</h1>
+          <p className="text-muted-foreground">
+            Track changes to your custom pricing over time
+          </p>
+        </div>
+        <div className="flex items-center justify-center h-96 px-4 lg:px-6">
+          <p className="text-muted-foreground">Loading price history...</p>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Price History</h1>
+    <div className="flex flex-1 flex-col">
+      <div className="px-4 lg:px-6 pb-4">
+        <h1 className="text-2xl font-bold">Price History</h1>
         <p className="text-muted-foreground">
           Track changes to your custom pricing over time
         </p>
       </div>
 
+      <div className="px-4 lg:px-6 space-y-6">
+
       <div className="grid gap-4 md:grid-cols-3">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Total Changes</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{history.length}</div>
-            <p className="text-xs text-muted-foreground">Price updates</p>
-          </CardContent>
-        </Card>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium">Total Changes</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{history.length}</div>
+              <p className="text-xs text-muted-foreground">Price updates</p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium">Avg. Reduction</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 dark:text-emerald-500 dark:text-emerald-400">
+                {history.length > 0 ? (
+                  (history.reduce((acc, h) => acc + ((h.old_price - h.new_price) / h.old_price * 100), 0) / history.length).toFixed(1)
+                ) : 0}%
+              </div>
+              <p className="text-xs text-muted-foreground">Average price decrease</p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium">Last Update</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {history.length > 0 ? (
+                  new Date(history[0].changed_at).toLocaleDateString()
+                ) : 'N/A'}
+              </div>
+              <p className="text-xs text-muted-foreground">Most recent change</p>
+            </CardContent>
+          </Card>
+        </div>
 
         <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Avg. Reduction</CardTitle>
+          <CardHeader>
+            <CardTitle>Your Price Change Log</CardTitle>
+            <CardDescription>
+              All pricing adjustments made to your account
+            </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 dark:text-emerald-500 dark:text-emerald-400">
-              {history.length > 0 ? (
-                (history.reduce((acc, h) => acc + ((h.old_price - h.new_price) / h.old_price * 100), 0) / history.length).toFixed(1)
-              ) : 0}%
-            </div>
-            <p className="text-xs text-muted-foreground">Average price decrease</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Last Update</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {history.length > 0 ? (
-                new Date(history[0].changed_at).toLocaleDateString()
-              ) : 'N/A'}
-            </div>
-            <p className="text-xs text-muted-foreground">Most recent change</p>
+            <PriceHistoryTable history={history} />
           </CardContent>
         </Card>
       </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Your Price Change Log</CardTitle>
-          <CardDescription>
-            All pricing adjustments made to your account
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <PriceHistoryTable history={history} />
-        </CardContent>
-      </Card>
     </div>
   )
 }

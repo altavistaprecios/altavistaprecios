@@ -7,15 +7,17 @@ export default function ClientDashboardPage() {
   const { user } = useAuth()
 
   return (
-    <div className="flex flex-col gap-4 px-4 md:gap-6 md:px-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Welcome back!</h1>
+    <div className="flex flex-1 flex-col">
+      <div className="px-4 lg:px-6 pb-4">
+        <h1 className="text-2xl font-bold">Welcome back!</h1>
         <p className="text-muted-foreground">
           {user?.company_name} - View your custom pricing and place orders
         </p>
       </div>
 
-      <ClientStats />
+      <div className="px-4 lg:px-6">
+        <ClientStats />
+      </div>
     </div>
   )
 }

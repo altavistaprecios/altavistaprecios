@@ -182,20 +182,30 @@ export default function ClientPricingPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-96">
-        <p className="text-muted-foreground">Loading pricing...</p>
+      <div className="flex flex-1 flex-col">
+        <div className="px-4 lg:px-6 pb-4">
+          <h1 className="text-2xl font-bold">Your Custom Pricing</h1>
+          <p className="text-muted-foreground">
+            View your negotiated prices and discounts
+          </p>
+        </div>
+        <div className="flex items-center justify-center h-96 px-4 lg:px-6">
+          <p className="text-muted-foreground">Loading pricing...</p>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Your Custom Pricing</h1>
+    <div className="flex flex-1 flex-col">
+      <div className="px-4 lg:px-6 pb-4">
+        <h1 className="text-2xl font-bold">Your Custom Pricing</h1>
         <p className="text-muted-foreground">
           View your negotiated prices and discounts
         </p>
       </div>
+
+      <div className="px-4 lg:px-6 space-y-6">
 
       <div className="grid gap-4 md:grid-cols-3">
         <Card>
@@ -267,17 +277,17 @@ export default function ClientPricingPage() {
         </CardContent>
       </Card>
 
-      <DataTableShell
-        title="Product Pricing Details"
-        description="Your custom pricing compared to standard rates. Click edit to modify individual prices."
-        footerLeft={
-          pricingData.length > 0 ? (
-            <span className="text-sm text-muted-foreground">
-              Showing {pricingData.length} product{pricingData.length === 1 ? '' : 's'}
-            </span>
-          ) : undefined
-        }
-      >
+        <DataTableShell
+          title="Product Pricing Details"
+          description="Your custom pricing compared to standard rates. Click edit to modify individual prices."
+          footerLeft={
+            pricingData.length > 0 ? (
+              <span className="text-sm text-muted-foreground">
+                Showing {pricingData.length} product{pricingData.length === 1 ? '' : 's'}
+              </span>
+            ) : undefined
+          }
+        >
         <Table>
           <TableHeader className="sticky top-0 z-10 bg-muted/60 backdrop-blur supports-[backdrop-filter]:bg-muted/80">
             <TableRow>
@@ -391,7 +401,8 @@ export default function ClientPricingPage() {
             )}
           </TableBody>
         </Table>
-      </DataTableShell>
+        </DataTableShell>
+      </div>
     </div>
   )
 }
