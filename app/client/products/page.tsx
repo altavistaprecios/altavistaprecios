@@ -39,7 +39,7 @@ export default function ClientProductsPage() {
   }
 
   const handleViewProduct = (product: Product) => {
-    toast.info(`Product: ${product.name}\nBase Price: $${product.base_price.toFixed(2)}\nCategory: ${product.category}`)
+    toast.info(`Product: ${product.name}\nBase Price: $${Number(product.base_price_usd).toFixed(2)}\nCode: ${product.code}`)
   }
 
   if (loading) {
@@ -103,8 +103,6 @@ export default function ClientProductsPage() {
           ) : (
             <ProductTable
               products={products}
-              onView={handleViewProduct}
-              isAdmin={false}
             />
           )}
         </CardContent>

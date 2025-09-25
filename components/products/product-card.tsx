@@ -62,27 +62,16 @@ export function ProductCard({
         )}
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="flex items-center justify-between">
-          <span className="text-sm text-muted-foreground">Category</span>
-          <Badge variant="secondary">{product.category}</Badge>
-        </div>
-        {product.specifications && (
-          <div className="space-y-2">
-            <span className="text-sm text-muted-foreground">Specifications</span>
-            <div className="grid grid-cols-2 gap-2 text-sm">
-              {Object.entries(product.specifications).map(([key, value]) => (
-                <div key={key} className="flex justify-between">
-                  <span className="text-muted-foreground">{key}:</span>
-                  <span className="font-medium">{value}</span>
-                </div>
-              ))}
-            </div>
+        {product.category_id && (
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-muted-foreground">Category</span>
+            <Badge variant="secondary">{product.category_id}</Badge>
           </div>
         )}
         <div className="flex items-center justify-between pt-2 border-t">
           <span className="text-sm text-muted-foreground">Base Price</span>
           <span className="text-lg font-semibold">
-            ${product.base_price.toFixed(2)}
+            ${Number(product.base_price_usd).toFixed(2)}
           </span>
         </div>
         <Button
