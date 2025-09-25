@@ -31,7 +31,7 @@ type RegistrationRequest = {
   email: string
   company_name: string
   phone: string | null
-  status: 'pending' | 'approved' | 'rejected' | 'email_sent'
+  status: 'pending' | 'approved' | 'rejected'
   rejected_reason: string | null
   approved_by: string | null
   approved_at: string | null
@@ -111,13 +111,8 @@ export default function RegistrationsPage() {
         })
       }
 
-      // Update the local state to show email_sent status
-      setRequests(prev => prev.map(req =>
-        req.id === selectedRequest.id
-          ? { ...req, status: 'email_sent' as const, approved_at: new Date().toISOString() }
-          : req
-      ))
-
+      // Refresh the list to show updated status
+      await fetchRequests()
       setSelectedRequest(null)
       setActionType(null)
 
@@ -172,12 +167,29 @@ export default function RegistrationsPage() {
     return request.status === activeTab
   })
 
-  const getStatusBadge = (status: string) => {
+  const getStatusBadge = (status: string, approvedAt?: string | null) => {
+    // For approved status, check if it was approved recently (within last 24 hours)
+    // and show "Email Sent" badge instead
+    if (status === 'approved' && approvedAt) {
+      const approvedDate = new Date(approvedAt)
+      const now = new Date()
+      const hoursSinceApproval = (now.getTime() - approvedDate.getTime()) / (1000 * 60 * 60)
+
+      // Show "Email Sent" for recently approved registrations
+      if (hoursSinceApproval < 24) {
+        return (
+          <Badge variant="default" className="gap-1">
+            <Mail className="h-3 w-3" />
+            Email Sent
+          </Badge>
+        )
+      }
+    }
+
     const variants: Record<string, { variant: any; icon: any; label: string }> = {
       pending: { variant: 'secondary', icon: Clock, label: 'Pending' },
       approved: { variant: 'default', icon: CheckCircle, label: 'Approved' },
       rejected: { variant: 'destructive', icon: XCircle, label: 'Rejected' },
-      email_sent: { variant: 'default', icon: Mail, label: 'Email Sent' },
     }
 
     const config = variants[status] || variants.pending
@@ -255,7 +267,7 @@ export default function RegistrationsPage() {
                       </TableCell>
                       <TableCell>{request.email}</TableCell>
                       <TableCell>{request.phone || 'N/A'}</TableCell>
-                      <TableCell>{getStatusBadge(request.status)}</TableCell>
+                      <TableCell>{getStatusBadge(request.status, request.approved_at)}</TableCell>
                       <TableCell>
                         {new Date(request.created_at).toLocaleDateString()}
                       </TableCell>
@@ -286,7 +298,7 @@ export default function RegistrationsPage() {
                               </Button>
                             </>
                           )}
-                          {(request.status === 'approved' || request.status === 'email_sent') && (
+                          {request.status === 'approved' && (
                             <span className="text-sm text-muted-foreground">
                               Approved {request.approved_at && `on ${new Date(request.approved_at).toLocaleDateString()}`}
                             </span>
