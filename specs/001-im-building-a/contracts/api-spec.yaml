@@ -1,0 +1,609 @@
+openapi: 3.0.3
+info:
+  title: Optics Factory B2B Pricing Platform API
+  version: 1.0.0
+  description: API for managing optical products and client-specific pricing
+
+servers:
+  - url: https://precios.altavista.com/api
+    description: Production server
+  - url: http://localhost:3000/api
+    description: Development server
+
+security:
+  - BearerAuth: []
+
+paths:
+  /auth/login:
+    post:
+      summary: Authenticate user
+      tags: [Authentication]
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  minLength: 8
+      responses:
+        200:
+          description: Successful authentication
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
+                  access_token:
+                    type: string
+                  refresh_token:
+                    type: string
+        401:
+          description: Invalid credentials
+
+  /auth/invite:
+    post:
+      summary: Send invitation to new client (Admin only)
+      tags: [Authentication]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email]
+              properties:
+                email:
+                  type: string
+                  format: email
+      responses:
+        201:
+          description: Invitation sent
+        403:
+          description: Unauthorized - Admin only
+
+  /auth/set-password:
+    post:
+      summary: Set password for first-time user
+      tags: [Authentication]
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [token, password]
+              properties:
+                token:
+                  type: string
+                password:
+                  type: string
+                  minLength: 8
+      responses:
+        200:
+          description: Password set successfully
+
+  /auth/reset-password:
+    post:
+      summary: Request password reset
+      tags: [Authentication]
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email]
+              properties:
+                email:
+                  type: string
+                  format: email
+      responses:
+        200:
+          description: Reset email sent
+
+  /products:
+    get:
+      summary: List all active products
+      tags: [Products]
+      parameters:
+        - name: category_id
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+            maximum: 100
+      responses:
+        200:
+          description: List of products with pagination
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  products:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProductWithPrice'
+                  total:
+                    type: integer
+                  page:
+                    type: integer
+                  limit:
+                    type: integer
+
+    post:
+      summary: Create new product (Admin only)
+      tags: [Products]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductCreate'
+      responses:
+        201:
+          description: Product created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        403:
+          description: Unauthorized - Admin only
+
+  /products/{id}:
+    get:
+      summary: Get product details
+      tags: [Products]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Product details with specifications
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductDetail'
+        404:
+          description: Product not found
+
+    put:
+      summary: Update product (Admin only)
+      tags: [Products]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductUpdate'
+      responses:
+        200:
+          description: Product updated
+        403:
+          description: Unauthorized - Admin only
+
+    delete:
+      summary: Soft delete product (Admin only)
+      tags: [Products]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Product soft deleted
+        403:
+          description: Unauthorized - Admin only
+
+  /categories:
+    get:
+      summary: List product categories
+      tags: [Categories]
+      responses:
+        200:
+          description: List of categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductCategory'
+
+  /client-prices:
+    get:
+      summary: Get client's custom prices
+      tags: [Pricing]
+      responses:
+        200:
+          description: Client's custom prices
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClientPrice'
+
+    post:
+      summary: Set custom price for product
+      tags: [Pricing]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [product_id, custom_price_usd]
+              properties:
+                product_id:
+                  type: string
+                  format: uuid
+                custom_price_usd:
+                  type: number
+                  format: decimal
+                  minimum: 0
+      responses:
+        201:
+          description: Custom price set
+        400:
+          description: Invalid price
+
+  /client-prices/{product_id}:
+    put:
+      summary: Update custom price
+      tags: [Pricing]
+      parameters:
+        - name: product_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [custom_price_usd]
+              properties:
+                custom_price_usd:
+                  type: number
+                  format: decimal
+                  minimum: 0
+      responses:
+        200:
+          description: Price updated
+
+    delete:
+      summary: Remove custom price (revert to base)
+      tags: [Pricing]
+      parameters:
+        - name: product_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Custom price removed
+
+  /price-history:
+    get:
+      summary: Get price history
+      tags: [Pricing]
+      parameters:
+        - name: product_id
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: from_date
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: to_date
+          in: query
+          schema:
+            type: string
+            format: date
+      responses:
+        200:
+          description: Price history
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PriceHistory'
+
+  /users:
+    get:
+      summary: List users (Admin only)
+      tags: [Users]
+      responses:
+        200:
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        403:
+          description: Unauthorized - Admin only
+
+  /users/{id}/deactivate:
+    post:
+      summary: Deactivate user (Admin only)
+      tags: [Users]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: User deactivated
+        403:
+          description: Unauthorized - Admin only
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        role:
+          type: string
+          enum: [admin, client]
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        last_login:
+          type: string
+          format: date-time
+
+    Product:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        code:
+          type: string
+        name:
+          type: string
+        category_id:
+          type: string
+          format: uuid
+        base_price_usd:
+          type: number
+          format: decimal
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    ProductWithPrice:
+      allOf:
+        - $ref: '#/components/schemas/Product'
+        - type: object
+          properties:
+            custom_price_usd:
+              type: number
+              format: decimal
+              nullable: true
+            markup_percentage:
+              type: number
+              format: decimal
+              nullable: true
+
+    ProductDetail:
+      allOf:
+        - $ref: '#/components/schemas/ProductWithPrice'
+        - type: object
+          properties:
+            specification:
+              $ref: '#/components/schemas/ProductSpecification'
+            treatments:
+              type: array
+              items:
+                $ref: '#/components/schemas/Treatment'
+
+    ProductCreate:
+      type: object
+      required: [code, name, category_id, base_price_usd]
+      properties:
+        code:
+          type: string
+        name:
+          type: string
+        category_id:
+          type: string
+          format: uuid
+        base_price_usd:
+          type: number
+          format: decimal
+          minimum: 0
+        specification:
+          $ref: '#/components/schemas/ProductSpecificationCreate'
+
+    ProductUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        base_price_usd:
+          type: number
+          format: decimal
+          minimum: 0
+
+    ProductCategory:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        slug:
+          type: string
+        description:
+          type: string
+        display_order:
+          type: integer
+
+    ProductSpecification:
+      type: object
+      properties:
+        materials:
+          type: array
+          items:
+            type: string
+        spherical_range:
+          type: string
+        cylindrical_range:
+          type: string
+        diameters:
+          type: array
+          items:
+            type: string
+        delivery_time:
+          type: string
+
+    ProductSpecificationCreate:
+      type: object
+      properties:
+        materials:
+          type: array
+          items:
+            type: string
+        spherical_range:
+          type: string
+        cylindrical_range:
+          type: string
+        diameters:
+          type: array
+          items:
+            type: string
+        delivery_time:
+          type: string
+
+    ClientPrice:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        product_id:
+          type: string
+          format: uuid
+        custom_price_usd:
+          type: number
+          format: decimal
+        markup_percentage:
+          type: number
+          format: decimal
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    Treatment:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        category:
+          type: string
+        description:
+          type: string
+        additional_cost:
+          type: number
+          format: decimal
+
+    PriceHistory:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        product_id:
+          type: string
+          format: uuid
+        old_price:
+          type: number
+          format: decimal
+        new_price:
+          type: number
+          format: decimal
+        change_type:
+          type: string
+          enum: [base_update, client_override]
+        changed_at:
+          type: string
+          format: date-time
+        changed_by:
+          type: string

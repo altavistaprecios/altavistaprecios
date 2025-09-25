@@ -1,0 +1,29 @@
+{
+  "mcpServers": {
+    "supabase": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@supabase/mcp-server-supabase",
+        "--project-ref=pnqjccgfmouxmledgjtt"
+      ],
+      "env": {
+        "SUPABASE_ACCESS_TOKEN": "sbp_265c4fe89b20c7c483618dba6d50a971b5783673"
+      }
+    },
+    "chrome-devtools": {
+      "command": "npx",
+      "args": ["chrome-devtools-mcp@latest"]
+    },
+    "resend": {
+      "command": "node",
+      "args": [
+        "/Users/anibalin/Sites/anibal7/altavista/altavista6/node_modules/.pnpm/resend-mcp@0.1.2_react-dom@19.1.1_react@19.1.1__react@19.1.1/node_modules/resend-mcp/dist/index.js"
+      ],
+      "env": {
+        "RESEND_API_KEY": "re_2RrVKVzp_AojA3tebcJ7Yt1ajGB8DEsmf",
+        "SENDER_EMAIL_ADDRESS": "onboarding@resend.dev"
+      }
+    }
+  }
+}

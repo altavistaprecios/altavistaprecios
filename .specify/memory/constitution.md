@@ -1,50 +1,90 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!--
+Sync Impact Report
+Version Change: 0.0.0 → 1.0.0 (Initial ratification)
+Modified Principles: N/A (new constitution)
+Added Sections: All sections (initial creation)
+Removed Sections: N/A
+Templates requiring updates: ✅ plan-template.md / ✅ spec-template.md / ✅ tasks-template.md / ✅ agent-file-template.md
+Follow-up TODOs: None
+-->
+
+# Platform App Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Latest Stack Only
+Every technology choice MUST use the latest stable version available. When encountering version conflicts or deprecation warnings, upgrade to the newest compatible version. Never downgrade to solve problems - find forward-compatible solutions instead. This ensures the codebase remains modern, secure, and benefits from the latest performance improvements and features.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### II. Package Management with pnpm
+All package management MUST use pnpm exclusively. This provides efficient disk space usage through content-addressable storage, strict dependency resolution preventing phantom dependencies, and faster installation times. Use workspace features for monorepo structures. Never mix package managers - convert any npm or yarn references to pnpm equivalents.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### III. Component-First Architecture
+All UI development MUST prioritize using standard shadcn/ui components. Before creating custom components, verify if shadcn/ui provides a suitable solution. When customization is needed, extend shadcn components rather than replacing them. This ensures consistent design language, accessibility compliance, and reduced maintenance burden.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### IV. Type Safety Throughout
+TypeScript MUST be used for all JavaScript code with strict mode enabled. No `any` types allowed except in exceptional circumstances with documented justification. All API contracts, data models, and component props require explicit type definitions. This prevents runtime errors and improves developer experience through IDE support.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### V. Test Coverage Requirements
+Every feature MUST include automated tests covering happy paths, error scenarios, and edge cases. Unit tests for business logic, integration tests for API endpoints, and E2E tests for critical user journeys are mandatory. Minimum 80% code coverage enforced through CI/CD gates.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+## Development Standards
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+### Technology Stack
+- **Runtime**: Latest Node.js LTS version
+- **Framework**: Next.js (latest stable)
+- **UI Components**: shadcn/ui with Radix UI primitives
+- **Styling**: Tailwind CSS (latest version)
+- **Database**: PostgreSQL with Prisma ORM (latest versions)
+- **API**: tRPC or REST with proper OpenAPI documentation
+- **Testing**: Vitest for unit/integration, Playwright for E2E
+- **Package Manager**: pnpm exclusively
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+### Code Quality Gates
+- ESLint with recommended rulesets must pass
+- Prettier formatting required (no manual formatting)
+- TypeScript compilation with no errors
+- All tests must pass before merge
+- Bundle size analysis for frontend changes
+- Lighthouse performance scores maintained above 90
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+## Platform Architecture
+
+### Monorepo Structure
+The platform uses a monorepo structure managed by pnpm workspaces:
+- `apps/` - Application packages (web, mobile, admin)
+- `packages/` - Shared libraries and utilities
+- `config/` - Shared configuration (ESLint, TypeScript, etc.)
+- Each package maintains its own package.json and dependencies
+- Shared dependencies hoisted to root for efficiency
+
+### Deployment Requirements
+- Containerized deployments using Docker
+- Environment-specific configurations via .env files
+- Health check endpoints mandatory
+- Graceful shutdown handling
+- Structured JSON logging for observability
+- Zero-downtime deployments through rolling updates
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+### Amendment Process
+1. Proposed changes must be documented in a pull request
+2. Major principle changes require team consensus
+3. Version bump following semantic versioning
+4. All dependent templates and documentation must be updated
+5. Migration plan required for breaking changes
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+### Compliance Verification
+- All pull requests must verify constitutional compliance
+- Automated checks enforce principle adherence
+- Architecture Decision Records (ADRs) document deviations
+- Quarterly reviews ensure principles remain relevant
+- New team members must review constitution during onboarding
+
+### Version Control
+Constitution changes tracked through semantic versioning:
+- MAJOR: Removing principles or fundamental architecture changes
+- MINOR: Adding new principles or significant clarifications
+- PATCH: Typo fixes, formatting, minor clarifications
+
+**Version**: 1.0.0 | **Ratified**: 2025-09-23 | **Last Amended**: 2025-09-23

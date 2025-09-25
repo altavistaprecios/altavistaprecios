@@ -1,0 +1,28 @@
+{
+  "future-x": {
+    "title": "Future-X",
+    "description": "Es un material de vanguardia que ha logrado balancear todas las necesidades ópticas y las aspiraciones estéticas del usuario. Por un extraordinario avance tecnológico Future-X es el único producto capaz de proporcionar el placer de disfrutar de los lentes más avanzados del mundo.",
+    "products": {
+      "steel": {
+        "name": "Steel",
+        "description": "Tratamiento anti reflejo super hidrofóbico, oleofóbico y antiestático de gran durabilidad y de muy fácil limpieza. Su alta calidad óptica y sus propiedades exclusivas hacen de Steel el anti reflejo premium por excelencia en lentes terminadas."
+      },
+      "x-treme": {
+        "name": "X-treme",
+        "description": "Los poderes altos siempre han sido una preocupación para el profesional y para el paciente. Innumerables sacrificios de visión y estética están acompañados del aumento en el poder del lente oftálmico. X-treme con su tecnología de asfericidad atórica lleva a un nuevo nivel las lentes Future-X permitiendo la corrección grado a grado para optimizar sorprendentemente el espesor de la lente y una calidad de visión insuperable. Las lentes X-treme incluyen tratamiento Steel."
+      },
+      "paladin": {
+        "name": "Paladin",
+        "description": "Tratamiento anti reflejo cerámico, único en el mundo, duplica la resistencia al rayado, es el sustituto ideal de la lente mineral. Paladin es a su vez hidrofílico (absorbe el agua) actuando como antiempañante."
+      },
+      "g2": {
+        "name": "Future-X G2",
+        "description": "Es la nueva generación de lentes FutureX con características mejoradas para ofrecerle nuevos beneficios. Es 2 veces más resistente a los impactos, ofreciéndole mayor protección y seguridad sin sacrificar su calidad óptica. La tensibilidad mejorada del FutureX G2, lo convierte en una excelente opción para adaptarlo a monturas de nylon y de 3 piezas, sustituyendo al policarbonato. Es totalmente asférico, asegurándole total calidad óptica a lo largo y ancho del lente permitiéndole así un mayor campo visual."
+      },
+      "g3-blusteel": {
+        "name": "Future-X G3 BluSteel",
+        "description": "Están equipados con tecnologías de protección contra la luz dañina para prevenir la fatiga visual digital, desviando un segmento importante de la luz azul (380 - 500 nm), reduciendo la aberración del color y la fatiga ocular mientras proporciona una visión clara."
+      }
+    }
+  }
+}

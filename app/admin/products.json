@@ -1,0 +1,182 @@
+[
+  {
+    "id": 1,
+    "code": "LENS-001",
+    "name": "Progressive Lens",
+    "category": "Lenses",
+    "price": 185.00,
+    "stock": 125,
+    "status": "active"
+  },
+  {
+    "id": 2,
+    "code": "LENS-002",
+    "name": "Single Vision Lens",
+    "category": "Lenses",
+    "price": 95.00,
+    "stock": 250,
+    "status": "active"
+  },
+  {
+    "id": 3,
+    "code": "LENS-003",
+    "name": "Bifocal Lens",
+    "category": "Lenses",
+    "price": 145.00,
+    "stock": 85,
+    "status": "active"
+  },
+  {
+    "id": 4,
+    "code": "LENS-004",
+    "name": "Trifocal Lens",
+    "category": "Lenses",
+    "price": 165.00,
+    "stock": 45,
+    "status": "active"
+  },
+  {
+    "id": 5,
+    "code": "LENS-005",
+    "name": "High Index Lens 1.67",
+    "category": "Lenses",
+    "price": 225.00,
+    "stock": 65,
+    "status": "active"
+  },
+  {
+    "id": 6,
+    "code": "LENS-006",
+    "name": "High Index Lens 1.74",
+    "category": "Lenses",
+    "price": 325.00,
+    "stock": 8,
+    "status": "active"
+  },
+  {
+    "id": 7,
+    "code": "LENS-007",
+    "name": "Polycarbonate Lens",
+    "category": "Lenses",
+    "price": 125.00,
+    "stock": 180,
+    "status": "active"
+  },
+  {
+    "id": 8,
+    "code": "LENS-008",
+    "name": "Trivex Lens",
+    "category": "Lenses",
+    "price": 195.00,
+    "stock": 35,
+    "status": "active"
+  },
+  {
+    "id": 9,
+    "code": "COAT-001",
+    "name": "Anti-Reflective Coating",
+    "category": "Coatings",
+    "price": 45.00,
+    "stock": 500,
+    "status": "active"
+  },
+  {
+    "id": 10,
+    "code": "COAT-002",
+    "name": "Scratch Resistant Coating",
+    "category": "Coatings",
+    "price": 35.00,
+    "stock": 450,
+    "status": "active"
+  },
+  {
+    "id": 11,
+    "code": "COAT-003",
+    "name": "Hydrophobic Coating",
+    "category": "Coatings",
+    "price": 55.00,
+    "stock": 200,
+    "status": "active"
+  },
+  {
+    "id": 12,
+    "code": "COAT-004",
+    "name": "Mirror Coating",
+    "category": "Coatings",
+    "price": 65.00,
+    "stock": 120,
+    "status": "active"
+  },
+  {
+    "id": 13,
+    "code": "COAT-005",
+    "name": "Anti-Fog Coating",
+    "category": "Coatings",
+    "price": 40.00,
+    "stock": 5,
+    "status": "out_of_stock"
+  },
+  {
+    "id": 14,
+    "code": "COAT-006",
+    "name": "Oleophobic Coating",
+    "category": "Coatings",
+    "price": 75.00,
+    "stock": 85,
+    "status": "active"
+  },
+  {
+    "id": 15,
+    "code": "TREAT-001",
+    "name": "UV Protection Treatment",
+    "category": "Treatments",
+    "price": 25.00,
+    "stock": 600,
+    "status": "active"
+  },
+  {
+    "id": 16,
+    "code": "TREAT-002",
+    "name": "Blue Light Filter",
+    "category": "Treatments",
+    "price": 50.00,
+    "stock": 320,
+    "status": "active"
+  },
+  {
+    "id": 17,
+    "code": "TREAT-003",
+    "name": "Photochromic Treatment",
+    "category": "Treatments",
+    "price": 95.00,
+    "stock": 0,
+    "status": "out_of_stock"
+  },
+  {
+    "id": 18,
+    "code": "TREAT-004",
+    "name": "Polarization Treatment",
+    "category": "Treatments",
+    "price": 85.00,
+    "stock": 140,
+    "status": "active"
+  },
+  {
+    "id": 19,
+    "code": "TREAT-005",
+    "name": "Tinting Service",
+    "category": "Treatments",
+    "price": 30.00,
+    "stock": 400,
+    "status": "active"
+  },
+  {
+    "id": 20,
+    "code": "TREAT-006",
+    "name": "Edge Polish Treatment",
+    "category": "Treatments",
+    "price": 15.00,
+    "stock": 550,
+    "status": "active"
+  }
+]
