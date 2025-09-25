@@ -5,8 +5,6 @@ import {
   Package,
   Users,
   LayoutDashboardIcon,
-  Glasses,
-  Sparkles,
   UserPlus,
 } from "lucide-react"
 
@@ -45,14 +43,23 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         icon: UserPlus,
       },
       {
-        title: "MONOFOCALES FUTURE-X",
-        url: "/admin/monofocales-future-x",
-        icon: Glasses,
-      },
-      {
-        title: "MONOFOCALES TERMINADOS",
-        url: "/admin/monofocales-terminados",
-        icon: Sparkles,
+        title: "Products",
+        url: "/admin/products",
+        icon: Package,
+        items: [
+          {
+            title: "All Products",
+            url: "/admin/products",
+          },
+          {
+            title: "MONOFOCALES FUTURE-X",
+            url: "/admin/monofocales-future-x",
+          },
+          {
+            title: "MONOFOCALES TERMINADOS",
+            url: "/admin/monofocales-terminados",
+          },
+        ],
       },
       {
         title: "Clientes",
