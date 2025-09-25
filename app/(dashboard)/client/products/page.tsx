@@ -27,9 +27,9 @@ export default function ClientProductsPage() {
       const response = await fetch('/api/products')
       const data = await response.json()
       
-      // Filter only available products for clients
-      const availableProducts = (data.data || []).filter((p: Product) => p.available)
-      setProducts(availableProducts)
+      // Filter only active products for clients
+      const activeProducts = (data.products || []).filter((p: Product) => p.is_active)
+      setProducts(activeProducts)
     } catch (error) {
       console.error('Failed to fetch products:', error)
       toast.error('Failed to load products')

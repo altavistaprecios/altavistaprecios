@@ -49,12 +49,12 @@ export function ClientStats() {
       const labCategory = categories.categories?.find((c: any) => c.slug === 'monofocales-future-x-laboratory')
       const clearViewCategory = categories.categories?.find((c: any) => c.slug === 'monofocales-terminados')
 
-      // Count products by category - only available products for clients
-      const availableProducts = products.products?.filter((p: any) => p.available) || []
+      // Count products by category - only active products for clients
+      const activeProducts = products.products?.filter((p: any) => p.is_active) || []
 
-      const stockCount = availableProducts.filter((p: any) => p.category_id === stockCategory?.id).length || 0
-      const labCount = availableProducts.filter((p: any) => p.category_id === labCategory?.id).length || 0
-      const clearViewCount = availableProducts.filter((p: any) => p.category_id === clearViewCategory?.id).length || 0
+      const stockCount = activeProducts.filter((p: any) => p.category_id === stockCategory?.id).length || 0
+      const labCount = activeProducts.filter((p: any) => p.category_id === labCategory?.id).length || 0
+      const clearViewCount = activeProducts.filter((p: any) => p.category_id === clearViewCategory?.id).length || 0
 
       setStats({
         futureXProducts: stockCount + labCount,
