@@ -5,9 +5,10 @@ import { UserService } from '@/lib/services/user-service'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const supabase = await createClient()
 
     // Check authentication
@@ -21,7 +22,7 @@ export async function GET(
     }
 
     const productService = new ProductService()
-    const product = await productService.findById(params.id)
+    const product = await productService.findById(id)
 
     if (!product) {
       return NextResponse.json(
@@ -42,9 +43,10 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const supabase = await createClient()
 
     // Check authentication
@@ -71,7 +73,7 @@ export async function PUT(
     const productService = new ProductService()
 
     // Check if product exists
-    const existingProduct = await productService.findById(params.id)
+    const existingProduct = await productService.findById(id)
     if (!existingProduct) {
       return NextResponse.json(
         { error: 'Product not found' },
@@ -89,7 +91,7 @@ export async function PUT(
       )
     }
 
-    const product = await productService.update(params.id, body)
+    const product = await productService.update(id, body)
 
     // Check if price was updated
     const priceHistoryCreated = body.base_price_usd &&
@@ -117,9 +119,10 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const supabase = await createClient()
 
     // Check authentication
@@ -146,7 +149,7 @@ export async function DELETE(
     const productService = new ProductService()
 
     // Check if product exists
-    const existingProduct = await productService.findById(params.id)
+    const existingProduct = await productService.findById(id)
     if (!existingProduct) {
       return NextResponse.json(
         { error: 'Product not found' },
@@ -154,7 +157,7 @@ export async function DELETE(
       )
     }
 
-    await productService.delete(params.id)
+    await productService.delete(id)
 
     return NextResponse.json({
       message: 'Product deactivated successfully',

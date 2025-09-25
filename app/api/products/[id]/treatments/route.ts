@@ -5,9 +5,10 @@ import { UserService } from '@/lib/services/user-service'
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const supabase = await createClient()
 
     // Check authentication
@@ -44,7 +45,7 @@ export async function POST(
     const productService = new ProductService()
 
     // Check if product exists
-    const product = await productService.findById(params.id)
+    const product = await productService.findById(id)
     if (!product) {
       return NextResponse.json(
         { error: 'Product not found' },
@@ -57,7 +58,7 @@ export async function POST(
       additional_cost: additional_costs?.[index],
     }))
 
-    await productService.addTreatments(params.id, treatments)
+    await productService.addTreatments(id, treatments)
 
     return NextResponse.json(
       { message: 'Treatments added successfully' },
