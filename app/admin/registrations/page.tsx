@@ -204,16 +204,22 @@ export default function RegistrationsPage() {
   }
 
   return (
-    <div className="container mx-auto py-10">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold">Registration Requests</h1>
-        <p className="text-muted-foreground mt-2">
-          Review and approve new client registration requests
-        </p>
+    <div className="flex flex-1 flex-col">
+      <div className="flex items-center justify-between px-4 lg:px-6 pb-4">
+        <div>
+          <h1 className="text-2xl font-bold">Registration Requests</h1>
+          <p className="text-muted-foreground">
+            Review and approve new client registration requests
+          </p>
+        </div>
+        <Button onClick={fetchRequests} variant="outline" size="sm">
+          <RefreshCw className="h-4 w-4 mr-2" />
+          Refresh
+        </Button>
       </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <div className="flex items-center justify-between mb-6">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="px-4 lg:px-6">
+        <div className="flex items-center justify-between mb-4">
           <TabsList>
             <TabsTrigger value="pending">
               Pending ({requests.filter(r => r.status === 'pending').length})
@@ -226,11 +232,6 @@ export default function RegistrationsPage() {
             </TabsTrigger>
             <TabsTrigger value="all">All Requests</TabsTrigger>
           </TabsList>
-
-          <Button onClick={fetchRequests} variant="outline" size="sm">
-            <RefreshCw className="h-4 w-4 mr-2" />
-            Refresh
-          </Button>
         </div>
 
         <TabsContent value={activeTab}>
