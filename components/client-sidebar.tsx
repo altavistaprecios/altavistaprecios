@@ -42,6 +42,20 @@ export function ClientSidebar({ ...props }: React.ComponentProps<typeof Sidebar>
         title: "Products",
         url: "/client/products",
         icon: Package,
+        items: [
+          {
+            title: "All Products",
+            url: "/client/products",
+          },
+          {
+            title: "MONOFOCALES FUTURE-X",
+            url: "/client/monofocales-future-x",
+          },
+          {
+            title: "MONOFOCALES TERMINADOS",
+            url: "/client/monofocales-terminados",
+          },
+        ],
       },
       {
         title: "Pricing",
