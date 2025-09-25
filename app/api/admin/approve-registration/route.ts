@@ -223,31 +223,141 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    // Send custom email with the magic link
-    // For now, we'll use Supabase's email service via a password reset
-    // In production, you'd want to use a proper email service like SendGrid/Resend
-    const { error: emailError } = await adminSupabase.auth.resetPasswordForEmail(
-      registrationRequest.email,
-      {
-        redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3001'}/setup-password`,
-      }
-    )
+    // Send approval email via Resend
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3001'
 
-    if (emailError) {
-      console.error('Error sending email:', emailError)
+    // Create a password reset link using the magic link
+    const resetLink = magicLink.properties?.action_link ||
+                     `${siteUrl}/auth/reset-password?email=${encodeURIComponent(registrationRequest.email)}`
 
-      // Check if it's a rate limit error
-      if (emailError.message?.includes('rate') || emailError.message?.includes('429')) {
+    const emailHtml = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="UTF-8">
+          <title>Welcome to AltaVista Precios</title>
+        </head>
+        <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <h1 style="color: #2563eb;">Welcome to AltaVista Precios!</h1>
+
+          <p>Dear ${registrationRequest.company_name},</p>
+
+          <p>Your registration request has been approved! You can now access our pricing platform.</p>
+
+          <p>To get started, please set up your password by clicking the link below:</p>
+
+          <div style="margin: 30px 0;">
+            <a href="${resetLink}"
+               style="background-color: #2563eb; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">
+              Set Up Your Password
+            </a>
+          </div>
+
+          <p><small>Or copy and paste this link into your browser:</small><br>
+          <small style="color: #666;">${resetLink}</small></p>
+
+          <p>This link will expire in 24 hours for security reasons.</p>
+
+          <p>If you didn't request this account, please ignore this email.</p>
+
+          <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;">
+
+          <p style="color: #666; font-size: 14px;">
+            Best regards,<br>
+            The AltaVista Precios Team
+          </p>
+        </body>
+      </html>
+    `
+
+    const emailText = `
+Welcome to AltaVista Precios!
+
+Dear ${registrationRequest.company_name},
+
+Your registration request has been approved! You can now access our pricing platform.
+
+To get started, please set up your password by clicking the link below:
+
+${resetLink}
+
+This link will expire in 24 hours for security reasons.
+
+If you didn't request this account, please ignore this email.
+
+Best regards,
+The AltaVista Precios Team
+    `.trim()
+
+    try {
+      // Send email via our Resend API route
+      const emailResponse = await fetch(`${siteUrl}/api/send-email`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          to: registrationRequest.email,
+          subject: 'Welcome to AltaVista Precios - Account Approved',
+          html: emailHtml,
+          text: emailText,
+        }),
+      })
+
+      const emailResult = await emailResponse.json()
+
+      if (!emailResponse.ok) {
+        console.error('Error sending email via Resend:', emailResult)
+
+        // Try fallback to Supabase email as last resort
+        const { error: fallbackError } = await adminSupabase.auth.resetPasswordForEmail(
+          registrationRequest.email,
+          {
+            redirectTo: `${siteUrl}/setup-password`,
+          }
+        )
+
+        if (fallbackError) {
+          console.error('Fallback email also failed:', fallbackError)
+          return NextResponse.json({
+            success: true,
+            warning: 'User approved but email could not be sent. User can use "Forgot Password" to set up their account.',
+            email: registrationRequest.email
+          })
+        }
+
         return NextResponse.json({
           success: true,
-          warning: 'User approved but email rate limited. Please wait 60 seconds and use "Resend Invite" or user can use "Forgot Password".',
+          message: 'Registration approved and invitation email sent (via backup service)',
+          email: registrationRequest.email
+        })
+      }
+
+      console.log('Email sent successfully via Resend:', emailResult.id)
+
+    } catch (emailError) {
+      console.error('Error sending email:', emailError)
+
+      // Try fallback to Supabase email
+      const { error: fallbackError } = await adminSupabase.auth.resetPasswordForEmail(
+        registrationRequest.email,
+        {
+          redirectTo: `${siteUrl}/setup-password`,
+        }
+      )
+
+      if (fallbackError) {
+        console.error('Fallback email also failed:', fallbackError)
+        return NextResponse.json({
+          success: true,
+          warning: 'User approved but email could not be sent. User can use "Forgot Password" to set up their account.',
           email: registrationRequest.email
         })
       }
 
       return NextResponse.json({
         success: true,
-        warning: 'User approved but email could not be sent. User can use "Forgot Password" to set up their account.',
+        message: 'Registration approved and invitation email sent (via backup service)',
         email: registrationRequest.email
       })
     }

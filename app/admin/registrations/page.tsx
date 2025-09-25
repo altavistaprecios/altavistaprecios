@@ -31,7 +31,7 @@ type RegistrationRequest = {
   email: string
   company_name: string
   phone: string | null
-  status: 'pending' | 'approved' | 'rejected'
+  status: 'pending' | 'approved' | 'rejected' | 'email_sent'
   rejected_reason: string | null
   approved_by: string | null
   approved_at: string | null
@@ -111,8 +111,13 @@ export default function RegistrationsPage() {
         })
       }
 
-      // Refresh the list
-      await fetchRequests()
+      // Update the local state to show email_sent status
+      setRequests(prev => prev.map(req =>
+        req.id === selectedRequest.id
+          ? { ...req, status: 'email_sent' as const, approved_at: new Date().toISOString() }
+          : req
+      ))
+
       setSelectedRequest(null)
       setActionType(null)
 
@@ -168,10 +173,11 @@ export default function RegistrationsPage() {
   })
 
   const getStatusBadge = (status: string) => {
-    const variants: Record<string, { variant: any; icon: any }> = {
-      pending: { variant: 'secondary', icon: Clock },
-      approved: { variant: 'default', icon: CheckCircle },
-      rejected: { variant: 'destructive', icon: XCircle },
+    const variants: Record<string, { variant: any; icon: any; label: string }> = {
+      pending: { variant: 'secondary', icon: Clock, label: 'Pending' },
+      approved: { variant: 'default', icon: CheckCircle, label: 'Approved' },
+      rejected: { variant: 'destructive', icon: XCircle, label: 'Rejected' },
+      email_sent: { variant: 'default', icon: Mail, label: 'Email Sent' },
     }
 
     const config = variants[status] || variants.pending
@@ -180,7 +186,7 @@ export default function RegistrationsPage() {
     return (
       <Badge variant={config.variant} className="gap-1">
         <Icon className="h-3 w-3" />
-        {status.charAt(0).toUpperCase() + status.slice(1)}
+        {config.label}
       </Badge>
     )
   }
@@ -280,7 +286,7 @@ export default function RegistrationsPage() {
                               </Button>
                             </>
                           )}
-                          {request.status === 'approved' && (
+                          {(request.status === 'approved' || request.status === 'email_sent') && (
                             <span className="text-sm text-muted-foreground">
                               Approved {request.approved_at && `on ${new Date(request.approved_at).toLocaleDateString()}`}
                             </span>
