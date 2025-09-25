@@ -64,16 +64,20 @@ export function DataTableShell({
         </div>
       ) : null}
       <div className={cn("px-4 lg:px-6", contentWrapperClassName)}>
-        <div className={cn("overflow-hidden rounded-lg border bg-background", contentClassName)}>
-          {children}
+        <div className={cn("overflow-hidden rounded-lg border", contentClassName)}>
+          <div className="relative w-full overflow-auto">
+            {children}
+          </div>
+          {(footerLeft || footerRight) && (
+            <div className="flex items-center justify-between px-4">
+              <div className="text-muted-foreground hidden flex-1 text-sm lg:flex">{footerLeft}</div>
+              <div className="flex w-full items-center gap-8 lg:w-fit">
+                {footerRight ? <div className="flex items-center gap-2">{footerRight}</div> : null}
+              </div>
+            </div>
+          )}
         </div>
       </div>
-      {(footerLeft || footerRight) && (
-        <div className="flex flex-col gap-2 border-t bg-muted/40 px-4 py-3 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
-          <div>{footerLeft}</div>
-          {footerRight ? <div className="flex items-center gap-2 sm:justify-end">{footerRight}</div> : <div />}
-        </div>
-      )}
     </div>
   )
 }
