@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
       prices = await clientPriceService.findByUser(targetUserId)
     }
 
-    return NextResponse.json({ prices })
+    return NextResponse.json({ data: prices })
   } catch (error) {
     console.error('Error fetching client prices:', error)
     return NextResponse.json(

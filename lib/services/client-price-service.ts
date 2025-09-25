@@ -81,9 +81,21 @@ export class ClientPriceService {
     return price
   }
 
+  async findById(id: string): Promise<ClientPrice | null> {
+    const supabase = await this.getSupabase()
+
+    const { data, error } = await supabase
+      .from('client_prices')
+      .select('*')
+      .eq('id', id)
+      .single()
+
+    if (error && error.code !== 'PGRST116') throw error
+    return data
+  }
+
   async update(
-    userId: string,
-    productId: string,
+    id: string,
     data: UpdateClientPriceInput
   ): Promise<ClientPrice> {
     const validated = UpdateClientPriceSchema.parse(data)
@@ -93,8 +105,7 @@ export class ClientPriceService {
     const { data: currentPrice, error: fetchError } = await supabase
       .from('client_prices')
       .select('*')
-      .eq('user_id', userId)
-      .eq('product_id', productId)
+      .eq('id', id)
       .single()
 
     if (fetchError) throw fetchError
@@ -106,7 +117,7 @@ export class ClientPriceService {
         ...validated,
         updated_at: new Date().toISOString(),
       })
-      .eq('id', currentPrice.id)
+      .eq('id', id)
       .select()
       .single()
 
@@ -115,8 +126,8 @@ export class ClientPriceService {
     // Track price change if applicable
     if (validated.custom_price_usd && validated.custom_price_usd !== currentPrice.custom_price_usd) {
       await this.createPriceHistory({
-        product_id: productId,
-        user_id: userId,
+        product_id: currentPrice.product_id,
+        user_id: currentPrice.user_id,
         old_price: currentPrice.custom_price_usd,
         new_price: validated.custom_price_usd,
         change_type: 'client_custom',
@@ -124,6 +135,17 @@ export class ClientPriceService {
     }
 
     return price
+  }
+
+  async delete(id: string): Promise<void> {
+    const supabase = await this.getSupabase()
+
+    const { error } = await supabase
+      .from('client_prices')
+      .delete()
+      .eq('id', id)
+
+    if (error) throw error
   }
 
   async findByUser(userId: string): Promise<ClientPrice[]> {

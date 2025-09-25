@@ -4,9 +4,12 @@ import { useEffect, useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { Product } from '@/lib/models/product'
 import { ClientPrice } from '@/lib/models/client-price'
-import { TrendingDown, DollarSign, Package } from 'lucide-react'
+import { TrendingDown, DollarSign, Package, Edit2, Save, X, Percent } from 'lucide-react'
 import { toast } from 'sonner'
 import { DataTableShell } from '@/components/ui/data-table-shell'
 
@@ -19,6 +22,13 @@ interface PricingData extends ClientPrice {
 export default function ClientPricingPage() {
   const [pricingData, setPricingData] = useState<PricingData[]>([])
   const [loading, setLoading] = useState(true)
+  const [globalAdjustment, setGlobalAdjustment] = useState('')
+  const [applyingGlobal, setApplyingGlobal] = useState(false)
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [editValues, setEditValues] = useState<{
+    custom_price: string
+    discount_percentage: string
+  }>({ custom_price: '', discount_percentage: '' })
   useEffect(() => {
     fetchPricingData()
   }, [])
@@ -83,6 +93,93 @@ export default function ClientPricingPage() {
     return totalDiscount / pricingData.length
   }
 
+  const handleGlobalAdjustment = async () => {
+    const percentage = parseFloat(globalAdjustment)
+    if (isNaN(percentage)) {
+      toast.error('Please enter a valid percentage')
+      return
+    }
+
+    setApplyingGlobal(true)
+    try {
+      const response = await fetch('/api/client-prices/bulk-adjust', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ percentage }),
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.error || 'Failed to apply adjustment')
+      }
+
+      toast.success(`Applied ${percentage > 0 ? '+' : ''}${percentage}% adjustment to all prices`)
+      setGlobalAdjustment('')
+      await fetchPricingData()
+    } catch (error) {
+      console.error('Failed to apply global adjustment:', error)
+      toast.error(error instanceof Error ? error.message : 'Failed to apply adjustment')
+    } finally {
+      setApplyingGlobal(false)
+    }
+  }
+
+  const startEditing = (item: PricingData) => {
+    setEditingId(item.id)
+    setEditValues({
+      custom_price: item.custom_price?.toString() || item.final_price?.toString() || '',
+      discount_percentage: item.discount_percentage?.toString() || '',
+    })
+  }
+
+  const cancelEditing = () => {
+    setEditingId(null)
+    setEditValues({ custom_price: '', discount_percentage: '' })
+  }
+
+  const savePrice = async (item: PricingData) => {
+    try {
+      const customPrice = parseFloat(editValues.custom_price)
+      const discountPercentage = parseFloat(editValues.discount_percentage)
+
+      if (!isNaN(customPrice) && item.product && customPrice < item.product.base_price) {
+        toast.error(`Price cannot be below base price of $${item.product.base_price.toFixed(2)}`)
+        return
+      }
+
+      const body: any = { product_id: item.product_id }
+
+      if (!isNaN(customPrice)) {
+        body.custom_price = customPrice
+        body.discount_percentage = 0
+      } else if (!isNaN(discountPercentage)) {
+        body.discount_percentage = discountPercentage
+        body.custom_price = 0
+      } else {
+        toast.error('Please enter a valid price or discount')
+        return
+      }
+
+      const response = await fetch(`/api/client-prices/${item.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.error || 'Failed to update price')
+      }
+
+      toast.success('Price updated successfully')
+      cancelEditing()
+      await fetchPricingData()
+    } catch (error) {
+      console.error('Failed to save price:', error)
+      toast.error(error instanceof Error ? error.message : 'Failed to save price')
+    }
+  }
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-96">
@@ -135,9 +232,44 @@ export default function ClientPricingPage() {
         </Card>
       </div>
 
+      <Card className="mb-6">
+        <CardHeader>
+          <CardTitle>Global Price Adjustment</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-end gap-4">
+            <div className="flex-1 max-w-sm">
+              <Label htmlFor="global-adjustment">Adjust all prices by percentage</Label>
+              <div className="flex gap-2 mt-2">
+                <div className="relative flex-1">
+                  <Input
+                    id="global-adjustment"
+                    type="number"
+                    value={globalAdjustment}
+                    onChange={(e) => setGlobalAdjustment(e.target.value)}
+                    placeholder="e.g., 10 for +10% or -5 for -5%"
+                    className="pr-8"
+                  />
+                  <Percent className="absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                </div>
+                <Button
+                  onClick={handleGlobalAdjustment}
+                  disabled={applyingGlobal || !globalAdjustment}
+                >
+                  {applyingGlobal ? 'Applying...' : 'Apply to All'}
+                </Button>
+              </div>
+              <p className="text-sm text-muted-foreground mt-2">
+                Enter a positive number to increase prices or negative to decrease
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       <DataTableShell
         title="Product Pricing Details"
-        description="Your custom pricing compared to standard rates"
+        description="Your custom pricing compared to standard rates. Click edit to modify individual prices."
         footerLeft={
           pricingData.length > 0 ? (
             <span className="text-sm text-muted-foreground">
@@ -156,12 +288,13 @@ export default function ClientPricingPage() {
               <TableHead className="text-right">Discount</TableHead>
               <TableHead className="text-right">Savings</TableHead>
               <TableHead>Status</TableHead>
+              <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {pricingData.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} className="h-24 text-center text-muted-foreground">
+                <TableCell colSpan={8} className="h-24 text-center text-muted-foreground">
                   No custom pricing configured yet
                 </TableCell>
               </TableRow>
@@ -183,17 +316,40 @@ export default function ClientPricingPage() {
                     ${item.product?.base_price.toFixed(2)}
                   </TableCell>
                   <TableCell className="text-right font-medium">
-                    ${item.final_price?.toFixed(2)}
+                    {editingId === item.id ? (
+                      <Input
+                        type="number"
+                        value={editValues.custom_price}
+                        onChange={(e) => setEditValues({ ...editValues, custom_price: e.target.value })}
+                        className="w-24 text-right"
+                        placeholder="Price"
+                      />
+                    ) : (
+                      `$${item.final_price?.toFixed(2)}`
+                    )}
                   </TableCell>
                   <TableCell className="text-right">
-                    {item.discount_percentage > 0 ? (
-                      <Badge className="bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-300 dark:bg-emerald-900 dark:bg-emerald-950 dark:text-emerald-100 dark:text-emerald-200">
-                        {item.discount_percentage}%
-                      </Badge>
-                    ) : item.custom_price > 0 ? (
-                      <Badge variant="secondary">Custom</Badge>
+                    {editingId === item.id ? (
+                      <div className="flex items-center justify-end gap-1">
+                        <Input
+                          type="number"
+                          value={editValues.discount_percentage}
+                          onChange={(e) => setEditValues({ ...editValues, discount_percentage: e.target.value })}
+                          className="w-20 text-right"
+                          placeholder="%"
+                        />
+                        <span className="text-muted-foreground">%</span>
+                      </div>
                     ) : (
-                      '-'
+                      item.discount_percentage > 0 ? (
+                        <Badge className="bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-300 dark:bg-emerald-900 dark:bg-emerald-950 dark:text-emerald-100 dark:text-emerald-200">
+                          {item.discount_percentage}%
+                        </Badge>
+                      ) : item.custom_price > 0 ? (
+                        <Badge variant="secondary">Custom</Badge>
+                      ) : (
+                        '-'
+                      )
                     )}
                   </TableCell>
                   <TableCell className="text-right text-emerald-600 dark:text-emerald-400 dark:text-emerald-500 dark:text-emerald-400">
@@ -201,6 +357,34 @@ export default function ClientPricingPage() {
                   </TableCell>
                   <TableCell>
                     <Badge variant="default">Active</Badge>
+                  </TableCell>
+                  <TableCell>
+                    {editingId === item.id ? (
+                      <div className="flex gap-1">
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => savePrice(item)}
+                        >
+                          <Save className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={cancelEditing}
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ) : (
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => startEditing(item)}
+                      >
+                        <Edit2 className="h-4 w-4" />
+                      </Button>
+                    )}
                   </TableCell>
                 </TableRow>
               ))
