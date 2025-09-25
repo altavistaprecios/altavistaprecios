@@ -89,7 +89,7 @@ export function ClientStats() {
 
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-      <Link href="/client/products" className="transition-transform hover:scale-[1.02]">
+      <Link href="/client/monofocales-future-x" className="transition-transform hover:scale-[1.02]">
         <Card className="cursor-pointer hover:shadow-lg transition-shadow bg-gradient-to-t from-primary/5 to-card">
           <CardHeader className="relative">
             <CardDescription>MONOFOCALES FUTURE-X</CardDescription>
@@ -116,7 +116,7 @@ export function ClientStats() {
         </Card>
       </Link>
 
-      <Link href="/client/products" className="transition-transform hover:scale-[1.02]">
+      <Link href="/client/monofocales-terminados" className="transition-transform hover:scale-[1.02]">
         <Card className="cursor-pointer hover:shadow-lg transition-shadow bg-gradient-to-t from-primary/5 to-card">
           <CardHeader className="relative">
             <CardDescription>MONOFOCALES TERMINADOS</CardDescription>
