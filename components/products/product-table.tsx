@@ -180,7 +180,7 @@ export function ProductTable({
               className="h-9 w-full pl-8"
             />
           </div>
-          {selectedProducts.length > 0 && (
+          {selectedProducts.length > 0 && onBulkDelete && (
             <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
               <span>
                 {selectedProducts.length} product{selectedProducts.length !== 1 ? 's' : ''} selected
@@ -201,20 +201,27 @@ export function ProductTable({
         </div>
       }
       toolbar={
-        <>
-          <Button size="sm" variant="outline">
-            <Upload className="mr-2 h-4 w-4" />
-            Import Products
-          </Button>
+        onAddProduct ? (
+          <>
+            <Button size="sm" variant="outline">
+              <Upload className="mr-2 h-4 w-4" />
+              Import Products
+            </Button>
+            <Button size="sm" variant="outline">
+              <Download className="mr-2 h-4 w-4" />
+              Export Catalog
+            </Button>
+            <Button size="sm" onClick={onAddProduct}>
+              <Plus className="mr-2 h-4 w-4" />
+              Add Product
+            </Button>
+          </>
+        ) : (
           <Button size="sm" variant="outline">
             <Download className="mr-2 h-4 w-4" />
             Export Catalog
           </Button>
-          <Button size="sm" onClick={onAddProduct}>
-            <Plus className="mr-2 h-4 w-4" />
-            Add Product
-          </Button>
-        </>
+        )
       }
       footerLeft={
         <div className="text-sm text-muted-foreground">
@@ -343,13 +350,13 @@ export function ProductTable({
             </TableHead>
             <TableHead>Category</TableHead>
             <TableHead>Status</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
+            {(onEdit || onDelete) && <TableHead className="text-right">Actions</TableHead>}
           </TableRow>
         </TableHeader>
         <TableBody>
           {paginatedProducts.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={7} className="h-24 text-center text-muted-foreground">
+              <TableCell colSpan={(onEdit || onDelete) ? 7 : 6} className="h-24 text-center text-muted-foreground">
                 No products found
               </TableCell>
             </TableRow>
@@ -387,31 +394,33 @@ export function ProductTable({
                     {product.is_active ? 'Active' : 'Inactive'}
                   </Badge>
                 </TableCell>
-                <TableCell className="text-right">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" className="h-8 w-8 p-0">
-                        <span className="sr-only">Open menu</span>
-                        <MoreHorizontal className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                      <DropdownMenuItem onClick={() => onEdit?.(product)}>
-                        <Edit className="mr-2 h-4 w-4" />
-                        Edit
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem
-                        className="text-destructive"
-                        onClick={() => onDelete?.(product)}
-                      >
-                        <Trash2 className="mr-2 h-4 w-4" />
-                        Delete
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </TableCell>
+                {(onEdit || onDelete) && (
+                  <TableCell className="text-right">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" className="h-8 w-8 p-0">
+                          <span className="sr-only">Open menu</span>
+                          <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuItem onClick={() => onEdit?.(product)}>
+                          <Edit className="mr-2 h-4 w-4" />
+                          Edit
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                          className="text-destructive"
+                          onClick={() => onDelete?.(product)}
+                        >
+                          <Trash2 className="mr-2 h-4 w-4" />
+                          Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
+                )}
               </TableRow>
             ))
           )}
