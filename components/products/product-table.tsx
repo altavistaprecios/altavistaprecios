@@ -41,7 +41,8 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   ChevronsLeftIcon,
-  ChevronsRightIcon
+  ChevronsRightIcon,
+  DollarSign
 } from 'lucide-react'
 import type { Product } from '@/lib/models/product'
 
@@ -405,18 +406,26 @@ export function ProductTable({
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem onClick={() => onEdit?.(product)}>
-                          <Edit className="mr-2 h-4 w-4" />
-                          Edit
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                          className="text-destructive"
-                          onClick={() => onDelete?.(product)}
-                        >
-                          <Trash2 className="mr-2 h-4 w-4" />
-                          Delete
-                        </DropdownMenuItem>
+                        {onEdit && (
+                          <DropdownMenuItem onClick={() => onEdit(product)}>
+                            {onDelete ? (
+                              <Edit className="mr-2 h-4 w-4" />
+                            ) : (
+                              <DollarSign className="mr-2 h-4 w-4" />
+                            )}
+                            {onDelete ? 'Edit' : 'Set Price'}
+                          </DropdownMenuItem>
+                        )}
+                        {onEdit && onDelete && <DropdownMenuSeparator />}
+                        {onDelete && (
+                          <DropdownMenuItem
+                            className="text-destructive"
+                            onClick={() => onDelete(product)}
+                          >
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            Delete
+                          </DropdownMenuItem>
+                        )}
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>

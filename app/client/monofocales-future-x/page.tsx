@@ -6,7 +6,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ProductCard } from '@/components/products/product-card'
 import { ProductTable } from '@/components/products/product-table'
 import { DataTableSkeleton } from '@/components/products/data-table-skeleton'
+import { PriceEditDialog } from '@/components/products/price-edit-dialog'
 import { Product } from '@/lib/models/product'
+import { ClientPrice } from '@/lib/models/client-price'
 import { Grid, List, Glasses } from 'lucide-react'
 import { toast } from 'sonner'
 import { useAuth } from '@/lib/hooks/use-auth'
@@ -15,10 +17,13 @@ export default function ClientMonofocalesFutureXPage() {
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('list')
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null)
+  const [clientPrices, setClientPrices] = useState<ClientPrice[]>([])
   const { user } = useAuth()
 
   useEffect(() => {
     fetchProducts()
+    fetchClientPrices()
   }, [])
 
   const fetchProducts = async () => {
@@ -54,8 +59,31 @@ export default function ClientMonofocalesFutureXPage() {
     }
   }
 
+  const fetchClientPrices = async () => {
+    try {
+      const response = await fetch('/api/client-prices')
+      const data = await response.json()
+      setClientPrices(data.data || [])
+    } catch (error) {
+      console.error('Failed to fetch client prices:', error)
+    }
+  }
+
   const handleViewProduct = (product: Product) => {
     toast.info(`Product: ${product.name}\nBase Price: $${Number(product.base_price_usd).toFixed(2)}\nCode: ${product.code}`)
+  }
+
+  const handleEditPrice = (product: Product) => {
+    setEditingProduct(product)
+  }
+
+  const handlePriceSaved = () => {
+    fetchClientPrices()
+    fetchProducts()
+  }
+
+  const getCurrentPrice = (productId: string) => {
+    return clientPrices.find(p => p.product_id === productId) || null
   }
 
   if (loading) {
@@ -129,11 +157,20 @@ export default function ClientMonofocalesFutureXPage() {
             ) : (
               <ProductTable
                 products={products}
+                onEdit={handleEditPrice}
               />
             )}
           </CardContent>
         </Card>
       </div>
+
+      <PriceEditDialog
+        open={!!editingProduct}
+        onClose={() => setEditingProduct(null)}
+        product={editingProduct}
+        currentPrice={editingProduct ? getCurrentPrice(editingProduct.id) : null}
+        onSave={handlePriceSaved}
+      />
     </div>
   )
 }
