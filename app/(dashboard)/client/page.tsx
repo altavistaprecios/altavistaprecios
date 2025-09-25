@@ -1,104 +1,15 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Package, DollarSign, ShoppingCart, TrendingDown, ArrowRight } from 'lucide-react'
+import { Package, DollarSign, ArrowRight, TrendingDown } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/hooks/use-auth'
-
-interface ClientStats {
-  availableProducts: number
-  customPrices: number
-  totalOrders: number
-  averageSavings: number
-}
+import { ClientStats } from '@/components/client-stats'
 
 export default function ClientDashboardPage() {
-  const [stats, setStats] = useState<ClientStats>({
-    availableProducts: 0,
-    customPrices: 0,
-    totalOrders: 0,
-    averageSavings: 0,
-  })
-  const [loading, setLoading] = useState(true)
   const router = useRouter()
   const { user } = useAuth()
-
-  useEffect(() => {
-    fetchClientStats()
-  }, [])
-
-  const fetchClientStats = async () => {
-    try {
-      setLoading(true)
-      // Fetch client-specific data
-      const [productsRes, pricesRes] = await Promise.all([
-        fetch('/api/products'),
-        fetch('/api/client-prices'),
-      ])
-
-      const products = await productsRes.json()
-      const prices = await pricesRes.json()
-
-      // Calculate average savings from custom prices
-      let totalSavings = 0
-      let customPriceCount = 0
-
-      if (prices.data && Array.isArray(prices.data)) {
-        prices.data.forEach((price: any) => {
-          if (price.discount_percentage > 0) {
-            totalSavings += price.discount_percentage
-            customPriceCount++
-          }
-        })
-      }
-
-      setStats({
-        availableProducts: products.data?.length || 0,
-        customPrices: customPriceCount,
-        totalOrders: 0, // This would come from orders API
-        averageSavings: customPriceCount > 0 ? totalSavings / customPriceCount : 0,
-      })
-    } catch (error) {
-      console.error('Failed to fetch client stats:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const StatCard = ({
-    title,
-    value,
-    description,
-    icon: Icon,
-    href,
-  }: {
-    title: string
-    value: string | number
-    description: string
-    icon: React.ElementType
-    href?: string
-  }) => (
-    <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => href && router.push(href)}>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium">{title}</CardTitle>
-        <Icon className="h-4 w-4 text-muted-foreground" />
-      </CardHeader>
-      <CardContent>
-        <div className="text-2xl font-bold">{value}</div>
-        <p className="text-xs text-muted-foreground">{description}</p>
-      </CardContent>
-    </Card>
-  )
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-96">
-        <p className="text-muted-foreground">Loading dashboard...</p>
-      </div>
-    )
-  }
 
   return (
     <div className="space-y-8">
@@ -109,34 +20,7 @@ export default function ClientDashboardPage() {
         </p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <StatCard
-          title="Available Products"
-          value={stats.availableProducts}
-          description="Products you can order"
-          icon={Package}
-          href="/client/products"
-        />
-        <StatCard
-          title="Custom Prices"
-          value={stats.customPrices}
-          description="Products with special pricing"
-          icon={DollarSign}
-          href="/client/pricing"
-        />
-        <StatCard
-          title="Total Orders"
-          value={stats.totalOrders}
-          description="Orders placed this month"
-          icon={ShoppingCart}
-        />
-        <StatCard
-          title="Avg. Savings"
-          value={`${stats.averageSavings.toFixed(1)}%`}
-          description="Your discount rate"
-          icon={TrendingDown}
-        />
-      </div>
+      <ClientStats />
 
       <div className="grid gap-6 md:grid-cols-2">
         <Card>
