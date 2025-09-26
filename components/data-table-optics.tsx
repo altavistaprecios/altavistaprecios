@@ -111,29 +111,29 @@ export function DataTable({ data, onEdit, onDelete, productType }: DataTableOpti
     },
     {
       accessorKey: "code",
-      header: "Código",
+      header: "Code",
       cell: ({ row }) => (
         <div className="font-mono text-sm">{row.getValue("code")}</div>
       ),
     },
     {
       accessorKey: "name",
-      header: "Nombre del Producto",
+      header: "Product Name",
       cell: ({ row }) => (
         <div className="font-medium">{row.getValue("name")}</div>
       ),
     },
     {
       accessorKey: "specifications",
-      header: "Especificaciones",
+      header: "Specifications",
       cell: ({ row }) => {
         if (productType === 'future-x') {
           // Show ranges for Future-X products
           return (
             <div className="text-sm text-muted-foreground">
-              {row.original.name.includes("Stock") ? "Esf -4.00 a +3.00 Cil -2.00" :
-               row.original.name.includes("Laboratory") ? "Esf -12.00 a +8.50 Cil -6.00" :
-               "Ver especificaciones"}
+              {row.original.name.includes("Stock") ? "Sph -4.00 to +3.00 Cyl -2.00" :
+               row.original.name.includes("Laboratory") ? "Sph -12.00 to +8.50 Cyl -6.00" :
+               "View specifications"}
             </div>
           )
         }

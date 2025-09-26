@@ -103,9 +103,9 @@ export default function SpecificationsPage() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">Especificaciones Técnicas</h1>
+            <h1 className="text-3xl font-bold tracking-tight">Technical Specifications</h1>
             <p className="text-muted-foreground">
-              Información técnica detallada de productos y tratamientos
+              Detailed technical information for products and treatments
             </p>
           </div>
         </div>
@@ -114,24 +114,24 @@ export default function SpecificationsPage() {
           <TabsList>
             <TabsTrigger value="overview">
               <FileText className="mr-2 h-4 w-4" />
-              Vista General
+              General View
             </TabsTrigger>
             <TabsTrigger value="grid">
               <Grid3x3 className="mr-2 h-4 w-4" />
-              Tabla de Graduaciones
+              Prescription Table
             </TabsTrigger>
             <TabsTrigger value="treatments">
               <Table className="mr-2 h-4 w-4" />
-              Tratamientos
+              Treatments
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-4">
             <Card>
               <CardHeader>
-                <CardTitle>Especificaciones por Tipo de Lente</CardTitle>
+                <CardTitle>Specifications by Lens Type</CardTitle>
                 <CardDescription>
-                  Comparativa de características técnicas entre diferentes líneas de productos
+                  Technical features comparison between different product lines
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -139,47 +139,47 @@ export default function SpecificationsPage() {
                   <table className="w-full border-collapse">
                     <thead>
                       <tr className="border-b">
-                        <th className="text-left p-4">Característica</th>
-                        <th className="text-left p-4">LENTES DE STOCK</th>
-                        <th className="text-left p-4">LENTES DE LABORATORIO</th>
+                        <th className="text-left p-4">Feature</th>
+                        <th className="text-left p-4">STOCK LENSES</th>
+                        <th className="text-left p-4">LABORATORY LENSES</th>
                         <th className="text-left p-4">CLEARVIEW DuraVision</th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr className="border-b">
-                        <td className="p-4 font-medium">Materiales Disponibles</td>
+                        <td className="p-4 font-medium">Available Materials</td>
                         <td className="p-4">1.56, 1.61</td>
                         <td className="p-4">1.56, 1.61, 1.67, 1.74</td>
                         <td className="p-4">1.60</td>
                       </tr>
                       <tr className="border-b">
-                        <td className="p-4 font-medium">Rango Esférico</td>
+                        <td className="p-4 font-medium">Spherical Range</td>
                         <td className="p-4">-8.00 a +6.00</td>
                         <td className="p-4">-20.00 a +20.00</td>
                         <td className="p-4">-10.00 a +8.00</td>
                       </tr>
                       <tr className="border-b">
-                        <td className="p-4 font-medium">Rango Cilíndrico</td>
-                        <td className="p-4">Hasta -4.00</td>
-                        <td className="p-4">Hasta -6.00</td>
-                        <td className="p-4">Hasta -4.00</td>
+                        <td className="p-4 font-medium">Cylindrical Range</td>
+                        <td className="p-4">Up to -4.00</td>
+                        <td className="p-4">Up to -6.00</td>
+                        <td className="p-4">Up to -4.00</td>
                       </tr>
                       <tr className="border-b">
-                        <td className="p-4 font-medium">Diámetros</td>
+                        <td className="p-4 font-medium">Diameters</td>
                         <td className="p-4">65mm, 70mm, 75mm</td>
-                        <td className="p-4">65mm a 80mm</td>
+                        <td className="p-4">65mm to 80mm</td>
                         <td className="p-4">70mm, 75mm</td>
                       </tr>
                       <tr className="border-b">
-                        <td className="p-4 font-medium">Tiempo de Entrega</td>
+                        <td className="p-4 font-medium">Delivery Time</td>
                         <td className="p-4">
-                          <Badge variant="secondary">Inmediato</Badge>
+                          <Badge variant="secondary">Immediate</Badge>
                         </td>
                         <td className="p-4">
-                          <Badge variant="outline">3-5 días hábiles</Badge>
+                          <Badge variant="outline">3-5 business days</Badge>
                         </td>
                         <td className="p-4">
-                          <Badge>24-48 horas</Badge>
+                          <Badge>24-48 hours</Badge>
                         </td>
                       </tr>
                     </tbody>
@@ -190,27 +190,27 @@ export default function SpecificationsPage() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Garantías</CardTitle>
+                <CardTitle>Warranties</CardTitle>
                 <CardDescription>
-                  Períodos de garantía por tipo de producto
+                  Warranty periods by product type
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="grid gap-4 md:grid-cols-3">
                   <div className="space-y-2">
-                    <h3 className="font-semibold">Lentes de Stock</h3>
-                    <p className="text-sm text-muted-foreground">Estándar: 6 meses</p>
-                    <p className="text-sm text-muted-foreground">Extendida: 12 meses</p>
+                    <h3 className="font-semibold">Stock Lenses</h3>
+                    <p className="text-sm text-muted-foreground">Standard: 6 months</p>
+                    <p className="text-sm text-muted-foreground">Extended: 12 months</p>
                   </div>
                   <div className="space-y-2">
-                    <h3 className="font-semibold">Lentes de Laboratorio</h3>
-                    <p className="text-sm text-muted-foreground">Estándar: 12 meses</p>
-                    <p className="text-sm text-muted-foreground">Extendida: 24 meses</p>
+                    <h3 className="font-semibold">Laboratory Lenses</h3>
+                    <p className="text-sm text-muted-foreground">Standard: 12 months</p>
+                    <p className="text-sm text-muted-foreground">Extended: 24 months</p>
                   </div>
                   <div className="space-y-2">
                     <h3 className="font-semibold">ClearView DuraVision</h3>
-                    <p className="text-sm text-muted-foreground">Estándar: 24 meses</p>
-                    <p className="text-sm text-muted-foreground">Extendida: 36 meses</p>
+                    <p className="text-sm text-muted-foreground">Standard: 24 months</p>
+                    <p className="text-sm text-muted-foreground">Extended: 36 months</p>
                   </div>
                 </div>
               </CardContent>
@@ -218,28 +218,28 @@ export default function SpecificationsPage() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Certificaciones</CardTitle>
+                <CardTitle>Certifications</CardTitle>
                 <CardDescription>
-                  Certificaciones de calidad y cumplimiento normativo
+                  Quality certifications and regulatory compliance
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="grid gap-3 md:grid-cols-2">
                   <div className="flex items-center gap-2">
                     <Badge variant="outline">ISO 9001:2015</Badge>
-                    <span className="text-sm">Sistema de Gestión de Calidad</span>
+                    <span className="text-sm">Quality Management System</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Badge variant="outline">ISO 14001:2015</Badge>
-                    <span className="text-sm">Gestión Ambiental</span>
+                    <span className="text-sm">Environmental Management</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Badge variant="outline">CE Mark</Badge>
-                    <span className="text-sm">Conformidad Europea</span>
+                    <span className="text-sm">European Conformity</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Badge variant="outline">FDA Approved</Badge>
-                    <span className="text-sm">Aprobación FDA para exportación</span>
+                    <span className="text-sm">FDA Approval for export</span>
                   </div>
                 </div>
               </CardContent>
@@ -249,9 +249,9 @@ export default function SpecificationsPage() {
           <TabsContent value="grid" className="space-y-4">
             <Card>
               <CardHeader>
-                <CardTitle>{gridData?.title || 'Cobertura de Graduaciones'}</CardTitle>
+                <CardTitle>{gridData?.title || 'Prescription Coverage'}</CardTitle>
                 <CardDescription>
-                  Matriz de disponibilidad por esfera y cilindro
+                  Availability matrix by sphere and cylinder
                 </CardDescription>
               </CardHeader>
               <CardContent>

@@ -96,7 +96,7 @@ export function AdminStats() {
             <CardTitle className="text-3xl font-semibold tabular-nums">
               {stats.stockLenses + stats.laboratoryLenses}
               <span className="text-sm font-normal text-muted-foreground ml-2">
-                productos
+                products
               </span>
             </CardTitle>
             <div className="absolute right-4 top-4">
@@ -105,12 +105,12 @@ export function AdminStats() {
           </CardHeader>
           <CardFooter className="flex-col items-start gap-1 text-sm">
             <div className="flex gap-4 font-medium">
-              <span>{stats.stockLenses} Lentes de Stock</span>
+              <span>{stats.stockLenses} Stock Lenses</span>
               <span className="text-muted-foreground">•</span>
-              <span>{stats.laboratoryLenses} Lentes de Laboratorio</span>
+              <span>{stats.laboratoryLenses} Laboratory Lenses</span>
             </div>
             <div className="text-muted-foreground">
-              Click para gestionar productos Future-X
+              Click to manage Future-X products
             </div>
           </CardFooter>
         </Card>
@@ -123,7 +123,7 @@ export function AdminStats() {
             <CardTitle className="text-3xl font-semibold tabular-nums">
               {stats.clearViewProducts}
               <span className="text-sm font-normal text-muted-foreground ml-2">
-                productos
+                products
               </span>
             </CardTitle>
             <div className="absolute right-4 top-4">
@@ -135,7 +135,7 @@ export function AdminStats() {
               ClearView 1.60 DuraVision
             </div>
             <div className="text-muted-foreground">
-              Click para gestionar productos terminados
+              Click to manage finished products
             </div>
           </CardFooter>
         </Card>

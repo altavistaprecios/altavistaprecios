@@ -59,7 +59,7 @@ export default function MonofocalesFutureXPage() {
   }
 
   const handleDeleteProduct = async (id: string) => {
-    if (!confirm('¿Está seguro de eliminar este producto?')) return
+    if (!confirm('Are you sure you want to delete this product?')) return
     await deleteMutation.mutateAsync(id)
   }
 
@@ -71,11 +71,11 @@ export default function MonofocalesFutureXPage() {
         <div className="flex items-center justify-between px-4 lg:px-6 pb-4">
           <div>
             <h1 className="text-2xl font-bold">MONOFOCALES FUTURE-X</h1>
-            <p className="text-muted-foreground">Gestión de Lentes de Stock y Laboratorio</p>
+            <p className="text-muted-foreground">Stock and Laboratory Lens Management</p>
           </div>
           <Button disabled>
             <PlusIcon className="mr-2 h-4 w-4" />
-            Agregar Producto
+            Add Product
           </Button>
         </div>
         <DataTableSkeleton />
@@ -107,12 +107,12 @@ export default function MonofocalesFutureXPage() {
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
-              {selectedProduct ? 'Editar Producto' : 'Crear Nuevo Producto'}
+              {selectedProduct ? 'Edit Product' : 'Create New Product'}
             </DialogTitle>
             <DialogDescription>
               {selectedProduct
-                ? 'Actualice los detalles del producto'
-                : 'Ingrese los detalles del nuevo producto Future-X'}
+                ? 'Update product details'
+                : 'Enter details for the new Future-X product'}
             </DialogDescription>
           </DialogHeader>
           <ProductForm

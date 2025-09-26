@@ -96,7 +96,7 @@ export function ClientStats() {
             <CardTitle className="text-3xl font-semibold tabular-nums">
               {stats.futureXProducts}
               <span className="text-sm font-normal text-muted-foreground ml-2">
-                productos disponibles
+                available products
               </span>
             </CardTitle>
             <div className="absolute right-4 top-4">
@@ -105,12 +105,12 @@ export function ClientStats() {
           </CardHeader>
           <CardFooter className="flex-col items-start gap-1 text-sm">
             <div className="flex gap-4 font-medium">
-              <span>{stats.stockLenses} Lentes de Stock</span>
+              <span>{stats.stockLenses} Stock Lenses</span>
               <span className="text-muted-foreground">•</span>
-              <span>{stats.laboratoryLenses} Lentes de Laboratorio</span>
+              <span>{stats.laboratoryLenses} Laboratory Lenses</span>
             </div>
             <div className="text-muted-foreground">
-              Click para ver productos Future-X disponibles
+              Click to view available Future-X products
             </div>
           </CardFooter>
         </Card>
@@ -123,7 +123,7 @@ export function ClientStats() {
             <CardTitle className="text-3xl font-semibold tabular-nums">
               {stats.terminadosProducts}
               <span className="text-sm font-normal text-muted-foreground ml-2">
-                productos disponibles
+                available products
               </span>
             </CardTitle>
             <div className="absolute right-4 top-4">
@@ -135,7 +135,7 @@ export function ClientStats() {
               ClearView 1.60 DuraVision
             </div>
             <div className="text-muted-foreground">
-              Click para ver productos terminados disponibles
+              Click to view available finished products
             </div>
           </CardFooter>
         </Card>

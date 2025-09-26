@@ -150,10 +150,10 @@ const technicalSpecs: Record<string, any> = {
     cylindrical: { min: -4.00, max: 0 },
     material: "1.60",
     treatment: "Blue Guard",
-    features: ["Blue Guard", "DuraVision", "Stock estándar"]
+    features: ["Blue Guard", "DuraVision", "Standard stock"]
   },
   "160VTCVRX": {
-    range: "Especificación azul",
+    range: "Blue specification",
     spherical: { min: -10.00, max: 8.00 },
     cylindrical: { min: -4.00, max: 0 },
     material: "1.60",
@@ -182,7 +182,7 @@ export function ProductSpecificationsDialog({
         <DialogHeader>
           <DialogTitle className="text-2xl">{product.name}</DialogTitle>
           <DialogDescription>
-            Código: {product.code} | Precio Base: ${product.base_price_usd} USD
+            Code: {product.code} | Base Price: ${product.base_price_usd} USD
           </DialogDescription>
         </DialogHeader>
 
@@ -191,9 +191,9 @@ export function ProductSpecificationsDialog({
           {specs?.spherical && (
             <Card className="border-zinc-200 dark:border-zinc-800">
               <CardHeader className="bg-gradient-to-r from-zinc-50 to-zinc-100 dark:from-zinc-900 dark:to-zinc-800">
-                <CardTitle className="text-lg">Rangos de Prescripción</CardTitle>
+                <CardTitle className="text-lg">Prescription Ranges</CardTitle>
                 <CardDescription>
-                  Visualización del rango disponible para este producto
+                  Available range visualization for this product
                 </CardDescription>
               </CardHeader>
               <CardContent className="pt-6">
@@ -241,12 +241,12 @@ export function ProductSpecificationsDialog({
           {specs && (
             <Card>
               <CardHeader>
-                <CardTitle>Especificaciones Técnicas</CardTitle>
+                <CardTitle>Technical Specifications</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-sm font-medium">Rango</p>
+                    <p className="text-sm font-medium">Range</p>
                     <p className="text-sm text-muted-foreground">{specs.range}</p>
                   </div>
                   {specs.bases && (
@@ -256,7 +256,7 @@ export function ProductSpecificationsDialog({
                     </div>
                   )}
                   <div>
-                    <p className="text-sm font-medium">Diámetro</p>
+                    <p className="text-sm font-medium">Diameter</p>
                     <p className="text-sm text-muted-foreground">{specs.diameter}</p>
                   </div>
                   <div>
@@ -265,13 +265,13 @@ export function ProductSpecificationsDialog({
                   </div>
                   {specs.treatment && (
                     <div className="col-span-2">
-                      <p className="text-sm font-medium">Tratamiento</p>
+                      <p className="text-sm font-medium">Treatment</p>
                       <p className="text-sm text-muted-foreground">{specs.treatment}</p>
                     </div>
                   )}
                   {specs.description && (
                     <div className="col-span-2">
-                      <p className="text-sm font-medium">Características Especiales</p>
+                      <p className="text-sm font-medium">Special Features</p>
                       <p className="text-sm text-muted-foreground">{specs.description}</p>
                     </div>
                   )}

@@ -113,41 +113,41 @@ export function SpecificationsView() {
             </TabsTrigger>
             <TabsTrigger value="treatments">
               <Table className="mr-2 h-4 w-4" />
-              Tratamientos
+              Treatments
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-4">
             <Card>
               <CardHeader>
-                <CardTitle>Especificaciones CLEARVIEW DuraVision</CardTitle>
+                <CardTitle>CLEARVIEW DuraVision Specifications</CardTitle>
                 <CardDescription>
-                  Características técnicas de la línea MONOFOCALES TERMINADOS
+                  Technical features of the MONOFOCALES TERMINADOS line
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   <div className="grid gap-4 md:grid-cols-2">
                     <div>
-                      <h3 className="font-semibold mb-2">1.60 con Blue Guard</h3>
+                      <h3 className="font-semibold mb-2">1.60 with Blue Guard</h3>
                       <div className="space-y-1 text-sm">
-                        <p><span className="font-medium">Código:</span> 160VTCV</p>
+                        <p><span className="font-medium">Code:</span> 160VTCV</p>
                         <p><span className="font-medium">Material:</span> 1.60</p>
-                        <p><span className="font-medium">Rango Esférico:</span> -10.00 a +8.00</p>
-                        <p><span className="font-medium">Rango Cilíndrico:</span> Hasta -4.00</p>
-                        <p><span className="font-medium">Diámetros:</span> 70mm, 75mm</p>
-                        <Badge variant="secondary" className="mt-2">Stock estándar</Badge>
+                        <p><span className="font-medium">Spherical Range:</span> -10.00 to +8.00</p>
+                        <p><span className="font-medium">Cylindrical Range:</span> Up to -4.00</p>
+                        <p><span className="font-medium">Diameters:</span> 70mm, 75mm</p>
+                        <Badge variant="secondary" className="mt-2">Standard stock</Badge>
                       </div>
                     </div>
                     <div>
-                      <h3 className="font-semibold mb-2">1.60 con Blue Guard (Rango Extendido)</h3>
+                      <h3 className="font-semibold mb-2">1.60 with Blue Guard (Extended Range)</h3>
                       <div className="space-y-1 text-sm">
-                        <p><span className="font-medium">Código:</span> 160VTCVRX</p>
+                        <p><span className="font-medium">Code:</span> 160VTCVRX</p>
                         <p><span className="font-medium">Material:</span> 1.60</p>
-                        <p><span className="font-medium">Rango Esférico:</span> -10.00 a +8.00</p>
-                        <p><span className="font-medium">Rango Cilíndrico:</span> Hasta -4.00</p>
-                        <p><span className="font-medium">Diámetros:</span> 70mm, 75mm</p>
-                        <Badge className="mt-2">Disponibilidad extendida</Badge>
+                        <p><span className="font-medium">Spherical Range:</span> -10.00 to +8.00</p>
+                        <p><span className="font-medium">Cylindrical Range:</span> Up to -4.00</p>
+                        <p><span className="font-medium">Diameters:</span> 70mm, 75mm</p>
+                        <Badge className="mt-2">Extended availability</Badge>
                       </div>
                     </div>
                   </div>
@@ -157,9 +157,9 @@ export function SpecificationsView() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Comparativa con otras líneas</CardTitle>
+                <CardTitle>Comparison with other lines</CardTitle>
                 <CardDescription>
-                  Diferencias entre CLEARVIEW y otras líneas de productos
+                  Differences between CLEARVIEW and other product lines
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -181,28 +181,28 @@ export function SpecificationsView() {
                         <td className="p-4 bg-primary/5 font-medium">1.60</td>
                       </tr>
                       <tr className="border-b">
-                        <td className="p-4 font-medium">Rango Esférico</td>
+                        <td className="p-4 font-medium">Spherical Range</td>
                         <td className="p-4">-8.00 a +6.00</td>
                         <td className="p-4">-20.00 a +20.00</td>
                         <td className="p-4 bg-primary/5 font-medium">-10.00 a +8.00</td>
                       </tr>
                       <tr className="border-b">
-                        <td className="p-4 font-medium">Tiempo de Entrega</td>
+                        <td className="p-4 font-medium">Delivery Time</td>
                         <td className="p-4">
-                          <Badge variant="secondary">Inmediato</Badge>
+                          <Badge variant="secondary">Immediate</Badge>
                         </td>
                         <td className="p-4">
-                          <Badge variant="outline">3-5 días hábiles</Badge>
+                          <Badge variant="outline">3-5 business days</Badge>
                         </td>
                         <td className="p-4 bg-primary/5">
-                          <Badge>24-48 horas</Badge>
+                          <Badge>24-48 hours</Badge>
                         </td>
                       </tr>
                       <tr className="border-b">
-                        <td className="p-4 font-medium">Garantía Estándar</td>
-                        <td className="p-4">6 meses</td>
-                        <td className="p-4">12 meses</td>
-                        <td className="p-4 bg-primary/5 font-medium">24 meses</td>
+                        <td className="p-4 font-medium">Standard Warranty</td>
+                        <td className="p-4">6 months</td>
+                        <td className="p-4">12 months</td>
+                        <td className="p-4 bg-primary/5 font-medium">24 months</td>
                       </tr>
                     </tbody>
                   </table>
@@ -243,10 +243,10 @@ export function SpecificationsView() {
           <TabsContent value="grid" className="space-y-4">
             <Card>
               <CardHeader>
-                <CardTitle>{gridData?.title || 'Cobertura de Graduaciones CLEARVIEW'}</CardTitle>
+                <CardTitle>{gridData?.title || 'CLEARVIEW Prescription Coverage'}</CardTitle>
                 <CardDescription>
-                  Matriz de disponibilidad por esfera y cilindro para productos terminados.
-                  Los colores indican: Gris (no disponible), Azul claro (stock estándar), Azul (disponibilidad extendida)
+                  Availability matrix by sphere and cylinder for finished products.
+                  Colors indicate: Gray (not available), Light blue (standard stock), Blue (extended availability)
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -258,9 +258,9 @@ export function SpecificationsView() {
           <TabsContent value="treatments" className="space-y-4">
             <Card>
               <CardHeader>
-                <CardTitle>Tratamientos DuraVision®</CardTitle>
+                <CardTitle>DuraVision® Treatments</CardTitle>
                 <CardDescription>
-                  Tratamientos premium incluidos en productos CLEARVIEW
+                  Premium treatments included in CLEARVIEW products
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">

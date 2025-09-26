@@ -54,7 +54,7 @@ export default function MonofocalesTerminadosPage() {
   }
 
   const handleDeleteProduct = async (id: string) => {
-    if (!confirm('¿Está seguro de eliminar este producto?')) return
+    if (!confirm('Are you sure you want to delete this product?')) return
     await deleteMutation.mutateAsync(id)
   }
 
@@ -66,16 +66,16 @@ export default function MonofocalesTerminadosPage() {
         <div className="flex items-center justify-between px-4 lg:px-6 pb-4">
           <div>
             <h1 className="text-2xl font-bold">MONOFOCALES TERMINADOS</h1>
-            <p className="text-muted-foreground">CLEARVIEW 1.60 DuraVision con Tratamientos DuraVision® y material BlueGuard</p>
+            <p className="text-muted-foreground">CLEARVIEW 1.60 DuraVision with DuraVision® Treatments and BlueGuard material</p>
           </div>
           <div className="flex gap-2">
             <Button variant="outline" disabled>
               <Grid3x3Icon className="mr-2 h-4 w-4" />
-              Ver Especificaciones Técnicas
+              View Technical Specifications
             </Button>
             <Button disabled>
               <PlusIcon className="mr-2 h-4 w-4" />
-              Agregar Producto
+              Add Product
             </Button>
           </div>
         </div>
@@ -94,7 +94,7 @@ export default function MonofocalesTerminadosPage() {
         <div className="flex gap-2">
           <Button variant="outline" onClick={() => setShowSpecGrid(!showSpecGrid)}>
             <Grid3x3Icon className="mr-2 h-4 w-4" />
-            {showSpecGrid ? 'Ver Productos' : 'Ver Especificaciones Técnicas'}
+            {showSpecGrid ? 'View Products' : 'View Technical Specifications'}
           </Button>
           <Button onClick={() => setDialogOpen(true)}>
             <PlusIcon className="mr-2 h-4 w-4" />
@@ -118,7 +118,7 @@ export default function MonofocalesTerminadosPage() {
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
-              {selectedProduct ? 'Editar Producto' : 'Crear Nuevo Producto'}
+              {selectedProduct ? 'Edit Product' : 'Create New Product'}
             </DialogTitle>
             <DialogDescription>
               {selectedProduct
