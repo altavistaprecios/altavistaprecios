@@ -4,7 +4,7 @@ import * as React from 'react'
 import { DataTable } from '@/components/data-table-optics'
 import { DataTableSkeleton } from '@/components/products/data-table-skeleton'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { ProductForm } from '@/components/products/product-form'
+import { ProductFormEnhanced } from '@/components/products/product-form-enhanced'
 import { Product } from '@/lib/models/product'
 import { Button } from '@/components/ui/button'
 import { PlusIcon } from 'lucide-react'
@@ -115,7 +115,7 @@ export default function MonofocalesFutureXPage() {
                 : 'Enter details for the new Future-X product'}
             </DialogDescription>
           </DialogHeader>
-          <ProductForm
+          <ProductFormEnhanced
             product={selectedProduct}
             categories={futureXCategories}
             onSubmit={selectedProduct ? handleUpdateProduct : handleCreateProduct}

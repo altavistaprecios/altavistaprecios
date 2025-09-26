@@ -18,16 +18,19 @@ export class ProductService {
     return await createAdminClient()
   }
 
-  async create(data: CreateProductInput): Promise<Product> {
-    const validated = CreateProductSchema.parse(data)
+  async create(data: any): Promise<Product> {
     const supabase = await this.getAdminSupabase()
 
-    const { specifications, ...productData } = validated
+    // Extract specifications if present
+    const { specifications, ...productData } = data
+
+    // Validate base product data
+    const validatedProduct = CreateProductSchema.parse(productData)
 
     // Create product
     const { data: product, error: productError } = await supabase
       .from('products')
-      .insert(productData)
+      .insert(validatedProduct)
       .select()
       .single()
 
@@ -35,12 +38,30 @@ export class ProductService {
 
     // Create specifications if provided
     if (specifications) {
+      // Format specifications for database
+      const specData: any = {
+        product_id: product.id,
+        spherical_range: specifications.spherical_range || null,
+        cylindrical_range: specifications.cylindrical_range || null,
+        materials: specifications.materials || null,
+        diameters: specifications.diameter ? [specifications.diameter] : null,
+        delivery_time: specifications.delivery_time || null,
+        additional_specs: {
+          bases: specifications.bases || null,
+          treatment: specifications.treatment || null,
+          features: specifications.features || null,
+          description: specifications.description || null,
+          type: specifications.type || null,
+          spherical_min: specifications.spherical_min || null,
+          spherical_max: specifications.spherical_max || null,
+          cylindrical_min: specifications.cylindrical_min || null,
+          cylindrical_max: specifications.cylindrical_max || null,
+        }
+      }
+
       const { error: specError } = await supabase
         .from('product_specifications')
-        .insert({
-          ...specifications,
-          product_id: product.id,
-        })
+        .insert(specData)
 
       if (specError) throw specError
     }
@@ -51,9 +72,14 @@ export class ProductService {
     return product
   }
 
-  async update(id: string, data: UpdateProductInput): Promise<Product> {
-    const validated = UpdateProductSchema.parse(data)
+  async update(id: string, data: any): Promise<Product> {
     const supabase = await this.getAdminSupabase()
+
+    // Extract specifications if present
+    const { specifications, ...productData } = data
+
+    // Validate base product data
+    const validated = UpdateProductSchema.parse(productData)
 
     // Get current product for price comparison
     const { data: currentProduct, error: fetchError } = await supabase
@@ -76,6 +102,57 @@ export class ProductService {
       .single()
 
     if (updateError) throw updateError
+
+    // Update specifications if provided
+    if (specifications) {
+      // Format specifications for database
+      const specData: any = {
+        spherical_range: specifications.spherical_range || null,
+        cylindrical_range: specifications.cylindrical_range || null,
+        materials: specifications.materials || null,
+        diameters: specifications.diameter ? [specifications.diameter] : null,
+        delivery_time: specifications.delivery_time || null,
+        additional_specs: {
+          bases: specifications.bases || null,
+          treatment: specifications.treatment || null,
+          features: specifications.features || null,
+          description: specifications.description || null,
+          type: specifications.type || null,
+          spherical_min: specifications.spherical_min || null,
+          spherical_max: specifications.spherical_max || null,
+          cylindrical_min: specifications.cylindrical_min || null,
+          cylindrical_max: specifications.cylindrical_max || null,
+        },
+        updated_at: new Date().toISOString(),
+      }
+
+      // Check if specifications exist
+      const { data: existingSpec } = await supabase
+        .from('product_specifications')
+        .select('id')
+        .eq('product_id', id)
+        .maybeSingle()
+
+      if (existingSpec) {
+        // Update existing specifications
+        const { error: specError } = await supabase
+          .from('product_specifications')
+          .update(specData)
+          .eq('product_id', id)
+
+        if (specError) throw specError
+      } else {
+        // Create new specifications
+        const { error: specError } = await supabase
+          .from('product_specifications')
+          .insert({
+            ...specData,
+            product_id: id,
+          })
+
+        if (specError) throw specError
+      }
+    }
 
     // Track price change if applicable
     if (validated.base_price_usd && validated.base_price_usd !== currentProduct.base_price_usd) {
