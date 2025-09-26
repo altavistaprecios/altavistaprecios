@@ -23,11 +23,13 @@ import {
   MoreVerticalIcon,
   EditIcon,
   TrashIcon,
+  EyeIcon,
 } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
+import { ProductSpecificationsDialog } from "@/components/products/product-specifications-dialog"
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -81,6 +83,8 @@ export function DataTable({ data, onEdit, onDelete, productType }: DataTableOpti
     pageIndex: 0,
     pageSize: 10,
   })
+  const [specsDialogOpen, setSpecsDialogOpen] = React.useState(false)
+  const [selectedProduct, setSelectedProduct] = React.useState<Product | null>(null)
 
   const columns: ColumnDef<Product>[] = React.useMemo(() => [
     {
@@ -128,13 +132,22 @@ export function DataTable({ data, onEdit, onDelete, productType }: DataTableOpti
       header: "Specifications",
       cell: ({ row }) => {
         if (productType === 'future-x') {
-          // Show ranges for Future-X products
+          // Show clickable button for Future-X products
           return (
-            <div className="text-sm text-muted-foreground">
-              {row.original.name.includes("Stock") ? "Sph -4.00 to +3.00 Cyl -2.00" :
-               row.original.name.includes("Laboratory") ? "Sph -12.00 to +8.50 Cyl -6.00" :
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                setSelectedProduct(row.original)
+                setSpecsDialogOpen(true)
+              }}
+              className="h-auto py-1 px-2 text-sm text-muted-foreground hover:text-foreground"
+            >
+              <EyeIcon className="mr-1 h-3 w-3" />
+              {row.original.name.includes("Stock") ? "Stock specs" :
+               row.original.name.includes("Laboratory") ? "Lab specs" :
                "View specifications"}
-            </div>
+            </Button>
           )
         }
         // Show reference color for ClearView
@@ -199,7 +212,7 @@ export function DataTable({ data, onEdit, onDelete, productType }: DataTableOpti
         </div>
       ),
     },
-  ], [onEdit, onDelete, productType])
+  ], [onEdit, onDelete, productType, setSelectedProduct, setSpecsDialogOpen])
 
   const table = useReactTable({
     data,
@@ -398,6 +411,12 @@ export function DataTable({ data, onEdit, onDelete, productType }: DataTableOpti
           </div>
         </div>
       </div>
+
+      <ProductSpecificationsDialog
+        product={selectedProduct}
+        open={specsDialogOpen}
+        onOpenChange={setSpecsDialogOpen}
+      />
     </div>
   )
 }
