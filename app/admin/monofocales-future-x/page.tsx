@@ -88,11 +88,11 @@ export default function MonofocalesFutureXPage() {
       <div className="flex items-center justify-between px-4 lg:px-6 pb-4">
         <div>
           <h1 className="text-2xl font-bold">MONOFOCALES FUTURE-X</h1>
-          <p className="text-muted-foreground">Gestión de Lentes de Stock y Laboratorio</p>
+          <p className="text-muted-foreground">Stock and Laboratory Lens Management</p>
         </div>
         <Button onClick={() => setDialogOpen(true)}>
           <PlusIcon className="mr-2 h-4 w-4" />
-          Agregar Producto
+          Add Product
         </Button>
       </div>
 

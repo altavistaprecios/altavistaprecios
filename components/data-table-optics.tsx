@@ -147,7 +147,7 @@ export function DataTable({ data, onEdit, onDelete, productType }: DataTableOpti
     },
     {
       accessorKey: "base_price_usd",
-      header: () => <div className="text-right">Precio Base (USD)</div>,
+      header: () => <div className="text-right">Base Price (USD)</div>,
       cell: ({ row }) => {
         const price = parseFloat(row.getValue("base_price_usd"))
         const formatted = new Intl.NumberFormat("en-US", {
@@ -159,10 +159,10 @@ export function DataTable({ data, onEdit, onDelete, productType }: DataTableOpti
     },
     {
       accessorKey: "is_active",
-      header: "Estado",
+      header: "Status",
       cell: ({ row }) => (
         <Badge variant={row.getValue("is_active") ? "success" : "secondary"}>
-          {row.getValue("is_active") ? "Activo" : "Inactivo"}
+          {row.getValue("is_active") ? "Active" : "Inactive"}
         </Badge>
       ),
     },
@@ -178,13 +178,13 @@ export function DataTable({ data, onEdit, onDelete, productType }: DataTableOpti
                 size="icon"
               >
                 <MoreVerticalIcon className="h-4 w-4" />
-                <span className="sr-only">Abrir menú</span>
+                <span className="sr-only">Open menu</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-32">
               <DropdownMenuItem onClick={() => onEdit?.(row.original)}>
                 <EditIcon className="mr-2 h-4 w-4" />
-                Editar
+                Edit
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
@@ -192,7 +192,7 @@ export function DataTable({ data, onEdit, onDelete, productType }: DataTableOpti
                 className="text-destructive"
               >
                 <TrashIcon className="mr-2 h-4 w-4" />
-                Eliminar
+                Delete
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -229,7 +229,7 @@ export function DataTable({ data, onEdit, onDelete, productType }: DataTableOpti
       <div className="flex items-center justify-between px-4 lg:px-6">
         <div className="flex flex-1 items-center space-x-2">
           <Input
-            placeholder="Buscar productos..."
+            placeholder="Search products..."
             value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
               table.getColumn("name")?.setFilterValue(event.target.value)
@@ -241,7 +241,7 @@ export function DataTable({ data, onEdit, onDelete, productType }: DataTableOpti
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="sm">
               <ColumnsIcon className="mr-2 h-4 w-4" />
-              Columnas
+              Columns
               <ChevronDownIcon className="ml-2 h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -312,7 +312,7 @@ export function DataTable({ data, onEdit, onDelete, productType }: DataTableOpti
                     colSpan={columns.length}
                     className="h-24 text-center"
                   >
-                    No se encontraron productos.
+                    No products found.
                   </TableCell>
                 </TableRow>
               )}
@@ -322,13 +322,13 @@ export function DataTable({ data, onEdit, onDelete, productType }: DataTableOpti
 
         <div className="flex items-center justify-between px-4">
           <div className="hidden flex-1 text-sm text-muted-foreground lg:flex">
-            {table.getFilteredSelectedRowModel().rows.length} de{" "}
-            {table.getFilteredRowModel().rows.length} producto(s) seleccionado(s).
+            {table.getFilteredSelectedRowModel().rows.length} of{" "}
+            {table.getFilteredRowModel().rows.length} product(s) selected.
           </div>
           <div className="flex w-full items-center gap-8 lg:w-fit">
             <div className="hidden items-center gap-2 lg:flex">
               <Label htmlFor="rows-per-page" className="text-sm font-medium">
-                Filas por página
+                Rows per page
               </Label>
               <Select
                 value={`${table.getState().pagination.pageSize}`}
@@ -351,7 +351,7 @@ export function DataTable({ data, onEdit, onDelete, productType }: DataTableOpti
               </Select>
             </div>
             <div className="flex w-fit items-center justify-center text-sm font-medium">
-              Página {table.getState().pagination.pageIndex + 1} de{" "}
+              Page {table.getState().pagination.pageIndex + 1} of{" "}
               {table.getPageCount()}
             </div>
             <div className="ml-auto flex items-center gap-2 lg:ml-0">
@@ -361,7 +361,7 @@ export function DataTable({ data, onEdit, onDelete, productType }: DataTableOpti
                 onClick={() => table.setPageIndex(0)}
                 disabled={!table.getCanPreviousPage()}
               >
-                <span className="sr-only">Ir a la primera página</span>
+                <span className="sr-only">Go to first page</span>
                 <ChevronsLeftIcon className="h-4 w-4" />
               </Button>
               <Button
@@ -371,7 +371,7 @@ export function DataTable({ data, onEdit, onDelete, productType }: DataTableOpti
                 onClick={() => table.previousPage()}
                 disabled={!table.getCanPreviousPage()}
               >
-                <span className="sr-only">Ir a la página anterior</span>
+                <span className="sr-only">Go to previous page</span>
                 <ChevronLeftIcon className="h-4 w-4" />
               </Button>
               <Button
@@ -381,7 +381,7 @@ export function DataTable({ data, onEdit, onDelete, productType }: DataTableOpti
                 onClick={() => table.nextPage()}
                 disabled={!table.getCanNextPage()}
               >
-                <span className="sr-only">Ir a la siguiente página</span>
+                <span className="sr-only">Go to next page</span>
                 <ChevronRightIcon className="h-4 w-4" />
               </Button>
               <Button
@@ -391,7 +391,7 @@ export function DataTable({ data, onEdit, onDelete, productType }: DataTableOpti
                 onClick={() => table.setPageIndex(table.getPageCount() - 1)}
                 disabled={!table.getCanNextPage()}
               >
-                <span className="sr-only">Ir a la última página</span>
+                <span className="sr-only">Go to last page</span>
                 <ChevronsRightIcon className="h-4 w-4" />
               </Button>
             </div>
