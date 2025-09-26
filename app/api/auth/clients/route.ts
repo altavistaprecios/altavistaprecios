@@ -24,14 +24,7 @@ export async function GET() {
     // Fetch all user profiles that are approved
     const { data: profiles, error } = await supabase
       .from('user_profiles')
-      .select(`
-        id,
-        company_name,
-        phone,
-        status,
-        created_at,
-        updated_at
-      `)
+      .select('*')
       .in('status', ['approved', 'pending']) // Include both approved and pending for visibility
       .order('created_at', { ascending: false })
 
