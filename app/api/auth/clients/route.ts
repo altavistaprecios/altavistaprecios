@@ -21,12 +21,9 @@ export async function GET() {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
-    // Fetch all user profiles that are approved
+    // Fetch all user profiles with emails using the function
     const { data: profiles, error } = await supabase
-      .from('user_profiles')
-      .select('*')
-      .in('status', ['approved', 'pending']) // Include both approved and pending for visibility
-      .order('created_at', { ascending: false })
+      .rpc('get_clients_with_email')
 
     if (error) {
       console.error('Error fetching profiles:', error)
@@ -36,17 +33,16 @@ export async function GET() {
       }, { status: 500 })
     }
 
-    // Since we can't access auth.users directly, work with what we have
     // Map the profile data to the expected format
     const enrichedClients = profiles?.map(profile => {
       return {
         id: profile.id,
-        email: 'client@example.com', // Placeholder since we can't access auth emails
+        email: profile.email || 'email@unknown.com', // Now we have real emails from the view
         company_name: profile.company_name || 'Unknown Company',
         contact_name: profile.contact_name || 'Unknown Contact',
         role: 'client',
         created_at: profile.created_at,
-        last_sign_in_at: null, // Can't get this without auth access
+        last_sign_in_at: profile.last_sign_in_at || null, // Now available from the view
         discount_tier: profile.discount_tier || 0,
         total_orders: 0, // This would come from an orders table if it exists
         active: profile.status === 'approved',
