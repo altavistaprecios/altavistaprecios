@@ -187,6 +187,35 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // IMPORTANT: Create or update user_profiles record with approved status
+    // This is critical for the middleware to recognize the user as approved
+    const { error: profileError } = await supabase
+      .from('user_profiles')
+      .upsert({
+        id: userId,
+        status: 'approved',
+        company_name: registrationRequest.company_name,
+        phone: registrationRequest.phone,
+        approved_by: user.id,
+        approved_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      })
+      .select()
+      .single()
+
+    if (profileError) {
+      console.error('Error creating/updating user profile:', profileError)
+      // This is critical - if we can't create the profile, the user will be stuck
+      // Try to clean up the created user
+      if (!userAlreadyExists) {
+        await adminSupabase.auth.admin.deleteUser(userId)
+      }
+      return NextResponse.json(
+        { error: 'Failed to create user profile: ' + profileError.message },
+        { status: 500 }
+      )
+    }
+
     // IMPORTANT: Update the registration request to approved BEFORE sending email
     // This ensures UI shows correct status even if email fails
     const { error: updateError } = await supabase

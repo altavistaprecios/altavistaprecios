@@ -2,6 +2,7 @@
 
 import { ChevronRight, type LucideIcon } from "lucide-react"
 import { usePrefetchData } from "@/hooks/use-prefetch"
+import { Badge } from "@/components/ui/badge"
 
 import {
   Collapsible,
@@ -27,6 +28,7 @@ export function NavMain({
     url: string
     icon?: LucideIcon
     isActive?: boolean
+    badge?: number
     items?: {
       title: string
       url: string
@@ -64,6 +66,11 @@ export function NavMain({
                       >
                         {item.icon && <item.icon />}
                         <span>{item.title}</span>
+                        {item.badge && (
+                          <Badge variant="destructive" className="ml-auto mr-2 animate-pulse">
+                            {item.badge}
+                          </Badge>
+                        )}
                         <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                       </SidebarMenuButton>
                     </CollapsibleTrigger>
@@ -94,6 +101,11 @@ export function NavMain({
                     <a href={item.url}>
                       {item.icon && <item.icon />}
                       <span>{item.title}</span>
+                      {item.badge && (
+                        <Badge variant="destructive" className="ml-auto animate-pulse">
+                          {item.badge}
+                        </Badge>
+                      )}
                     </a>
                   </SidebarMenuButton>
                 )}

@@ -84,16 +84,46 @@ export default function SetupPasswordPage() {
       setError(error.message)
       setLoading(false)
     } else {
+      // Get the current user to ensure profile exists
+      const { data: { user } } = await supabase.auth.getUser()
+
+      if (user) {
+        // Ensure user_profiles record exists with approved status
+        // This is a safety check in case the admin approval didn't create it
+        const { error: profileError } = await supabase
+          .from('user_profiles')
+          .upsert({
+            id: user.id,
+            status: 'approved',
+            company_name: user.user_metadata?.company_name || '',
+            phone: user.user_metadata?.phone || '',
+            updated_at: new Date().toISOString()
+          })
+          .select()
+          .single()
+
+        if (profileError) {
+          console.error('Error ensuring user profile:', profileError)
+        }
+
+        // Refresh the session to ensure metadata is up to date
+        await supabase.auth.refreshSession()
+      }
+
       setSuccess(true)
       toast({
         title: 'Success',
-        description: 'Your password has been set successfully!',
+        description: 'Your password has been set successfully! Logging you in...',
       })
 
-      // Redirect to login after 2 seconds
+      // Determine the redirect path based on user role
+      const isAdmin = user?.user_metadata?.is_admin === true
+      const redirectPath = isAdmin ? '/admin' : '/client'
+
+      // Redirect to appropriate dashboard after 1.5 seconds
       setTimeout(() => {
-        router.push('/login')
-      }, 2000)
+        router.push(redirectPath)
+      }, 1500)
     }
   }
 
@@ -135,7 +165,7 @@ export default function SetupPasswordPage() {
             </div>
             <CardTitle>Password Set Successfully!</CardTitle>
             <CardDescription className="mt-2">
-              Your account is now active. Redirecting to login...
+              Your account is now active. Redirecting to your dashboard...
             </CardDescription>
           </CardHeader>
         </Card>

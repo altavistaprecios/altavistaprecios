@@ -20,9 +20,11 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { useAuth } from "@/components/providers/auth-provider"
+import { useRegistrationCount } from "@/hooks/use-registration-count"
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { user } = useAuth()
+  const { pendingCount } = useRegistrationCount()
 
   const data = {
     user: {
@@ -41,6 +43,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         title: "Registrations",
         url: "/admin/registrations",
         icon: UserPlus,
+        badge: pendingCount > 0 ? pendingCount : undefined,
       },
       {
         title: "Products",
