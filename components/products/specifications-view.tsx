@@ -55,7 +55,7 @@ export function SpecificationsView() {
         <table className="min-w-full border-collapse">
           <thead>
             <tr>
-              <th className="border p-2 bg-muted">Esfera / Cilindro</th>
+              <th className="border p-2 bg-muted">Sphere / Cylinder</th>
               {cylinderValues.map((cyl, idx) => (
                 <th key={idx} className="border p-2 bg-muted text-xs">
                   {cyl.toFixed(2)}
@@ -105,11 +105,11 @@ export function SpecificationsView() {
           <TabsList>
             <TabsTrigger value="overview">
               <FileText className="mr-2 h-4 w-4" />
-              Vista General
+              Overview
             </TabsTrigger>
             <TabsTrigger value="grid">
               <Grid3x3 className="mr-2 h-4 w-4" />
-              Tabla de Graduaciones
+              Prescription Grid
             </TabsTrigger>
             <TabsTrigger value="treatments">
               <Table className="mr-2 h-4 w-4" />
@@ -167,24 +167,24 @@ export function SpecificationsView() {
                   <table className="w-full border-collapse">
                     <thead>
                       <tr className="border-b">
-                        <th className="text-left p-4">Característica</th>
-                        <th className="text-left p-4">LENTES DE STOCK</th>
-                        <th className="text-left p-4">LENTES DE LABORATORIO</th>
+                        <th className="text-left p-4">Feature</th>
+                        <th className="text-left p-4">STOCK LENSES</th>
+                        <th className="text-left p-4">LABORATORY LENSES</th>
                         <th className="text-left p-4 bg-primary/5">CLEARVIEW DuraVision</th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr className="border-b">
-                        <td className="p-4 font-medium">Materiales</td>
+                        <td className="p-4 font-medium">Materials</td>
                         <td className="p-4">1.56, 1.61</td>
                         <td className="p-4">1.56, 1.61, 1.67, 1.74</td>
                         <td className="p-4 bg-primary/5 font-medium">1.60</td>
                       </tr>
                       <tr className="border-b">
                         <td className="p-4 font-medium">Spherical Range</td>
-                        <td className="p-4">-8.00 a +6.00</td>
-                        <td className="p-4">-20.00 a +20.00</td>
-                        <td className="p-4 bg-primary/5 font-medium">-10.00 a +8.00</td>
+                        <td className="p-4">-8.00 to +6.00</td>
+                        <td className="p-4">-20.00 to +20.00</td>
+                        <td className="p-4 bg-primary/5 font-medium">-10.00 to +8.00</td>
                       </tr>
                       <tr className="border-b">
                         <td className="p-4 font-medium">Delivery Time</td>
@@ -212,28 +212,28 @@ export function SpecificationsView() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Certificaciones</CardTitle>
+                <CardTitle>Certifications</CardTitle>
                 <CardDescription>
-                  Certificaciones de calidad aplicables a productos CLEARVIEW
+                  Quality certifications applicable to CLEARVIEW products
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="grid gap-3 md:grid-cols-2">
                   <div className="flex items-center gap-2">
                     <Badge variant="outline">ISO 9001:2015</Badge>
-                    <span className="text-sm">Sistema de Gestión de Calidad</span>
+                    <span className="text-sm">Quality Management System</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Badge variant="outline">ISO 14001:2015</Badge>
-                    <span className="text-sm">Gestión Ambiental</span>
+                    <span className="text-sm">Environmental Management</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Badge variant="outline">CE Mark</Badge>
-                    <span className="text-sm">Conformidad Europea</span>
+                    <span className="text-sm">European Conformity</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Badge variant="outline">FDA Approved</Badge>
-                    <span className="text-sm">Aprobación FDA para exportación</span>
+                    <span className="text-sm">FDA Approval for export</span>
                   </div>
                 </div>
               </CardContent>
@@ -268,22 +268,22 @@ export function SpecificationsView() {
                   <div>
                     <h3 className="font-semibold mb-2">Blue Guard</h3>
                     <p className="text-sm text-muted-foreground">
-                      Protección avanzada contra la luz azul nociva (380-455 nm) emitida por pantallas digitales.
-                      Reduce la fatiga visual y mejora el contraste, manteniendo una transmisión de luz óptima.
+                      Advanced protection against harmful blue light (380-455 nm) emitted by digital screens.
+                      Reduces eye strain and improves contrast while maintaining optimal light transmission.
                     </p>
                   </div>
                   <div>
                     <h3 className="font-semibold mb-2">DuraVision Platinum</h3>
                     <p className="text-sm text-muted-foreground">
-                      Capa antirreflejante premium con propiedades hidrofóbicas y oleofóbicas.
-                      Facilita la limpieza y mantiene las lentes libres de huellas y manchas.
+                      Premium anti-reflective coating with hydrophobic and oleophobic properties.
+                      Facilitates cleaning and keeps lenses free from fingerprints and smudges.
                     </p>
                   </div>
                   <div>
-                    <h3 className="font-semibold mb-2">Capa Antiestática</h3>
+                    <h3 className="font-semibold mb-2">Antistatic Layer</h3>
                     <p className="text-sm text-muted-foreground">
-                      Previene la acumulación de polvo y partículas en la superficie del lente,
-                      manteniendo una visión clara por más tiempo.
+                      Prevents dust and particle accumulation on the lens surface,
+                      maintaining clear vision for longer.
                     </p>
                   </div>
                 </div>
@@ -292,26 +292,26 @@ export function SpecificationsView() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Características del Material 1.60</CardTitle>
+                <CardTitle>Material 1.60 Features</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid gap-4 md:grid-cols-2">
                   <div>
-                    <h4 className="font-medium mb-1">Ventajas Ópticas</h4>
+                    <h4 className="font-medium mb-1">Optical Advantages</h4>
                     <ul className="text-sm text-muted-foreground space-y-1">
-                      <li>• Índice de refracción óptimo</li>
-                      <li>• Menor espesor que 1.50</li>
-                      <li>• Excelente claridad visual</li>
-                      <li>• Número Abbe balanceado</li>
+                      <li>• Optimal refractive index</li>
+                      <li>• Thinner than 1.50</li>
+                      <li>• Excellent visual clarity</li>
+                      <li>• Balanced Abbe number</li>
                     </ul>
                   </div>
                   <div>
-                    <h4 className="font-medium mb-1">Ventajas Físicas</h4>
+                    <h4 className="font-medium mb-1">Physical Advantages</h4>
                     <ul className="text-sm text-muted-foreground space-y-1">
-                      <li>• 30% más delgado y liviano</li>
-                      <li>• Resistente a impactos</li>
-                      <li>• Compatible con monturas al aire</li>
-                      <li>• Protección UV 100%</li>
+                      <li>• 30% thinner and lighter</li>
+                      <li>• Impact resistant</li>
+                      <li>• Compatible with rimless frames</li>
+                      <li>• 100% UV protection</li>
                     </ul>
                   </div>
                 </div>

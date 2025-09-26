@@ -42,7 +42,6 @@ import {
   User,
   Calendar,
   Package,
-  TrendingUp,
   ArrowUpDown,
   Download,
   UserPlus,
@@ -50,13 +49,6 @@ import {
 import { format } from 'date-fns'
 import { toast } from 'sonner'
 import { ClientInviteDialog } from '@/components/clients/invite-dialog'
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from '@/components/ui/chart'
-import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts'
 
 const clientSchema = z.object({
   id: z.string(),
@@ -73,21 +65,7 @@ const clientSchema = z.object({
 
 type ClientData = z.infer<typeof clientSchema>
 
-const orderHistoryData = [
-  { month: "Jan", orders: 4 },
-  { month: "Feb", orders: 7 },
-  { month: "Mar", orders: 5 },
-  { month: "Apr", orders: 8 },
-  { month: "May", orders: 6 },
-  { month: "Jun", orders: 9 },
-]
 
-const chartConfig = {
-  orders: {
-    label: "Orders",
-    color: "var(--primary)",
-  },
-} satisfies ChartConfig
 
 function ClientDetailViewer({ client }: { client: ClientData }) {
   return (
@@ -107,40 +85,19 @@ function ClientDetailViewer({ client }: { client: ClientData }) {
         <div className="flex flex-1 flex-col gap-4 overflow-y-auto py-4">
           <div className="space-y-4">
             <div className="rounded-lg border p-4">
-              <Label className="text-xs text-muted-foreground">Order History</Label>
-              <ChartContainer config={chartConfig} className="mt-2 h-[150px] w-full">
-                <BarChart
-                  accessibilityLayer
-                  data={orderHistoryData}
-                  margin={{
-                    left: 0,
-                    right: 0,
-                  }}
-                >
-                  <CartesianGrid vertical={false} />
-                  <XAxis
-                    dataKey="month"
-                    tickLine={false}
-                    axisLine={false}
-                    tickMargin={8}
-                    tickFormatter={(value) => value.slice(0, 3)}
-                  />
-                  <ChartTooltip
-                    cursor={false}
-                    content={<ChartTooltipContent />}
-                  />
-                  <Bar
-                    dataKey="orders"
-                    fill="var(--color-orders)"
-                    radius={[4, 4, 0, 0]}
-                  />
-                </BarChart>
-              </ChartContainer>
-              <div className="mt-4 flex items-center gap-2 text-sm">
-                <TrendingUp className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
-                <span className="text-muted-foreground">
-                  {client.total_orders || 0} total orders • Up 12% this month
-                </span>
+              <Label className="text-xs text-muted-foreground">Order Statistics</Label>
+              <div className="mt-4 flex flex-col gap-2">
+                <div className="flex items-center gap-2 text-sm">
+                  <Package className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-muted-foreground">
+                    Total orders: {client.total_orders || 0}
+                  </span>
+                </div>
+                {client.total_orders === 0 && (
+                  <p className="text-xs text-muted-foreground">
+                    No order history available yet
+                  </p>
+                )}
               </div>
             </div>
 

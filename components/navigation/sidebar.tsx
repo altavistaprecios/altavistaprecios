@@ -50,31 +50,31 @@ const navItems: NavItem[] = [
     adminOnly: true,
   },
   {
-    title: 'Clientes',
+    title: 'Clients',
     href: '/admin/clients',
     icon: Users,
     adminOnly: true,
   },
   {
-    title: 'Catálogo de Productos',
+    title: 'Product Catalog',
     href: '/client/products',
     icon: Package,
     clientOnly: true,
   },
   {
-    title: 'Mis Precios',
+    title: 'My Pricing',
     href: '/client/pricing',
     icon: DollarSign,
     clientOnly: true,
   },
   {
-    title: 'Historial de Precios',
+    title: 'Price History',
     href: '/admin/history',
     icon: History,
     adminOnly: true,
   },
   {
-    title: 'Mi Historial',
+    title: 'My History',
     href: '/client/history',
     icon: History,
     clientOnly: true,
@@ -157,7 +157,7 @@ export function Sidebar({
               <div>
                 <h2 className="text-lg font-semibold">Altavista Optics</h2>
                 <p className="text-xs text-muted-foreground">
-                  {isAdmin ? 'Administración' : 'Portal B2B'}
+                  {isAdmin ? 'Administration' : 'B2B Portal'}
                 </p>
               </div>
             )}

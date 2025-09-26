@@ -69,11 +69,9 @@ export function DataTableShell({
             {children}
           </div>
           {(footerLeft || footerRight) && (
-            <div className="flex items-center justify-between px-4">
-              <div className="text-muted-foreground hidden flex-1 text-sm lg:flex">{footerLeft}</div>
-              <div className="flex w-full items-center gap-8 lg:w-fit">
-                {footerRight ? <div className="flex items-center gap-2">{footerRight}</div> : null}
-              </div>
+            <div className="flex items-center justify-between space-x-2 px-4 py-4">
+              {footerLeft}
+              {footerRight}
             </div>
           )}
         </div>

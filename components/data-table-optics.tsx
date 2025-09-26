@@ -153,7 +153,7 @@ export function DataTable({ data, onEdit, onDelete, productType }: DataTableOpti
         // Show reference color for ClearView
         return (
           <Badge variant={row.original.name.includes("extendido") ? "default" : "secondary"}>
-            {row.original.name.includes("extendido") ? "Azul" : "Azul Claro"}
+            {row.original.name.includes("extendido") ? "Blue" : "Light Blue"}
           </Badge>
         )
       },

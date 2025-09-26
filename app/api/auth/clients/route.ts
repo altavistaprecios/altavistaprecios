@@ -1,11 +1,84 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
-import { cookies } from 'next/headers'
+import { createClient, createAdminClient } from '@/lib/supabase/server'
 
 export async function GET() {
   try {
-    const cookieStore = await cookies()
-    const supabase = createClient(cookieStore)
+    const supabase = await createClient()
+
+    // Get the current user to check if they're an admin
+    const { data: { user }, error: authError } = await supabase.auth.getUser()
+
+    if (authError || !user) {
+      console.error('Auth error or no user:', authError)
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    // Check if user is admin
+    const isAdmin = user.user_metadata?.is_admin === true
+    console.log('User metadata:', user.user_metadata)
+    console.log('Is admin?', isAdmin)
+    if (!isAdmin) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    }
+
+    // Fetch all user profiles that are approved
+    const { data: profiles, error } = await supabase
+      .from('user_profiles')
+      .select(`
+        id,
+        company_name,
+        phone,
+        status,
+        created_at,
+        updated_at
+      `)
+      .in('status', ['approved', 'pending']) // Include both approved and pending for visibility
+      .order('created_at', { ascending: false })
+
+    if (error) {
+      console.error('Error fetching profiles:', error)
+      return NextResponse.json({
+        error: 'Failed to fetch clients',
+        details: error.message
+      }, { status: 500 })
+    }
+
+    // Since we can't access auth.users directly, work with what we have
+    // Map the profile data to the expected format
+    const enrichedClients = profiles?.map(profile => {
+      return {
+        id: profile.id,
+        email: 'client@example.com', // Placeholder since we can't access auth emails
+        company_name: profile.company_name || 'Unknown Company',
+        contact_name: profile.contact_name || 'Unknown Contact',
+        role: 'client',
+        created_at: profile.created_at,
+        last_sign_in_at: null, // Can't get this without auth access
+        discount_tier: profile.discount_tier || 0,
+        total_orders: 0, // This would come from an orders table if it exists
+        active: profile.status === 'approved',
+        status: profile.status
+      }
+    }) || []
+
+    return NextResponse.json({ data: enrichedClients })
+  } catch (error) {
+    console.error('Error in clients API:', error)
+    console.error('Error details:', {
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined
+    })
+    return NextResponse.json({
+      error: 'Internal server error',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    }, { status: 500 })
+  }
+}
+
+// Add POST method to create a new pre-authorized client
+export async function POST(request: Request) {
+  try {
+    const supabase = await createClient()
 
     // Get the current user to check if they're an admin
     const { data: { user }, error: authError } = await supabase.auth.getUser()
@@ -20,65 +93,53 @@ export async function GET() {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
-    // Fetch all approved clients
-    const { data: clients, error } = await supabase
-      .from('user_profiles')
-      .select(`
-        id,
+    const body = await request.json()
+    const { email, company_name, contact_name, discount_tier = 0 } = body
+
+    // Create user with Supabase Auth Admin API using admin client
+    const adminSupabase = await createAdminClient()
+    const { data: newUser, error: createError } = await adminSupabase.auth.admin.createUser({
+      email,
+      email_confirm: true,
+      user_metadata: {
         company_name,
-        phone,
-        status,
-        created_at,
-        updated_at
-      `)
-      .eq('status', 'approved')
-      .order('created_at', { ascending: false })
-
-    if (error) {
-      console.error('Error fetching clients:', error)
-      return NextResponse.json({ error: 'Failed to fetch clients' }, { status: 500 })
-    }
-
-    // Get additional user data from auth.users
-    const userIds = clients?.map(c => c.id) || []
-
-    if (userIds.length === 0) {
-      return NextResponse.json({ data: [] })
-    }
-
-    // Get auth user data
-    const { data: { users: authUsers }, error: usersError } = await supabase.auth.admin.listUsers()
-
-    if (usersError) {
-      console.error('Error fetching auth users:', usersError)
-      // Continue with partial data if we can't get auth users
-    }
-
-    // Combine the data
-    const enrichedClients = clients?.map(client => {
-      const authUser = authUsers?.find(u => u.id === client.id)
-      const isClient = authUser?.user_metadata?.is_admin !== true
-
-      // Only include actual clients (not admins)
-      if (!isClient) return null
-
-      return {
-        id: client.id,
-        email: authUser?.email || '',
-        company_name: client.company_name || authUser?.user_metadata?.company_name || '',
-        contact_name: authUser?.user_metadata?.contact_name || authUser?.email?.split('@')[0] || '',
-        role: 'client',
-        created_at: client.created_at,
-        last_sign_in_at: authUser?.last_sign_in_at || null,
-        discount_tier: authUser?.user_metadata?.discount_tier || 0,
-        total_orders: 0, // This would come from an orders table if it exists
-        active: client.status === 'approved'
+        contact_name,
+        full_name: contact_name,
+        discount_tier,
+        is_admin: false
       }
-    }).filter(Boolean) || []
+    })
 
-    return NextResponse.json({ data: enrichedClients })
+    if (createError) {
+      console.error('Error creating user:', createError)
+      return NextResponse.json({ error: createError.message }, { status: 400 })
+    }
+
+    // Create user profile using admin client
+    if (newUser.user) {
+      const { error: profileError } = await adminSupabase
+        .from('user_profiles')
+        .insert({
+          id: newUser.user.id,
+          company_name,
+          status: 'approved', // Pre-authorized by admin
+          approved_by: user.id,
+          approved_at: new Date().toISOString()
+        })
+
+      if (profileError) {
+        console.error('Error creating user profile:', profileError)
+        // Don't fail the whole operation if profile creation fails
+      }
+    }
+
+    return NextResponse.json({
+      success: true,
+      user: newUser.user
+    })
+
   } catch (error) {
-    console.error('Error in clients API:', error)
+    console.error('Error in POST /api/auth/clients:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

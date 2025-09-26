@@ -47,7 +47,7 @@ const codeToDescriptionKey: Record<string, string> = {
 // Technical specifications by product type with parsed values
 const technicalSpecs: Record<string, any> = {
   "FVTS": {
-    range: "Esf -4.00 a +3.00 Cil -2.00",
+    range: "Sph -4.00 to +3.00 Cyl -2.00",
     spherical: { min: -4.00, max: 3.00 },
     cylindrical: { min: -2.00, max: -2.00 },
     bases: "0.50/2.00/4.00",
@@ -57,7 +57,7 @@ const technicalSpecs: Record<string, any> = {
     features: ["Resistente", "Antirreflejo", "Protección UV"]
   },
   "FVTG25": {
-    range: "Esf +/-4.00 Cil -2.00",
+    range: "Sph +/-4.00 Cyl -2.00",
     spherical: { min: -4.00, max: 4.00 },
     cylindrical: { min: -2.00, max: -2.00 },
     bases: "0.50/2.00/4.00",
@@ -68,29 +68,29 @@ const technicalSpecs: Record<string, any> = {
     description: "2x más resistente a impactos, totalmente asférico"
   },
   "FVTBS": {
-    range: "Esf +/-4.00 Cil -2.00",
+    range: "Sph +/-4.00 Cyl -2.00",
     spherical: { min: -4.00, max: 4.00 },
     cylindrical: { min: -2.00, max: -2.00 },
     bases: "0.50/2.00/4.00",
     diameter: "70mm",
     material: "1.56",
     treatment: "BluSteel (Protección luz azul 380-500nm)",
-    features: ["Luz Azul", "Anti-fatiga", "Visión clara"],
+    features: ["Blue Light", "Anti-fatigue", "Clear Vision"],
     description: "Previene fatiga visual digital"
   },
   "FVTBSRX": {
-    range: "Esf -4.00 a +3.00 Cil -2.5 a -4.00",
+    range: "Sph -4.00 to +3.00 Cyl -2.5 to -4.00",
     spherical: { min: -4.00, max: 3.00 },
     cylindrical: { min: -4.00, max: -2.50 },
     bases: "0.50/2.00/4.00",
     diameter: "70mm",
     material: "1.56",
     treatment: "BluSteel (Protección luz azul 380-500nm)",
-    features: ["Rango extendido", "Luz Azul", "Anti-fatiga"],
-    description: "Rango extendido"
+    features: ["Extended range", "Blue Light", "Anti-fatigue"],
+    description: "Extended range"
   },
   "FVTP": {
-    range: "Esf +/-4.00 Cil -2.00",
+    range: "Sph +/-4.00 Cyl -2.00",
     spherical: { min: -4.00, max: 4.00 },
     cylindrical: { min: -2.00, max: -2.00 },
     bases: "0.50/2.00/4.00",
@@ -101,7 +101,7 @@ const technicalSpecs: Record<string, any> = {
     description: "Duplica resistencia al rayado"
   },
   "FVTXS": {
-    range: "Esf -6.00 a +6.00 Cil -0.25 a -4.00",
+    range: "Sph -6.00 to +6.00 Cyl -0.25 to -4.00",
     spherical: { min: -6.00, max: 6.00 },
     cylindrical: { min: -4.00, max: -0.25 },
     bases: "0.50/2.00/4.00",
@@ -109,10 +109,10 @@ const technicalSpecs: Record<string, any> = {
     material: "1.56",
     treatment: "Steel",
     features: ["Alta graduación", "Asférico atórico", "Espesor optimizado"],
-    description: "Asfericidad atórica, optimización de espesor"
+    description: "Atoric asphericity, thickness optimization"
   },
   "FVS": {
-    range: "Esf -12.00 a +3.50 Cil -6.00",
+    range: "Sph -12.00 to +3.50 Cyl -6.00",
     spherical: { min: -12.00, max: 3.50 },
     cylindrical: { min: -6.00, max: -6.00 },
     bases: "0.50/2.00/4.00/6.00/8.00",
@@ -122,7 +122,7 @@ const technicalSpecs: Record<string, any> = {
     features: ["Laboratorio", "Múltiples índices", "Amplio rango"]
   },
   "FVS157A": {
-    range: "Esf -3.25 a +10.00 Cil -6.00",
+    range: "Sph -3.25 to +10.00 Cyl -6.00",
     spherical: { min: -3.25, max: 10.00 },
     cylindrical: { min: -6.00, max: -6.00 },
     bases: "5.00/6.00/8.00/10.00",
@@ -133,7 +133,7 @@ const technicalSpecs: Record<string, any> = {
     description: "Diseño asférico"
   },
   "FVSG2": {
-    range: "Esf -12.00 a +8.50 Cil -6.00",
+    range: "Sph -12.00 to +8.50 Cyl -6.00",
     spherical: { min: -12.00, max: 8.50 },
     cylindrical: { min: -6.00, max: -6.00 },
     bases: "0.50/2.00/3.50/6.00/8.00/9.00",
@@ -158,7 +158,7 @@ const technicalSpecs: Record<string, any> = {
     cylindrical: { min: -4.00, max: 0 },
     material: "1.60",
     treatment: "Blue Guard",
-    features: ["Blue Guard", "DuraVision", "Rango extendido"]
+    features: ["Blue Guard", "DuraVision", "Extended range"]
   }
 }
 
