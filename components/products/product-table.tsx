@@ -225,7 +225,7 @@ export function ProductTable({
         )
       }
       footerLeft={
-        <div className="text-sm text-muted-foreground">
+        <div className="flex-1 text-sm text-muted-foreground">
           {selectedProducts.length} of {sortedProducts.length} row(s) selected.
         </div>
       }
