@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Product } from '@/lib/models/product'
 import { ClientPrice } from '@/lib/models/client-price'
-import { TrendingDown, DollarSign, Package, Edit2, Save, X, Percent } from 'lucide-react'
+import { Edit2, Save, X, Percent } from 'lucide-react'
 import { toast } from 'sonner'
 import { DataTableShell } from '@/components/ui/data-table-shell'
 
@@ -74,23 +74,6 @@ export default function ClientPricingPage() {
     } finally {
       setLoading(false)
     }
-  }
-
-  const calculateTotalSavings = () => {
-    return pricingData.reduce((total, item) => total + (item.savings || 0), 0)
-  }
-
-  const calculateAverageDiscount = () => {
-    if (pricingData.length === 0) return 0
-    const totalDiscount = pricingData.reduce((total, item) => {
-      if (item.discount_percentage > 0) return total + item.discount_percentage
-      if (item.product && item.final_price) {
-        const discount = ((item.product.base_price - item.final_price) / item.product.base_price) * 100
-        return total + discount
-      }
-      return total
-    }, 0)
-    return totalDiscount / pricingData.length
   }
 
   const handleGlobalAdjustment = async () => {
@@ -207,42 +190,6 @@ export default function ClientPricingPage() {
       </div>
 
       <div className="px-4 lg:px-6 space-y-6">
-
-      <div className="grid gap-4 md:grid-cols-3">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Custom Prices</CardTitle>
-            <Package className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{pricingData.length}</div>
-            <p className="text-xs text-muted-foreground">Products with special pricing</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Savings</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">${calculateTotalSavings().toFixed(2)}</div>
-            <p className="text-xs text-muted-foreground">Per unit savings</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Average Discount</CardTitle>
-            <TrendingDown className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{calculateAverageDiscount().toFixed(1)}%</div>
-            <p className="text-xs text-muted-foreground">Across all products</p>
-          </CardContent>
-        </Card>
-      </div>
-
       <Card className="mb-6">
         <CardHeader>
           <CardTitle>Global Price Adjustment</CardTitle>
