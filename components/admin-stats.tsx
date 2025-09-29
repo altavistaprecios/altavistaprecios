@@ -73,7 +73,7 @@ export function AdminStats() {
     return (
       <div className="grid grid-cols-1 gap-4 px-4 lg:px-6 md:grid-cols-2">
         {[...Array(2)].map((_, i) => (
-          <Card key={i} className="bg-gradient-to-t from-primary/5 to-card">
+          <Card key={i}>
             <CardHeader>
               <div className="h-4 w-24 bg-muted animate-pulse rounded"></div>
               <div className="h-8 w-32 bg-muted animate-pulse rounded mt-2"></div>
@@ -90,7 +90,7 @@ export function AdminStats() {
   return (
     <div className="grid grid-cols-1 gap-4 px-4 lg:px-6 md:grid-cols-2">
       <Link href="/admin/monofocales-future-x" className="transition-transform hover:scale-[1.02]">
-        <Card className="cursor-pointer hover:shadow-lg transition-shadow bg-gradient-to-t from-primary/5 to-card">
+        <Card className="cursor-pointer hover:shadow-lg transition-shadow">
           <CardHeader className="relative">
             <CardDescription>MONOFOCALES FUTURE-X</CardDescription>
             <CardTitle className="text-3xl font-semibold tabular-nums">
@@ -117,7 +117,7 @@ export function AdminStats() {
       </Link>
 
       <Link href="/admin/monofocales-terminados" className="transition-transform hover:scale-[1.02]">
-        <Card className="cursor-pointer hover:shadow-lg transition-shadow bg-gradient-to-t from-primary/5 to-card">
+        <Card className="cursor-pointer hover:shadow-lg transition-shadow">
           <CardHeader className="relative">
             <CardDescription>MONOFOCALES TERMINADOS</CardDescription>
             <CardTitle className="text-3xl font-semibold tabular-nums">
