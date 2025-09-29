@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ProductCard } from '@/components/products/product-card'
@@ -20,6 +21,8 @@ export default function ClientProductsPage() {
   const [editingProduct, setEditingProduct] = useState<Product | null>(null)
   const [clientPrices, setClientPrices] = useState<ClientPrice[]>([])
   const { user } = useAuth()
+  const searchParams = useSearchParams()
+  const searchQuery = searchParams.get('q') || ''
 
   useEffect(() => {
     fetchProducts()
@@ -70,6 +73,16 @@ export default function ClientProductsPage() {
     return clientPrices.find(p => p.product_id === productId) || null
   }
 
+  // Filter products based on search
+  const filteredProducts = products.filter(product => {
+    if (!searchQuery) return true
+    const searchLower = searchQuery.toLowerCase()
+    return (
+      product.name.toLowerCase().includes(searchLower) ||
+      product.code.toLowerCase().includes(searchLower)
+    )
+  })
+
   if (loading) {
     return (
       <div className="flex flex-1 flex-col">
@@ -102,7 +115,7 @@ export default function ClientProductsPage() {
               <div>
                 <CardTitle>Available Products</CardTitle>
                 <CardDescription>
-                  {products.length} products available for ordering
+                  {filteredProducts.length} products available for ordering
                 </CardDescription>
               </div>
               <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as 'grid' | 'list')}>
@@ -120,9 +133,13 @@ export default function ClientProductsPage() {
             </div>
           </CardHeader>
           <CardContent>
-            {viewMode === 'grid' ? (
+            {filteredProducts.length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground">
+                {searchQuery ? 'No products found matching your search' : 'No products available at the moment'}
+              </div>
+            ) : viewMode === 'grid' ? (
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {products.map((product) => (
+                {filteredProducts.map((product) => (
                   <ProductCard
                     key={product.id}
                     product={product}
@@ -133,7 +150,7 @@ export default function ClientProductsPage() {
               </div>
             ) : (
               <ProductTable
-                products={products}
+                products={filteredProducts}
                 onEdit={handleEditPrice}
               />
             )}

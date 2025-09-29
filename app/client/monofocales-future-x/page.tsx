@@ -1,10 +1,9 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { Card, CardContent } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
 import {
   Breadcrumb,
@@ -14,12 +13,6 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { ProductCard } from '@/components/products/product-card'
 import { ProductTable } from '@/components/products/product-table'
@@ -27,7 +20,7 @@ import { DataTableSkeleton } from '@/components/products/data-table-skeleton'
 import { PriceEditDialog } from '@/components/products/price-edit-dialog'
 import { Product } from '@/lib/models/product'
 import { ClientPrice } from '@/lib/models/client-price'
-import { Grid3x3, List, Download, Search } from 'lucide-react'
+import { Grid3x3, List } from 'lucide-react'
 import { toast } from 'sonner'
 import { useAuth } from '@/lib/hooks/use-auth'
 
@@ -38,8 +31,9 @@ export default function ClientMonofocalesFutureXPage() {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('list')
   const [editingProduct, setEditingProduct] = useState<Product | null>(null)
   const [clientPrices, setClientPrices] = useState<ClientPrice[]>([])
-  const [filter, setFilter] = useState('')
   const { user } = useAuth()
+  const searchParams = useSearchParams()
+  const searchQuery = searchParams.get('q') || ''
 
   useEffect(() => {
     fetchProducts()
@@ -111,7 +105,8 @@ export default function ClientMonofocalesFutureXPage() {
 
   // Filter products based on search
   const filteredProducts = products.filter(product => {
-    const searchLower = filter.toLowerCase()
+    if (!searchQuery) return true
+    const searchLower = searchQuery.toLowerCase()
     return (
       product.name.toLowerCase().includes(searchLower) ||
       product.code.toLowerCase().includes(searchLower)
@@ -142,8 +137,7 @@ export default function ClientMonofocalesFutureXPage() {
   }
 
   return (
-    <TooltipProvider>
-      <div className="flex flex-1 flex-col space-y-6">
+    <div className="flex flex-1 flex-col space-y-6">
         {/* Breadcrumb Navigation */}
         <div className="px-6 pt-6">
           <Breadcrumb>
@@ -183,50 +177,21 @@ export default function ClientMonofocalesFutureXPage() {
         {/* Main Content */}
         <div className="px-6 pb-6 space-y-4">
           {/* Toolbar */}
-          <div className="flex items-center justify-between gap-4">
-            {/* Search */}
-            <div className="flex-1 max-w-sm">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <Input
-                  placeholder="Search products..."
-                  value={filter}
-                  onChange={(e) => setFilter(e.target.value)}
-                  className="pl-9 h-9"
-                />
-              </div>
-            </div>
-
-            {/* Actions */}
-            <div className="flex items-center gap-2">
-              <ToggleGroup
-                type="single"
-                value={viewMode}
-                onValueChange={(v) => v && setViewMode(v as 'grid' | 'list')}
-                className="h-9"
-              >
-                <ToggleGroupItem value="grid" aria-label="Grid view" className="h-9 px-3">
-                  <Grid3x3 className="h-4 w-4" />
-                </ToggleGroupItem>
-                <ToggleGroupItem value="list" aria-label="List view" className="h-9 px-3">
-                  <List className="h-4 w-4" />
-                </ToggleGroupItem>
-              </ToggleGroup>
-
-              <Separator orientation="vertical" className="h-6" />
-
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button variant="outline" size="sm" className="h-9">
-                    <Download className="h-4 w-4 mr-2" />
-                    Export Catalog
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Download product catalog as CSV</p>
-                </TooltipContent>
-              </Tooltip>
-            </div>
+          <div className="flex items-center justify-end gap-4">
+            {/* View Mode Toggle */}
+            <ToggleGroup
+              type="single"
+              value={viewMode}
+              onValueChange={(v) => v && setViewMode(v as 'grid' | 'list')}
+              className="h-9"
+            >
+              <ToggleGroupItem value="grid" aria-label="Grid view" className="h-9 px-3">
+                <Grid3x3 className="h-4 w-4" />
+              </ToggleGroupItem>
+              <ToggleGroupItem value="list" aria-label="List view" className="h-9 px-3">
+                <List className="h-4 w-4" />
+              </ToggleGroupItem>
+            </ToggleGroup>
           </div>
 
           {/* Product Display */}
@@ -234,7 +199,7 @@ export default function ClientMonofocalesFutureXPage() {
             <Card>
               <CardContent className="flex items-center justify-center h-32">
                 <div className="text-center text-muted-foreground">
-                  {filter ? 'No products found matching your search' : 'No Future-X products available at the moment'}
+                  {searchQuery ? 'No products found matching your search' : 'No Future-X products available at the moment'}
                 </div>
               </CardContent>
             </Card>
@@ -267,7 +232,6 @@ export default function ClientMonofocalesFutureXPage() {
           currentPrice={editingProduct ? getCurrentPrice(editingProduct.id) : null}
           onSave={handlePriceSaved}
         />
-      </div>
-    </TooltipProvider>
+    </div>
   )
 }

@@ -1,25 +1,39 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useSearchParams } from 'next/navigation'
+import { Card, CardContent } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Separator } from '@/components/ui/separator'
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb'
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { ProductCard } from '@/components/products/product-card'
 import { ProductTable } from '@/components/products/product-table'
 import { DataTableSkeleton } from '@/components/products/data-table-skeleton'
 import { PriceEditDialog } from '@/components/products/price-edit-dialog'
 import { Product } from '@/lib/models/product'
 import { ClientPrice } from '@/lib/models/client-price'
-import { Grid, List, Sparkles } from 'lucide-react'
+import { Grid3x3, List } from 'lucide-react'
 import { toast } from 'sonner'
 import { useAuth } from '@/lib/hooks/use-auth'
 
 export default function ClientMonofocalesTerminadosPage() {
   const [products, setProducts] = useState<Product[]>([])
+  const [categories, setCategories] = useState<Array<{ id: string; name: string; slug: string }>>([])
   const [loading, setLoading] = useState(true)
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('list')
   const [editingProduct, setEditingProduct] = useState<Product | null>(null)
   const [clientPrices, setClientPrices] = useState<ClientPrice[]>([])
   const { user } = useAuth()
+  const searchParams = useSearchParams()
+  const searchQuery = searchParams.get('q') || ''
 
   useEffect(() => {
     fetchProducts()
@@ -36,6 +50,9 @@ export default function ClientMonofocalesTerminadosPage() {
 
       const productsData = await productsRes.json()
       const categoriesData = await categoriesRes.json()
+
+      // Store all categories for display
+      setCategories(categoriesData.categories || [])
 
       // Find Terminados category
       const terminadosCategory = (categoriesData.categories || []).find((c: any) =>
@@ -86,16 +103,33 @@ export default function ClientMonofocalesTerminadosPage() {
     return clientPrices.find(p => p.product_id === productId) || null
   }
 
+  // Filter products based on search
+  const filteredProducts = products.filter(product => {
+    if (!searchQuery) return true
+    const searchLower = searchQuery.toLowerCase()
+    return (
+      product.name.toLowerCase().includes(searchLower) ||
+      product.code.toLowerCase().includes(searchLower)
+    )
+  })
+
   if (loading) {
     return (
-      <div className="flex flex-1 flex-col">
-        <div className="px-4 lg:px-6 pb-4">
-          <h1 className="text-2xl font-bold">MONOFOCALES TERMINADOS</h1>
+      <div className="flex flex-1 flex-col space-y-6">
+        <div className="px-6 pt-6">
+          <div className="flex items-center gap-3">
+            <h1 className="text-3xl font-bold tracking-tight">
+              Monofocales Terminados
+            </h1>
+            <Badge variant="secondary" className="px-2.5 py-0.5">
+              Loading...
+            </Badge>
+          </div>
           <p className="text-muted-foreground">
             Finished single vision lenses ready for immediate delivery
           </p>
         </div>
-        <div className="px-4 lg:px-6">
+        <div className="px-6">
           <DataTableSkeleton />
         </div>
       </div>
@@ -103,65 +137,92 @@ export default function ClientMonofocalesTerminadosPage() {
   }
 
   return (
-    <div className="flex flex-1 flex-col">
-      <div className="px-4 lg:px-6 pb-4">
-        <h1 className="text-2xl font-bold">MONOFOCALES TERMINADOS</h1>
+    <div className="flex flex-1 flex-col space-y-6">
+      {/* Breadcrumb Navigation */}
+      <div className="px-6 pt-6">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/client">Dashboard</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/client/products">Products</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>Monofocales Terminados</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+      </div>
+
+      {/* Enhanced Header */}
+      <div className="px-6 space-y-1">
+        <div className="flex items-center gap-3">
+          <h1 className="text-3xl font-bold tracking-tight">
+            Monofocales Terminados
+          </h1>
+          <Badge variant="secondary" className="px-2.5 py-0.5">
+            {filteredProducts.length} products
+          </Badge>
+        </div>
         <p className="text-muted-foreground">
           Finished single vision lenses ready for immediate delivery
         </p>
       </div>
 
-      <div className="px-4 lg:px-6">
-        <Card>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Sparkles className="h-5 w-5" />
-                <div>
-                  <CardTitle>Terminados Collection</CardTitle>
-                  <CardDescription>
-                    {products.length} finished products ready for delivery
-                  </CardDescription>
-                </div>
+      <Separator className="mx-6" />
+
+      {/* Main Content */}
+      <div className="px-6 pb-6 space-y-4">
+        {/* Toolbar */}
+        <div className="flex items-center justify-end gap-4">
+          {/* View Mode Toggle */}
+          <ToggleGroup
+            type="single"
+            value={viewMode}
+            onValueChange={(v) => v && setViewMode(v as 'grid' | 'list')}
+            className="h-9"
+          >
+            <ToggleGroupItem value="grid" aria-label="Grid view" className="h-9 px-3">
+              <Grid3x3 className="h-4 w-4" />
+            </ToggleGroupItem>
+            <ToggleGroupItem value="list" aria-label="List view" className="h-9 px-3">
+              <List className="h-4 w-4" />
+            </ToggleGroupItem>
+          </ToggleGroup>
+        </div>
+
+        {/* Product Display */}
+        {filteredProducts.length === 0 ? (
+          <Card>
+            <CardContent className="flex items-center justify-center h-32">
+              <div className="text-center text-muted-foreground">
+                {searchQuery ? 'No products found matching your search' : 'No Terminados products available at the moment'}
               </div>
-              <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as 'grid' | 'list')}>
-                <TabsList>
-                  <TabsTrigger value="grid">
-                    <Grid className="h-4 w-4 mr-2" />
-                    Grid
-                  </TabsTrigger>
-                  <TabsTrigger value="list">
-                    <List className="h-4 w-4 mr-2" />
-                    List
-                  </TabsTrigger>
-                </TabsList>
-              </Tabs>
-            </div>
-          </CardHeader>
-          <CardContent>
-            {products.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground">
-                No Terminados products available at the moment
-              </div>
-            ) : viewMode === 'grid' ? (
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {products.map((product) => (
-                  <ProductCard
-                    key={product.id}
-                    product={product}
-                    onView={handleViewProduct}
-                    isAdmin={false}
-                  />
-                ))}
-              </div>
-            ) : (
-              <ProductTable
-                products={products}
-                onEdit={handleEditPrice}
+            </CardContent>
+          </Card>
+        ) : viewMode === 'grid' ? (
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {filteredProducts.map((product) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                onView={handleViewProduct}
+                isAdmin={false}
               />
-            )}
-          </CardContent>
-        </Card>
+            ))}
+          </div>
+        ) : (
+          <Card>
+            <ProductTable
+              products={filteredProducts}
+              categories={categories}
+              onEdit={handleEditPrice}
+            />
+          </Card>
+        )}
       </div>
 
       <PriceEditDialog
