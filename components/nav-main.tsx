@@ -67,7 +67,7 @@ export function NavMain({
                         {item.icon && <item.icon />}
                         <span>{item.title}</span>
                         {item.badge && (
-                          <Badge variant="destructive" className="ml-auto mr-2 animate-pulse">
+                          <Badge className="ml-auto mr-2 animate-pulse bg-lime-500 text-white hover:bg-lime-600">
                             {item.badge}
                           </Badge>
                         )}
@@ -102,7 +102,7 @@ export function NavMain({
                       {item.icon && <item.icon />}
                       <span>{item.title}</span>
                       {item.badge && (
-                        <Badge variant="destructive" className="ml-auto animate-pulse">
+                        <Badge className="ml-auto animate-pulse bg-lime-500 text-white hover:bg-lime-600">
                           {item.badge}
                         </Badge>
                       )}
