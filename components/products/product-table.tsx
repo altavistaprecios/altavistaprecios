@@ -54,6 +54,7 @@ interface ProductTableProps {
   onBulkDelete?: (productIds: string[]) => void
   onAddProduct?: () => void
   viewToggle?: React.ReactNode
+  showExportButton?: boolean
 }
 
 export function ProductTable({
@@ -63,7 +64,8 @@ export function ProductTable({
   onDelete,
   onBulkDelete,
   onAddProduct,
-  viewToggle
+  viewToggle,
+  showExportButton = true,
 }: ProductTableProps) {
   const [selectedProducts, setSelectedProducts] = React.useState<string[]>([])
   const [filter, setFilter] = React.useState('')
@@ -211,21 +213,23 @@ export function ProductTable({
                 <Upload className="mr-2 h-4 w-4" />
                 Import Products
               </Button>
-              <Button size="sm" variant="outline">
-                <Download className="mr-2 h-4 w-4" />
-                Export Catalog
-              </Button>
+              {showExportButton ? (
+                <Button size="sm" variant="outline">
+                  <Download className="mr-2 h-4 w-4" />
+                  Export Catalog
+                </Button>
+              ) : null}
               <Button size="sm" onClick={onAddProduct}>
                 <Plus className="mr-2 h-4 w-4" />
                 Add Product
               </Button>
             </>
-          ) : (
+          ) : showExportButton ? (
             <Button size="sm" variant="outline">
               <Download className="mr-2 h-4 w-4" />
               Export Catalog
             </Button>
-          )}
+          ) : null}
           {viewToggle}
         </>
       }

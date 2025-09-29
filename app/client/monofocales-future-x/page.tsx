@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
 import {
@@ -23,7 +22,7 @@ import { PriceEditDialog } from '@/components/products/price-edit-dialog'
 import { ProductSpecificationsDialog } from '@/components/products/product-specifications-dialog'
 import { Product } from '@/lib/models/product'
 import { ClientPrice } from '@/lib/models/client-price'
-import { Grid3x3, List, Search, Download } from 'lucide-react'
+import { Grid3x3, List, Search } from 'lucide-react'
 import { toast } from 'sonner'
 import { useAuth } from '@/lib/hooks/use-auth'
 
@@ -202,15 +201,6 @@ export default function ClientMonofocalesFutureXPage() {
                 />
               </div>
               <div className="flex items-center gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="h-9"
-                  onClick={() => toast.info('Export functionality coming soon')}
-                >
-                  <Download className="mr-2 h-4 w-4" />
-                  Export Catalog
-                </Button>
                 <ToggleGroup
                   type="single"
                   value={viewMode}
@@ -254,6 +244,7 @@ export default function ClientMonofocalesFutureXPage() {
                 products={filteredProducts}
                 categories={categories}
                 onEdit={handleEditPrice}
+                showExportButton={false}
                 viewToggle={
                   <ToggleGroup
                     type="single"
