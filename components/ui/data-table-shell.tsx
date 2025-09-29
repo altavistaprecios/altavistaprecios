@@ -56,7 +56,7 @@ export function DataTableShell({
       {filters ? (
         <div
           className={cn(
-            "flex flex-col gap-3 px-4 lg:px-6 sm:flex-row sm:items-center sm:justify-between",
+            "flex flex-col gap-2 px-4 lg:px-6 sm:flex-row sm:items-center sm:justify-between",
             filtersClassName,
           )}
         >

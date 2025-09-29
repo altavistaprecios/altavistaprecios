@@ -175,35 +175,40 @@ export function ProductTable({
   return (
     <DataTableShell
       filters={
-        <div className="flex w-full flex-col gap-2 sm:max-w-lg">
-          <div className="relative">
-            <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              placeholder="Filter products..."
-              value={filter}
-              onChange={(e) => setFilter(e.target.value)}
-              className="h-9 w-full pl-8"
-            />
-          </div>
-          {selectedProducts.length > 0 && onBulkDelete && (
-            <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
-              <span>
-                {selectedProducts.length} product{selectedProducts.length !== 1 ? 's' : ''} selected
-              </span>
-              <Button size="sm" variant="outline" aria-label="Bulk edit">
-                Bulk Edit
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => onBulkDelete?.(selectedProducts)}
-                aria-label="Bulk delete"
-              >
-                Bulk Delete
-              </Button>
+        <>
+          <div className="flex w-full flex-col gap-2 sm:max-w-lg">
+            <div className="relative">
+              <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                placeholder="Filter products..."
+                value={filter}
+                onChange={(e) => setFilter(e.target.value)}
+                className="h-9 w-full pl-8"
+              />
             </div>
-          )}
-        </div>
+            {selectedProducts.length > 0 && onBulkDelete && (
+              <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+                <span>
+                  {selectedProducts.length} product{selectedProducts.length !== 1 ? 's' : ''} selected
+                </span>
+                <Button size="sm" variant="outline" aria-label="Bulk edit">
+                  Bulk Edit
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => onBulkDelete?.(selectedProducts)}
+                  aria-label="Bulk delete"
+                >
+                  Bulk Delete
+                </Button>
+              </div>
+            )}
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            {viewToggle}
+          </div>
+        </>
       }
       toolbar={
         <>
@@ -230,7 +235,6 @@ export function ProductTable({
               Export Catalog
             </Button>
           ) : null}
-          {viewToggle}
         </>
       }
       footerLeft={
