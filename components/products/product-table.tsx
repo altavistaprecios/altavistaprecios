@@ -53,6 +53,7 @@ interface ProductTableProps {
   onDelete?: (product: Product) => void
   onBulkDelete?: (productIds: string[]) => void
   onAddProduct?: () => void
+  viewToggle?: React.ReactNode
 }
 
 export function ProductTable({
@@ -61,7 +62,8 @@ export function ProductTable({
   onEdit,
   onDelete,
   onBulkDelete,
-  onAddProduct
+  onAddProduct,
+  viewToggle
 }: ProductTableProps) {
   const [selectedProducts, setSelectedProducts] = React.useState<string[]>([])
   const [filter, setFilter] = React.useState('')
@@ -202,27 +204,30 @@ export function ProductTable({
         </div>
       }
       toolbar={
-        onAddProduct ? (
-          <>
-            <Button size="sm" variant="outline">
-              <Upload className="mr-2 h-4 w-4" />
-              Import Products
-            </Button>
+        <>
+          {onAddProduct ? (
+            <>
+              <Button size="sm" variant="outline">
+                <Upload className="mr-2 h-4 w-4" />
+                Import Products
+              </Button>
+              <Button size="sm" variant="outline">
+                <Download className="mr-2 h-4 w-4" />
+                Export Catalog
+              </Button>
+              <Button size="sm" onClick={onAddProduct}>
+                <Plus className="mr-2 h-4 w-4" />
+                Add Product
+              </Button>
+            </>
+          ) : (
             <Button size="sm" variant="outline">
               <Download className="mr-2 h-4 w-4" />
               Export Catalog
             </Button>
-            <Button size="sm" onClick={onAddProduct}>
-              <Plus className="mr-2 h-4 w-4" />
-              Add Product
-            </Button>
-          </>
-        ) : (
-          <Button size="sm" variant="outline">
-            <Download className="mr-2 h-4 w-4" />
-            Export Catalog
-          </Button>
-        )
+          )}
+          {viewToggle}
+        </>
       }
       footerLeft={
         <div className="flex-1 text-sm text-muted-foreground">
