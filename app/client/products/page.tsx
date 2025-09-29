@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -15,7 +15,7 @@ import { Grid, List } from 'lucide-react'
 import { toast } from 'sonner'
 import { useAuth } from '@/lib/hooks/use-auth'
 
-export default function ClientProductsPage() {
+function ClientProductsPageContent() {
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
@@ -174,5 +174,14 @@ export default function ClientProductsPage() {
         />
       </div>
     </div>
+  )
+}
+
+// Export default component with Suspense boundary
+export default function ClientProductsPage() {
+  return (
+    <Suspense fallback={<DataTableSkeleton />}>
+      <ClientProductsPageContent />
+    </Suspense>
   )
 }

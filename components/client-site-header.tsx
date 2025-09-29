@@ -1,7 +1,7 @@
 'use client'
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState, Suspense } from 'react'
 import { Separator } from "@/components/ui/separator"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 import { Input } from '@/components/ui/input'
@@ -13,7 +13,7 @@ interface ClientSiteHeaderProps {
   title?: string
 }
 
-export function ClientSiteHeader({ title = "Client Portal" }: ClientSiteHeaderProps) {
+function ClientSiteHeaderContent({ title = "Client Portal" }: ClientSiteHeaderProps) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -138,5 +138,25 @@ export function ClientSiteHeader({ title = "Client Portal" }: ClientSiteHeaderPr
         )}
       </div>
     </header>
+  )
+}
+
+// Export wrapper component with Suspense boundary
+export function ClientSiteHeader(props: ClientSiteHeaderProps) {
+  return (
+    <Suspense fallback={
+      <header className="group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 flex h-12 shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear">
+        <div className="flex w-full items-center gap-1 px-4 lg:gap-2 lg:px-6">
+          <SidebarTrigger className="-ml-1" />
+          <Separator
+            orientation="vertical"
+            className="mx-2 data-[orientation=vertical]:h-4"
+          />
+          <h1 className="text-base font-medium">{props.title || "Client Portal"}</h1>
+        </div>
+      </header>
+    }>
+      <ClientSiteHeaderContent {...props} />
+    </Suspense>
   )
 }

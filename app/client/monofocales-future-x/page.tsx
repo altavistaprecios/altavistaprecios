@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -26,7 +26,7 @@ import { Grid3x3, List, Search } from 'lucide-react'
 import { toast } from 'sonner'
 import { useAuth } from '@/lib/hooks/use-auth'
 
-export default function ClientMonofocalesFutureXPage() {
+function ClientMonofocalesFutureXPageContent() {
   const [products, setProducts] = useState<Product[]>([])
   const [categories, setCategories] = useState<Array<{ id: string; name: string; slug: string }>>([])
   const [loading, setLoading] = useState(true)
@@ -279,5 +279,27 @@ export default function ClientMonofocalesFutureXPage() {
           onOpenChange={(open) => !open && setViewingProduct(null)}
         />
     </div>
+  )
+}
+
+// Export default component with Suspense boundary
+export default function ClientMonofocalesFutureXPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex flex-1 flex-col space-y-6">
+        <div className="px-6 pt-6">
+          <div className="flex items-center gap-3">
+            <h1 className="text-3xl font-bold tracking-tight">
+              Monofocales Future-X
+            </h1>
+          </div>
+          <p className="text-muted-foreground">
+            Loading products...
+          </p>
+        </div>
+      </div>
+    }>
+      <ClientMonofocalesFutureXPageContent />
+    </Suspense>
   )
 }
