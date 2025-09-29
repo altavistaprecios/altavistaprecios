@@ -42,7 +42,7 @@ export function AdminStats() {
         fetch('/api/auth/clients'),
       ])
 
-      const products = await productsRes.json().catch(() => ({ products: [] }))
+      const products = await productsRes.json().catch(() => ({ data: [] }))
       const categories = await categoriesRes.json().catch(() => ({ categories: [] }))
       const clients = await clientsRes.json().catch(() => ({ data: [] }))
 
@@ -52,9 +52,9 @@ export function AdminStats() {
       const clearViewCategory = categories.categories?.find((c: any) => c.slug === 'monofocales-terminados')
 
       // Count products by category
-      const stockCount = products.products?.filter((p: any) => p.category_id === stockCategory?.id).length || 0
-      const labCount = products.products?.filter((p: any) => p.category_id === labCategory?.id).length || 0
-      const clearViewCount = products.products?.filter((p: any) => p.category_id === clearViewCategory?.id).length || 0
+      const stockCount = products.data?.filter((p: any) => p.category_id === stockCategory?.id).length || 0
+      const labCount = products.data?.filter((p: any) => p.category_id === labCategory?.id).length || 0
+      const clearViewCount = products.data?.filter((p: any) => p.category_id === clearViewCategory?.id).length || 0
 
       setStats({
         stockLenses: stockCount,
