@@ -8,6 +8,8 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Search, Download } from 'lucide-react'
 import { toast } from 'sonner'
+import { generateCatalogPDF, prepareProductsForPDF } from '@/lib/pdf/generate-catalog-pdf'
+import { useAuth } from '@/lib/hooks/use-auth'
 
 interface ClientSiteHeaderProps {
   title?: string
@@ -18,6 +20,8 @@ function ClientSiteHeaderContent({ title = "Client Portal" }: ClientSiteHeaderPr
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const [searchValue, setSearchValue] = useState(searchParams.get('q') || '')
+  const [isExporting, setIsExporting] = useState(false)
+  const { user } = useAuth()
 
   // Update search value when URL params change
   useEffect(() => {
@@ -49,51 +53,58 @@ function ClientSiteHeaderContent({ title = "Client Portal" }: ClientSiteHeaderPr
   // Handle export catalog
   const handleExportCatalog = async () => {
     try {
+      setIsExporting(true)
+
       // Determine which products to export based on current page
       let categoryFilter = ''
+      let categoryTitle = 'Product Catalog'
 
       if (pathname.includes('monofocales-future-x')) {
         categoryFilter = 'future-x'
+        categoryTitle = 'Monofocales Future-X'
       } else if (pathname.includes('monofocales-terminados')) {
         categoryFilter = 'terminados'
+        categoryTitle = 'Monofocales Terminados'
+      } else if (pathname.includes('/client/products')) {
+        categoryTitle = 'All Products'
       }
 
-      // Fetch products with filter
-      const response = await fetch(`/api/products${categoryFilter ? `?category=${categoryFilter}` : ''}`)
-      const data = await response.json()
+      // Fetch products and client prices
+      const [productsRes, pricesRes] = await Promise.all([
+        fetch(`/api/products${categoryFilter ? `?category=${categoryFilter}` : ''}`),
+        fetch('/api/client-prices'),
+      ])
 
-      // Convert to CSV
-      const products = data.products || data.data || []
+      const productsData = await productsRes.json()
+      const pricesData = await pricesRes.json()
+
+      const products = productsData.products || productsData.data || []
+      const clientPrices = pricesData.data || []
+
       if (products.length === 0) {
         toast.error('No products to export')
         return
       }
 
-      const csv = [
-        ['Code', 'Name', 'Category', 'Base Price (USD)', 'Stock', 'Status'],
-        ...products.map((p: any) => [
-          p.code,
-          p.name,
-          p.category_name || '',
-          p.base_price_usd,
-          p.stock_quantity || 0,
-          p.is_active ? 'Active' : 'Inactive'
-        ])
-      ].map(row => row.map(cell => `"${cell}"`).join(',')).join('\n')
+      // Filter only active products
+      const activeProducts = products.filter((p: any) => p.is_active)
 
-      // Download CSV
-      const blob = new Blob([csv], { type: 'text/csv' })
-      const url = window.URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = `catalog_${categoryFilter || 'all'}_${new Date().toISOString().split('T')[0]}.csv`
-      a.click()
-      window.URL.revokeObjectURL(url)
+      // Prepare products with pricing data
+      const productsForPDF = prepareProductsForPDF(activeProducts, clientPrices)
+
+      // Generate PDF
+      await generateCatalogPDF({
+        products: productsForPDF,
+        clientName: user?.company_name || user?.email,
+        categoryTitle,
+      })
 
       toast.success('Catalog exported successfully')
     } catch (error) {
       console.error('Failed to export catalog:', error)
       toast.error('Failed to export catalog')
+    } finally {
+      setIsExporting(false)
     }
   }
 
@@ -128,10 +139,11 @@ function ClientSiteHeaderContent({ title = "Client Portal" }: ClientSiteHeaderPr
                 variant="outline"
                 size="sm"
                 onClick={handleExportCatalog}
+                disabled={isExporting}
                 className="h-9"
               >
                 <Download className="h-4 w-4 mr-2" />
-                Export Catalog
+                {isExporting ? 'Generating...' : 'Export Catalog'}
               </Button>
             </div>
           </>
