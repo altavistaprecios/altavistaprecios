@@ -321,7 +321,7 @@ export async function POST(request: NextRequest) {
 
           <p style="color: #666; font-size: 14px;">
             Best regards,<br>
-            The AltaVista Precios Team
+            Altavista
           </p>
         </body>
       </html>
@@ -343,7 +343,7 @@ This link will expire in 24 hours for security reasons.
 If you didn't request this account, please ignore this email.
 
 Best regards,
-The AltaVista Precios Team
+Altavista
     `.trim()
 
     try {
