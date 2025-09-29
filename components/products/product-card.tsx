@@ -9,6 +9,7 @@ import { Product } from '@/lib/models/product'
 
 interface ProductCardProps {
   product: Product
+  categories?: Array<{ id: string; name: string }>
   onEdit?: (product: Product) => void
   onDelete?: (product: Product) => void
   onView?: (product: Product) => void
@@ -17,11 +18,18 @@ interface ProductCardProps {
 
 export function ProductCard({
   product,
+  categories = [],
   onEdit,
   onDelete,
   onView,
   isAdmin = false
 }: ProductCardProps) {
+  const getCategoryName = (categoryId: string | null) => {
+    if (!categoryId) return null
+    const category = categories.find(c => c.id === categoryId)
+    return category?.name || categoryId
+  }
+
   return (
     <Card className="hover:shadow-lg transition-shadow">
       <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
@@ -62,10 +70,10 @@ export function ProductCard({
         )}
       </CardHeader>
       <CardContent className="space-y-4">
-        {product.category_id && (
+        {product.category_id && getCategoryName(product.category_id) && (
           <div className="flex items-center justify-between">
             <span className="text-sm text-muted-foreground">Category</span>
-            <Badge variant="secondary">{product.category_id}</Badge>
+            <Badge variant="secondary">{getCategoryName(product.category_id)}</Badge>
           </div>
         )}
         <div className="flex items-center justify-between pt-2 border-t">

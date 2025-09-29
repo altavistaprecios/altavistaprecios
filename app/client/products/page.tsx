@@ -17,6 +17,7 @@ import { useAuth } from '@/lib/hooks/use-auth'
 
 function ClientProductsPageContent() {
   const [products, setProducts] = useState<Product[]>([])
+  const [categories, setCategories] = useState<Array<{ id: string; name: string; slug: string }>>([])
   const [loading, setLoading] = useState(true)
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [editingProduct, setEditingProduct] = useState<Product | null>(null)
@@ -34,11 +35,19 @@ function ClientProductsPageContent() {
   const fetchProducts = async () => {
     try {
       setLoading(true)
-      const response = await fetch('/api/products')
-      const data = await response.json()
-      
+      const [productsRes, categoriesRes] = await Promise.all([
+        fetch('/api/products'),
+        fetch('/api/categories'),
+      ])
+
+      const productsData = await productsRes.json()
+      const categoriesData = await categoriesRes.json()
+
+      // Store all categories for display
+      setCategories(categoriesData.categories || [])
+
       // Filter only active products for clients
-      const activeProducts = (data.products || []).filter((p: Product) => p.is_active)
+      const activeProducts = (productsData.products || []).filter((p: Product) => p.is_active)
       setProducts(activeProducts)
     } catch (error) {
       console.error('Failed to fetch products:', error)
@@ -145,6 +154,7 @@ function ClientProductsPageContent() {
                   <ProductCard
                     key={product.id}
                     product={product}
+                    categories={categories}
                     onView={handleViewProduct}
                     isAdmin={false}
                   />
@@ -153,6 +163,7 @@ function ClientProductsPageContent() {
             ) : (
               <ProductTable
                 products={filteredProducts}
+                categories={categories}
                 onEdit={handleEditPrice}
               />
             )}

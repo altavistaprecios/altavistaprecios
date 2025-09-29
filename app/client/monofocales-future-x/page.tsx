@@ -233,6 +233,7 @@ function ClientMonofocalesFutureXPageContent() {
                 <ProductCard
                   key={product.id}
                   product={product}
+                  categories={categories}
                   onView={handleViewProduct}
                   isAdmin={false}
                 />
