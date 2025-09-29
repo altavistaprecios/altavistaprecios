@@ -44,7 +44,14 @@ export async function GET(request: NextRequest) {
       prices = await clientPriceService.findByUser(targetUserId)
     }
 
-    return NextResponse.json({ data: prices })
+    // Map prices to include field aliases for frontend compatibility
+    const mappedPrices = prices.map(price => ({
+      ...price,
+      custom_price: price.custom_price_usd,
+      discount_percentage: price.markup_percentage ? -price.markup_percentage : 0, // Convert markup to discount
+    }))
+
+    return NextResponse.json({ data: mappedPrices })
   } catch (error) {
     console.error('Error fetching client prices:', error)
     return NextResponse.json(

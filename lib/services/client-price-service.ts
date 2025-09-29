@@ -75,7 +75,7 @@ export class ClientPriceService {
       user_id: validated.user_id,
       old_price: oldPrice,
       new_price: validated.custom_price_usd,
-      change_type: 'client_custom',
+      change_type: 'client_override',
     })
 
     return price
@@ -130,7 +130,7 @@ export class ClientPriceService {
         user_id: currentPrice.user_id,
         old_price: currentPrice.custom_price_usd,
         new_price: validated.custom_price_usd,
-        change_type: 'client_custom',
+        change_type: 'client_override',
       })
     }
 
@@ -219,7 +219,7 @@ export class ClientPriceService {
         product_id: prices[0].product_id, // Use first product as reference
         user_id: userId,
         new_price: 0, // Placeholder for bulk operation
-        change_type: 'bulk_update',
+        change_type: 'client_override',
         changed_by: user?.id || null,
         changed_at: new Date().toISOString(),
       })

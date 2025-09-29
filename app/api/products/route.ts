@@ -42,15 +42,22 @@ export async function GET(request: NextRequest) {
         const clientPrice = clientPrices.find(cp => cp.product_id === product.id)
         return {
           ...product,
+          base_price: product.base_price_usd, // Add alias for frontend compatibility
           client_price: clientPrice?.custom_price_usd,
           markup_percentage: clientPrice?.markup_percentage,
         }
       })
 
-      return NextResponse.json({ products: productsWithPrices })
+      return NextResponse.json({ data: productsWithPrices })
     }
 
-    return NextResponse.json({ products })
+    // Map products to include base_price alias for frontend compatibility
+    const mappedProducts = products.map(product => ({
+      ...product,
+      base_price: product.base_price_usd,
+    }))
+
+    return NextResponse.json({ data: mappedProducts })
   } catch (error) {
     console.error('Error fetching products:', error)
     return NextResponse.json(

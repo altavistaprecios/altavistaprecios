@@ -41,15 +41,19 @@ export default function ClientPricingPage() {
         fetch('/api/client-prices'),
       ])
 
-      const products = await productsRes.json()
-      const prices = await pricesRes.json()
+      const productsResponse = await productsRes.json()
+      const pricesResponse = await pricesRes.json()
+
+      // Extract data arrays
+      const products = productsResponse.data || []
+      const prices = pricesResponse.data || []
 
       // Combine product and pricing data
       const combinedData: PricingData[] = []
 
-      if (prices.data && Array.isArray(prices.data)) {
-        prices.data.forEach((price: ClientPrice) => {
-          const product = products.data?.find((p: Product) => p.id === price.product_id)
+      if (prices && Array.isArray(prices)) {
+        prices.forEach((price: ClientPrice) => {
+          const product = products.find((p: Product) => p.id === price.product_id)
           if (product) {
             const finalPrice = price.custom_price > 0
               ? price.custom_price

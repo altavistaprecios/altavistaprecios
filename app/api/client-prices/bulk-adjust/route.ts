@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
       existingPrices.map(p => [p.product_id, p])
     )
 
-    const adjustmentMultiplier = 1 + (percentage / 100)
+    // Note: Frontend sends positive percentage for discount, negative for markup
     const updatedPrices = []
     const errors = []
 
@@ -52,13 +52,19 @@ export async function POST(request: NextRequest) {
     for (const product of products) {
       const existingPrice = existingPriceMap.get(product.id)
 
-      // Calculate new price based on existing custom price or base price
-      const currentPrice = existingPrice?.custom_price_usd ||
-                          (existingPrice?.discount_percentage
-                            ? product.base_price_usd * (1 - existingPrice.discount_percentage / 100)
-                            : product.base_price_usd)
+      // Calculate new price based on existing custom price or base price with markup
+      let currentPrice: number
+      if (existingPrice?.custom_price_usd && existingPrice.custom_price_usd > 0) {
+        currentPrice = existingPrice.custom_price_usd
+      } else if (existingPrice?.markup_percentage) {
+        // Apply existing markup (can be negative for discount)
+        currentPrice = product.base_price_usd * (1 + existingPrice.markup_percentage / 100)
+      } else {
+        currentPrice = product.base_price_usd
+      }
 
-      const newPrice = currentPrice * adjustmentMultiplier
+      // Apply the adjustment (positive percentage = discount, negative = markup)
+      const newPrice = currentPrice * (1 - percentage / 100)
 
       // Skip if new price would be below base price
       if (newPrice < product.base_price_usd) {
@@ -71,7 +77,7 @@ export async function POST(request: NextRequest) {
           // Update existing price
           const updated = await clientPriceService.update(existingPrice.id, {
             custom_price_usd: newPrice,
-            discount_percentage: 0, // Clear discount when setting custom price
+            markup_percentage: null, // Clear markup when setting custom price
           })
           updatedPrices.push(updated)
         } else {
@@ -80,7 +86,7 @@ export async function POST(request: NextRequest) {
             user_id: user.id,
             product_id: product.id,
             custom_price_usd: newPrice,
-            discount_percentage: 0,
+            markup_percentage: null,
           })
           updatedPrices.push(created)
         }

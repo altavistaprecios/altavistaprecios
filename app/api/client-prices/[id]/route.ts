@@ -53,19 +53,27 @@ export async function PUT(
       )
     }
 
-    // Validate custom price is not below base price
-    if (body.custom_price && body.custom_price < product.base_price_usd) {
-      return NextResponse.json(
-        { error: `Price cannot be below base price of $${product.base_price_usd}` },
-        { status: 400 }
-      )
+    // Map frontend fields to database fields
+    const updateData: any = {}
+
+    if (body.custom_price !== undefined) {
+      // Validate custom price is not below base price
+      if (body.custom_price < product.base_price_usd) {
+        return NextResponse.json(
+          { error: `Price cannot be below base price of $${product.base_price_usd}` },
+          { status: 400 }
+        )
+      }
+      updateData.custom_price_usd = body.custom_price
+    }
+
+    if (body.discount_percentage !== undefined) {
+      // Convert discount percentage to markup percentage (negative markup = discount)
+      updateData.markup_percentage = -body.discount_percentage
     }
 
     // Update the price
-    const updatedPrice = await clientPriceService.update(params.id, {
-      custom_price_usd: body.custom_price || 0,
-      discount_percentage: body.discount_percentage || 0,
-    })
+    const updatedPrice = await clientPriceService.update(params.id, updateData)
 
     return NextResponse.json({ price: updatedPrice })
   } catch (error) {

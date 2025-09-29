@@ -160,7 +160,7 @@ export class ProductService {
         product_id: id,
         old_price: currentProduct.base_price_usd,
         new_price: validated.base_price_usd,
-        change_type: 'admin_update',
+        change_type: 'base_update',
         user_id: null,
       })
     }
