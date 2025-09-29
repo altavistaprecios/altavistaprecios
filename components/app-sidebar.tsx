@@ -65,16 +65,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         ],
       },
       {
-        title: "Clientes",
+        title: "Clients",
         url: "/admin/clients",
         icon: Users,
         items: [
           {
-            title: "Todos los Clientes",
+            title: "All Clients",
             url: "/admin/clients",
           },
           {
-            title: "Pre-autorizar Cliente",
+            title: "Pre-authorize Client",
             url: "/admin/clients/authorize",
           },
         ],
