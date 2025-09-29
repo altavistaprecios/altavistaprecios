@@ -8,6 +8,7 @@ import { ProductCard } from '@/components/products/product-card'
 import { ProductTable } from '@/components/products/product-table'
 import { DataTableSkeleton } from '@/components/products/data-table-skeleton'
 import { PriceEditDialog } from '@/components/products/price-edit-dialog'
+import { ProductSpecificationsDialog } from '@/components/products/product-specifications-dialog'
 import { Product } from '@/lib/models/product'
 import { ClientPrice } from '@/lib/models/client-price'
 import { Grid, List } from 'lucide-react'
@@ -19,6 +20,7 @@ export default function ClientProductsPage() {
   const [loading, setLoading] = useState(true)
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [editingProduct, setEditingProduct] = useState<Product | null>(null)
+  const [viewingProduct, setViewingProduct] = useState<Product | null>(null)
   const [clientPrices, setClientPrices] = useState<ClientPrice[]>([])
   const { user } = useAuth()
   const searchParams = useSearchParams()
@@ -57,7 +59,7 @@ export default function ClientProductsPage() {
   }
 
   const handleViewProduct = (product: Product) => {
-    toast.info(`Product: ${product.name}\nBase Price: $${Number(product.base_price_usd).toFixed(2)}\nCode: ${product.code}`)
+    setViewingProduct(product)
   }
 
   const handleEditPrice = (product: Product) => {
@@ -163,6 +165,12 @@ export default function ClientProductsPage() {
           product={editingProduct}
           currentPrice={editingProduct ? getCurrentPrice(editingProduct.id) : null}
           onSave={handlePriceSaved}
+        />
+
+        <ProductSpecificationsDialog
+          product={viewingProduct}
+          open={!!viewingProduct}
+          onOpenChange={(open) => !open && setViewingProduct(null)}
         />
       </div>
     </div>
