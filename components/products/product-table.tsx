@@ -306,7 +306,7 @@ export function ProductTable({
       <Table>
         <TableHeader className="sticky top-0 z-10 bg-muted/60 backdrop-blur supports-[backdrop-filter]:bg-muted/80">
           <TableRow>
-            <TableHead className="w-[50px]">
+            <TableHead className="w-12 px-2">
               <Checkbox
                 checked={
                   selectedProducts.length === paginatedProducts.length &&
@@ -317,7 +317,7 @@ export function ProductTable({
               />
             </TableHead>
             <TableHead
-              className="cursor-pointer"
+              className="w-32 cursor-pointer"
               onClick={() => handleSort('code')}
               aria-sort={
                 sortBy === 'code'
@@ -327,11 +327,13 @@ export function ProductTable({
                   : undefined
               }
             >
-              Product Code
-              <ArrowUpDown className="ml-2 inline h-4 w-4" />
+              <div className="flex items-center">
+                Product Code
+                <ArrowUpDown className="ml-2 h-4 w-4" />
+              </div>
             </TableHead>
             <TableHead
-              className="cursor-pointer"
+              className="min-w-[200px] cursor-pointer"
               onClick={() => handleSort('name')}
               aria-sort={
                 sortBy === 'name'
@@ -341,11 +343,13 @@ export function ProductTable({
                   : undefined
               }
             >
-              Product Name
-              <ArrowUpDown className="ml-2 inline h-4 w-4" />
+              <div className="flex items-center">
+                Product Name
+                <ArrowUpDown className="ml-2 h-4 w-4" />
+              </div>
             </TableHead>
             <TableHead
-              className="cursor-pointer"
+              className="w-32 cursor-pointer"
               onClick={() => handleSort('price')}
               aria-sort={
                 sortBy === 'price'
@@ -355,12 +359,14 @@ export function ProductTable({
                   : undefined
               }
             >
-              Base Price
-              <ArrowUpDown className="ml-2 inline h-4 w-4" />
+              <div className="flex items-center">
+                Base Price
+                <ArrowUpDown className="ml-2 h-4 w-4" />
+              </div>
             </TableHead>
-            <TableHead>Category</TableHead>
-            <TableHead>Status</TableHead>
-            {(onEdit || onDelete) && <TableHead className="text-right">Actions</TableHead>}
+            <TableHead className="min-w-[250px]">Category</TableHead>
+            <TableHead className="w-24">Status</TableHead>
+            {(onEdit || onDelete) && <TableHead className="w-20 text-right">Actions</TableHead>}
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -378,7 +384,7 @@ export function ProductTable({
                   selectedProducts.includes(product.id) ? 'selected' : undefined
                 }
               >
-                <TableCell>
+                <TableCell className="w-12 px-2">
                   <Checkbox
                     checked={selectedProducts.includes(product.id)}
                     onCheckedChange={(checked) =>
@@ -387,25 +393,25 @@ export function ProductTable({
                     aria-label={`Select ${product.name}`}
                   />
                 </TableCell>
-                <TableCell className="font-medium">{product.code}</TableCell>
-                <TableCell>{product.name}</TableCell>
-                <TableCell>{formatPrice(product.base_price_usd)}</TableCell>
-                <TableCell>
+                <TableCell className="w-32 font-medium">{product.code}</TableCell>
+                <TableCell className="min-w-[200px]">{product.name}</TableCell>
+                <TableCell className="w-32">{formatPrice(product.base_price_usd)}</TableCell>
+                <TableCell className="min-w-[250px]">
                   {getCategoryName(product.category_id) ? (
-                    <Badge variant="secondary">
+                    <Badge variant="secondary" className="max-w-full">
                       {getCategoryName(product.category_id)}
                     </Badge>
                   ) : (
                     <span className="text-muted-foreground">—</span>
                   )}
                 </TableCell>
-                <TableCell>
+                <TableCell className="w-24">
                   <Badge variant={product.is_active ? 'default' : 'secondary'}>
                     {product.is_active ? 'Active' : 'Inactive'}
                   </Badge>
                 </TableCell>
                 {(onEdit || onDelete) && (
-                  <TableCell className="text-right">
+                  <TableCell className="w-20 text-right">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" className="h-8 w-8 p-0">
