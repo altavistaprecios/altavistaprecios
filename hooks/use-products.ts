@@ -13,7 +13,7 @@ export const productKeys = {
 }
 
 interface ProductsResponse {
-  products: Product[]
+  data: Product[]
 }
 
 export function useProducts(filters?: { category_id?: string }) {
@@ -31,7 +31,7 @@ export function useProducts(filters?: { category_id?: string }) {
       }
 
       const data: ProductsResponse = await response.json()
-      return data.products
+      return data.data || []
     },
   })
 }

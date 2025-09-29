@@ -14,7 +14,7 @@ export function usePrefetchData() {
         const response = await fetch('/api/products')
         if (!response.ok) throw new Error('Failed to fetch products')
         const data = await response.json()
-        return data.products
+        return data.data || []
       },
       staleTime: 60 * 1000, // 1 minute
     })
