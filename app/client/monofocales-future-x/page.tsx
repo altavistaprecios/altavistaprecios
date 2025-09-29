@@ -178,10 +178,9 @@ export default function ClientMonofocalesFutureXPage() {
 
         {/* Main Content */}
         <div className="px-6 pb-6 space-y-4">
-          {/* Toolbar - Only show for grid view since ProductTable has its own */}
-          {viewMode === 'grid' ? (
+          {/* Toolbar for grid view only */}
+          {viewMode === 'grid' && (
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              {/* Search Filter */}
               <div className="relative flex-1 max-w-sm">
                 <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
@@ -200,24 +199,16 @@ export default function ClientMonofocalesFutureXPage() {
                   className="h-9 w-full pl-8"
                 />
               </div>
-
-              {/* Right side controls */}
               <div className="flex items-center gap-2">
-                {/* Export Catalog Button */}
                 <Button
                   variant="outline"
                   size="sm"
                   className="h-9"
-                  onClick={() => {
-                    // TODO: Implement export functionality
-                    toast.info('Export functionality coming soon')
-                  }}
+                  onClick={() => toast.info('Export functionality coming soon')}
                 >
                   <Download className="mr-2 h-4 w-4" />
                   Export Catalog
                 </Button>
-
-                {/* View Mode Toggle */}
                 <ToggleGroup
                   type="single"
                   value={viewMode}
@@ -233,7 +224,7 @@ export default function ClientMonofocalesFutureXPage() {
                 </ToggleGroup>
               </div>
             </div>
-          ) : null}
+          )}
 
           {/* Product Display */}
           {filteredProducts.length === 0 ? (
