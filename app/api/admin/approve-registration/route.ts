@@ -115,12 +115,19 @@ export async function POST(request: NextRequest) {
         user_metadata: {
           company_name: registrationRequest.company_name,
           phone: registrationRequest.phone,
-          is_admin: false
+          is_admin: false,
+          email_verified: true
         }
       })
 
       if (createError) {
         console.error('Error creating user:', createError)
+        console.error('Error details:', {
+          message: createError.message,
+          status: createError.status,
+          code: createError.code,
+          email: registrationRequest.email
+        })
 
         // Check if user already exists error
         if (createError.message?.includes('already been registered')) {
@@ -187,12 +194,14 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // IMPORTANT: Create or update user_profiles record with approved status
-    // This is critical for the middleware to recognize the user as approved
+    // IMPORTANT: Update user_profiles record with approved status
+    // The triggers should have already created the profile, so we just update it
+    // Use a small delay to ensure trigger has completed
+    await new Promise(resolve => setTimeout(resolve, 500))
+
     const { error: profileError } = await supabase
       .from('user_profiles')
-      .upsert({
-        id: userId,
+      .update({
         status: 'approved',
         company_name: registrationRequest.company_name,
         phone: registrationRequest.phone,
@@ -200,20 +209,39 @@ export async function POST(request: NextRequest) {
         approved_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
       })
+      .eq('id', userId)
       .select()
       .single()
 
     if (profileError) {
-      console.error('Error creating/updating user profile:', profileError)
-      // This is critical - if we can't create the profile, the user will be stuck
-      // Try to clean up the created user
-      if (!userAlreadyExists) {
-        await adminSupabase.auth.admin.deleteUser(userId)
+      console.error('Error updating user profile:', profileError)
+      // Try upsert as fallback
+      const { error: upsertError } = await supabase
+        .from('user_profiles')
+        .upsert({
+          id: userId,
+          status: 'approved',
+          company_name: registrationRequest.company_name,
+          phone: registrationRequest.phone,
+          approved_by: user.id,
+          approved_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        })
+        .select()
+        .single()
+
+      if (upsertError) {
+        console.error('Error upserting user profile:', upsertError)
+        // This is critical - if we can't update the profile, the user will be stuck
+        // Try to clean up the created user
+        if (!userAlreadyExists) {
+          await adminSupabase.auth.admin.deleteUser(userId)
+        }
+        return NextResponse.json(
+          { error: 'Failed to update user profile: ' + upsertError.message },
+          { status: 500 }
+        )
       }
-      return NextResponse.json(
-        { error: 'Failed to create user profile: ' + profileError.message },
-        { status: 500 }
-      )
     }
 
     // IMPORTANT: Update the registration request to approved BEFORE sending email
@@ -239,7 +267,7 @@ export async function POST(request: NextRequest) {
       type: 'magiclink',
       email: registrationRequest.email,
       options: {
-        redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3001'}/setup-password`,
+        redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/setup-password`,
       }
     })
 
@@ -253,7 +281,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Send approval email via Resend
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3001'
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
 
     // Create a password reset link using the magic link
     const resetLink = magicLink.properties?.action_link ||
@@ -342,7 +370,7 @@ The AltaVista Precios Team
         const { error: fallbackError } = await adminSupabase.auth.resetPasswordForEmail(
           registrationRequest.email,
           {
-            redirectTo: `${siteUrl}/setup-password`,
+            redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/setup-password`,
           }
         )
 
@@ -371,7 +399,7 @@ The AltaVista Precios Team
       const { error: fallbackError } = await adminSupabase.auth.resetPasswordForEmail(
         registrationRequest.email,
         {
-          redirectTo: `${siteUrl}/setup-password`,
+          redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/setup-password`,
         }
       )
 
