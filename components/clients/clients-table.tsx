@@ -61,6 +61,7 @@ const clientSchema = z.object({
   discount_tier: z.number().optional(),
   total_orders: z.number().optional(),
   active: z.boolean().optional(),
+  status: z.enum(['pending', 'approved', 'rejected', 'suspended']).optional(),
 })
 
 type ClientData = z.infer<typeof clientSchema>
@@ -330,13 +331,23 @@ export function ClientsTable({
       ),
     },
     {
-      accessorKey: "active",
+      accessorKey: "status",
       header: "Status",
-      cell: ({ row }) => (
-        <Badge variant={row.original.active ? 'default' : 'secondary'}>
-          {row.original.active ? 'Active' : 'Invited'}
-        </Badge>
-      ),
+      cell: ({ row }) => {
+        const status = row.original.status || (row.original.active ? 'approved' : 'pending')
+        const statusConfig = {
+          pending: { variant: 'secondary' as const, label: 'Pending' },
+          approved: { variant: 'default' as const, label: 'Approved' },
+          rejected: { variant: 'destructive' as const, label: 'Rejected' },
+          suspended: { variant: 'outline' as const, label: 'Suspended' },
+        }
+        const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.pending
+        return (
+          <Badge variant={config.variant}>
+            {config.label}
+          </Badge>
+        )
+      },
     },
     {
       accessorKey: "created_at",
@@ -404,8 +415,10 @@ export function ClientsTable({
     },
   ]
 
-  const activeCount = clients.filter(c => c.active).length
-  const invitedCount = clients.filter(c => !c.active).length
+  const pendingCount = clients.filter(c => c.status === 'pending').length
+  const approvedCount = clients.filter(c => c.status === 'approved').length
+  const rejectedCount = clients.filter(c => c.status === 'rejected').length
+  const suspendedCount = clients.filter(c => c.status === 'suspended').length
 
   const tabs: TableTab[] = [
     {
@@ -414,14 +427,24 @@ export function ClientsTable({
       badge: clients.length,
     },
     {
-      value: "active",
-      label: "Active",
-      badge: activeCount,
+      value: "approved",
+      label: "Approved",
+      badge: approvedCount,
     },
     {
-      value: "invited",
-      label: "Invited",
-      badge: invitedCount,
+      value: "pending",
+      label: "Pending",
+      badge: pendingCount,
+    },
+    {
+      value: "rejected",
+      label: "Rejected",
+      badge: rejectedCount,
+    },
+    {
+      value: "suspended",
+      label: "Suspended",
+      badge: suspendedCount,
     },
   ]
 

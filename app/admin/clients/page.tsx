@@ -15,6 +15,7 @@ interface Client {
   discount_tier?: number
   total_orders?: number
   active?: boolean
+  status?: 'pending' | 'approved' | 'rejected' | 'suspended'
 }
 
 export default function AdminClientsPage() {
