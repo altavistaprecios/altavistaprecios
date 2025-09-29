@@ -41,7 +41,7 @@ export function ClientStats() {
         fetch('/api/categories'),
       ])
 
-      const products = await productsRes.json().catch(() => ({ products: [] }))
+      const products = await productsRes.json().catch(() => ({ data: [] }))
       const categories = await categoriesRes.json().catch(() => ({ categories: [] }))
 
       // Find category IDs
@@ -50,7 +50,7 @@ export function ClientStats() {
       const clearViewCategory = categories.categories?.find((c: any) => c.slug === 'monofocales-terminados')
 
       // Count products by category - only active products for clients
-      const activeProducts = products.products?.filter((p: any) => p.is_active) || []
+      const activeProducts = products.data?.filter((p: any) => p.is_active) || []
 
       const stockCount = activeProducts.filter((p: any) => p.category_id === stockCategory?.id).length || 0
       const labCount = activeProducts.filter((p: any) => p.category_id === labCategory?.id).length || 0
