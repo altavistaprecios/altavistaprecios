@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
 import {
   Breadcrumb,
@@ -20,7 +22,7 @@ import { DataTableSkeleton } from '@/components/products/data-table-skeleton'
 import { PriceEditDialog } from '@/components/products/price-edit-dialog'
 import { Product } from '@/lib/models/product'
 import { ClientPrice } from '@/lib/models/client-price'
-import { Grid3x3, List } from 'lucide-react'
+import { Grid3x3, List, Search, Download } from 'lucide-react'
 import { toast } from 'sonner'
 import { useAuth } from '@/lib/hooks/use-auth'
 
@@ -176,22 +178,59 @@ export default function ClientMonofocalesFutureXPage() {
 
         {/* Main Content */}
         <div className="px-6 pb-6 space-y-4">
-          {/* Toolbar */}
-          <div className="flex items-center justify-end gap-4">
-            {/* View Mode Toggle */}
-            <ToggleGroup
-              type="single"
-              value={viewMode}
-              onValueChange={(v) => v && setViewMode(v as 'grid' | 'list')}
-              className="h-9"
-            >
-              <ToggleGroupItem value="grid" aria-label="Grid view" className="h-9 px-3">
-                <Grid3x3 className="h-4 w-4" />
-              </ToggleGroupItem>
-              <ToggleGroupItem value="list" aria-label="List view" className="h-9 px-3">
-                <List className="h-4 w-4" />
-              </ToggleGroupItem>
-            </ToggleGroup>
+          {/* Toolbar with Search, Export and View Toggle */}
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            {/* Search Filter */}
+            <div className="relative flex-1 max-w-sm">
+              <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                placeholder="Filter products..."
+                value={searchQuery}
+                onChange={(e) => {
+                  const params = new URLSearchParams(window.location.search)
+                  if (e.target.value) {
+                    params.set('q', e.target.value)
+                  } else {
+                    params.delete('q')
+                  }
+                  const newUrl = `${window.location.pathname}${params.toString() ? `?${params.toString()}` : ''}`
+                  window.history.replaceState(null, '', newUrl)
+                }}
+                className="h-9 w-full pl-8"
+              />
+            </div>
+
+            {/* Right side controls */}
+            <div className="flex items-center gap-2">
+              {/* Export Catalog Button */}
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-9"
+                onClick={() => {
+                  // TODO: Implement export functionality
+                  toast.info('Export functionality coming soon')
+                }}
+              >
+                <Download className="mr-2 h-4 w-4" />
+                Export Catalog
+              </Button>
+
+              {/* View Mode Toggle */}
+              <ToggleGroup
+                type="single"
+                value={viewMode}
+                onValueChange={(v) => v && setViewMode(v as 'grid' | 'list')}
+                className="h-9"
+              >
+                <ToggleGroupItem value="grid" aria-label="Grid view" className="h-9 px-3">
+                  <Grid3x3 className="h-4 w-4" />
+                </ToggleGroupItem>
+                <ToggleGroupItem value="list" aria-label="List view" className="h-9 px-3">
+                  <List className="h-4 w-4" />
+                </ToggleGroupItem>
+              </ToggleGroup>
+            </div>
           </div>
 
           {/* Product Display */}
