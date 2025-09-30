@@ -45,6 +45,7 @@ import {
   DollarSign
 } from 'lucide-react'
 import type { Product } from '@/lib/models/product'
+import { useTranslations, useFormatter } from 'next-intl'
 
 interface ProductTableProps {
   products: Product[]
@@ -73,6 +74,8 @@ export function ProductTable({
   const [sortOrder, setSortOrder] = React.useState<'asc' | 'desc'>('asc')
   const [currentPage, setCurrentPage] = React.useState(1)
   const [rowsPerPage, setRowsPerPage] = React.useState(10)
+  const t = useTranslations('productTable')
+  const formatter = useFormatter()
 
   // Filter products
   const filteredProducts = React.useMemo(() => {
@@ -146,12 +149,7 @@ export function ProductTable({
     }
   }
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(price)
-  }
+  const formatPrice = (price: number) => formatter.number(price, { style: 'currency', currency: 'USD' })
 
   const getCategoryName = (categoryId: string | null) => {
     if (!categoryId) return null
@@ -162,11 +160,11 @@ export function ProductTable({
   if (products.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-12">
-        <p className="text-lg font-medium">No products found</p>
-        <p className="text-sm text-muted-foreground">Add your first product to get started</p>
+        <p className="text-lg font-medium">{t('emptyTitle')}</p>
+        <p className="text-sm text-muted-foreground">{t('emptyDescription')}</p>
         <Button className="mt-4" onClick={onAddProduct}>
           <Plus className="mr-2 h-4 w-4" />
-          Add Product
+          {t('emptyAction')}
         </Button>
       </div>
     )
@@ -180,7 +178,7 @@ export function ProductTable({
             <div className="relative">
               <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
-                placeholder="Filter products..."
+                placeholder={t('filterPlaceholder')}
                 value={filter}
                 onChange={(e) => setFilter(e.target.value)}
                 className="h-9 w-full pl-8"
@@ -189,18 +187,18 @@ export function ProductTable({
             {selectedProducts.length > 0 && onBulkDelete && (
               <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
                 <span>
-                  {selectedProducts.length} product{selectedProducts.length !== 1 ? 's' : ''} selected
+                  {t('bulkSelected', { count: selectedProducts.length })}
                 </span>
-                <Button size="sm" variant="outline" aria-label="Bulk edit">
-                  Bulk Edit
+                <Button size="sm" variant="outline" aria-label={t('bulkEditAria')}>
+                  {t('bulkEdit')}
                 </Button>
                 <Button
                   size="sm"
                   variant="outline"
                   onClick={() => onBulkDelete?.(selectedProducts)}
-                  aria-label="Bulk delete"
+                  aria-label={t('bulkDeleteAria')}
                 >
-                  Bulk Delete
+                  {t('bulkDelete')}
                 </Button>
               </div>
             )}
@@ -216,36 +214,36 @@ export function ProductTable({
             <>
               <Button size="sm" variant="outline">
                 <Upload className="mr-2 h-4 w-4" />
-                Import Products
+                {t('import')}
               </Button>
               {showExportButton ? (
                 <Button size="sm" variant="outline">
                   <Download className="mr-2 h-4 w-4" />
-                  Export Catalog
+                  {t('export')}
                 </Button>
               ) : null}
               <Button size="sm" onClick={onAddProduct}>
                 <Plus className="mr-2 h-4 w-4" />
-                Add Product
+                {t('addProduct')}
               </Button>
             </>
           ) : showExportButton ? (
             <Button size="sm" variant="outline">
               <Download className="mr-2 h-4 w-4" />
-              Export Catalog
+              {t('export')}
             </Button>
           ) : null}
         </>
       }
       footerLeft={
         <div className="flex-1 text-sm text-muted-foreground">
-          {selectedProducts.length} of {sortedProducts.length} row(s) selected.
+          {t('footerSelected', { selected: selectedProducts.length, total: sortedProducts.length })}
         </div>
       }
       footerRight={
         <div className="flex items-center space-x-6 lg:space-x-8">
           <div className="flex items-center space-x-2">
-            <p className="text-sm font-medium">Rows per page</p>
+            <p className="text-sm font-medium">{t('rowsPerPage')}</p>
             <Select
               value={rowsPerPage.toString()}
               onValueChange={(value) => {
@@ -264,7 +262,7 @@ export function ProductTable({
             </Select>
           </div>
           <div className="flex w-[100px] items-center justify-center text-sm font-medium">
-            Page {currentPage} of {totalPages || 1}
+            {t('paginationLabel', { page: currentPage, total: totalPages || 1 })}
           </div>
           <div className="flex items-center space-x-2">
             <Button
@@ -272,7 +270,7 @@ export function ProductTable({
               className="hidden h-8 w-8 p-0 lg:flex"
               onClick={() => setCurrentPage(1)}
               disabled={currentPage === 1}
-              aria-label="Go to first page"
+              aria-label={t('aria.first')}
             >
               <ChevronsLeftIcon className="h-4 w-4" />
             </Button>
@@ -281,7 +279,7 @@ export function ProductTable({
               className="h-8 w-8 p-0"
               onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
-              aria-label="Go to previous page"
+              aria-label={t('aria.previous')}
             >
               <ChevronLeftIcon className="h-4 w-4" />
             </Button>
@@ -290,7 +288,7 @@ export function ProductTable({
               className="h-8 w-8 p-0"
               onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages || 1))}
               disabled={currentPage === totalPages || totalPages === 0}
-              aria-label="Go to next page"
+              aria-label={t('aria.next')}
             >
               <ChevronRightIcon className="h-4 w-4" />
             </Button>
@@ -299,7 +297,7 @@ export function ProductTable({
               className="hidden h-8 w-8 p-0 lg:flex"
               onClick={() => setCurrentPage(totalPages)}
               disabled={currentPage === totalPages || totalPages === 0}
-              aria-label="Go to last page"
+              aria-label={t('aria.last')}
             >
               <ChevronsRightIcon className="h-4 w-4" />
             </Button>
@@ -317,7 +315,7 @@ export function ProductTable({
                   paginatedProducts.length > 0
                 }
                 onCheckedChange={(value) => handleSelectAll(!!value)}
-                aria-label="Select all"
+                aria-label={t('aria.selectAll')}
               />
             </TableHead>
             <TableHead
@@ -332,7 +330,7 @@ export function ProductTable({
               }
             >
               <div className="flex items-center">
-                Product Code
+                {t('columns.code')}
                 <ArrowUpDown className="ml-2 h-4 w-4" />
               </div>
             </TableHead>
@@ -348,7 +346,7 @@ export function ProductTable({
               }
             >
               <div className="flex items-center">
-                Product Name
+                {t('columns.name')}
                 <ArrowUpDown className="ml-2 h-4 w-4" />
               </div>
             </TableHead>
@@ -364,20 +362,20 @@ export function ProductTable({
               }
             >
               <div className="flex items-center">
-                Base Price
+                {t('columns.basePrice')}
                 <ArrowUpDown className="ml-2 h-4 w-4" />
               </div>
             </TableHead>
-            <TableHead className="min-w-[250px]">Category</TableHead>
-            <TableHead className="w-24">Status</TableHead>
-            {(onEdit || onDelete) && <TableHead className="w-20 text-right">Actions</TableHead>}
+            <TableHead className="min-w-[250px]">{t('columns.category')}</TableHead>
+            <TableHead className="w-24">{t('columns.status')}</TableHead>
+            {(onEdit || onDelete) && <TableHead className="w-20 text-right">{t('columns.actions')}</TableHead>}
           </TableRow>
         </TableHeader>
         <TableBody>
           {paginatedProducts.length === 0 ? (
             <TableRow>
               <TableCell colSpan={(onEdit || onDelete) ? 7 : 6} className="h-24 text-center text-muted-foreground">
-                No products found
+                {t('emptyTable')}
               </TableCell>
             </TableRow>
           ) : (
@@ -394,7 +392,7 @@ export function ProductTable({
                     onCheckedChange={(checked) =>
                       handleSelectProduct(product.id, checked as boolean)
                     }
-                    aria-label={`Select ${product.name}`}
+                    aria-label={t('aria.selectProduct', { product: product.name })}
                   />
                 </TableCell>
                 <TableCell className="w-32 font-medium">{product.code}</TableCell>
@@ -411,7 +409,7 @@ export function ProductTable({
                 </TableCell>
                 <TableCell className="w-24">
                   <Badge variant={product.is_active ? 'default' : 'secondary'}>
-                    {product.is_active ? 'Active' : 'Inactive'}
+                    {product.is_active ? t('status.active') : t('status.inactive')}
                   </Badge>
                 </TableCell>
                 {(onEdit || onDelete) && (
@@ -419,12 +417,12 @@ export function ProductTable({
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" className="h-8 w-8 p-0">
-                          <span className="sr-only">Open menu</span>
+                          <span className="sr-only">{t('aria.openRowMenu')}</span>
                           <MoreHorizontal className="h-4 w-4" />
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuLabel>{t('menu.title')}</DropdownMenuLabel>
                         {onEdit && (
                           <DropdownMenuItem onClick={() => onEdit(product)}>
                             {onDelete ? (
@@ -432,7 +430,7 @@ export function ProductTable({
                             ) : (
                               <DollarSign className="mr-2 h-4 w-4" />
                             )}
-                            {onDelete ? 'Edit' : 'Set Price'}
+                            {onDelete ? t('menu.edit') : t('menu.setPrice')}
                           </DropdownMenuItem>
                         )}
                         {onEdit && onDelete && <DropdownMenuSeparator />}
@@ -442,7 +440,7 @@ export function ProductTable({
                             onClick={() => onDelete(product)}
                           >
                             <Trash2 className="mr-2 h-4 w-4" />
-                            Delete
+                            {t('menu.delete')}
                           </DropdownMenuItem>
                         )}
                       </DropdownMenuContent>
