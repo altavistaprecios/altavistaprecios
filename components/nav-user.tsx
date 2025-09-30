@@ -6,9 +6,12 @@ import {
   Moon,
   Sun,
   Monitor,
+  Languages,
 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useTheme } from "next-themes"
+import { useTranslations } from "next-intl"
+import { useState, useTransition } from "react"
 
 import {
   Avatar,
@@ -47,10 +50,38 @@ export function NavUser({
   const { signOut } = useAuth()
   const { setTheme } = useTheme()
   const router = useRouter()
+  const t = useTranslations()
+  const [isPending, startTransition] = useTransition()
+  const [currentLocale, setCurrentLocale] = useState<string>('en')
 
   const handleLogout = async () => {
     await signOut()
     router.push("/login")
+  }
+
+  const handleLanguageChange = async (locale: string) => {
+    setCurrentLocale(locale)
+
+    // Set cookie for locale
+    document.cookie = `NEXT_LOCALE=${locale};path=/;max-age=31536000`
+
+    // Update user profile with preferred language
+    try {
+      const response = await fetch('/api/user/language', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ language: locale }),
+      })
+
+      if (response.ok) {
+        // Refresh the page to apply new language
+        startTransition(() => {
+          router.refresh()
+        })
+      }
+    } catch (error) {
+      console.error('Failed to update language preference:', error)
+    }
   }
 
   return (
@@ -100,27 +131,41 @@ export function NavUser({
               <DropdownMenuSubTrigger>
                 <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
                 <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                <span>Theme</span>
+                <span>{t('user.theme')}</span>
               </DropdownMenuSubTrigger>
               <DropdownMenuSubContent>
                 <DropdownMenuItem onClick={() => setTheme("light")}>
                   <Sun />
-                  Light
+                  {t('user.themeLight')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setTheme("dark")}>
                   <Moon />
-                  Dark
+                  {t('user.themeDark')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setTheme("system")}>
                   <Monitor />
-                  System
+                  {t('user.themeSystem')}
+                </DropdownMenuItem>
+              </DropdownMenuSubContent>
+            </DropdownMenuSub>
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger>
+                <Languages className="h-4 w-4" />
+                <span>{t('user.language')}</span>
+              </DropdownMenuSubTrigger>
+              <DropdownMenuSubContent>
+                <DropdownMenuItem onClick={() => handleLanguageChange('en')} disabled={isPending}>
+                  {t('user.languageEnglish')}
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleLanguageChange('es')} disabled={isPending}>
+                  {t('user.languageSpanish')}
                 </DropdownMenuItem>
               </DropdownMenuSubContent>
             </DropdownMenuSub>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleLogout}>
               <LogOutIcon />
-              Log out
+              {t('user.logout')}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

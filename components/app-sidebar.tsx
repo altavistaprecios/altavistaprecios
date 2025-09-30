@@ -7,6 +7,7 @@ import {
   LayoutDashboardIcon,
   UserPlus,
 } from "lucide-react"
+import { useTranslations } from "next-intl"
 
 import { NavMain } from "@/components/nav-main"
 import { NavUser } from "@/components/nav-user"
@@ -25,6 +26,7 @@ import { useRegistrationCount } from "@/hooks/use-registration-count"
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { user } = useAuth()
   const { pendingCount } = useRegistrationCount()
+  const t = useTranslations()
 
   const data = {
     user: {
@@ -34,47 +36,47 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     },
     navMain: [
       {
-        title: "Dashboard",
+        title: t('nav.dashboard'),
         url: "/admin",
         icon: LayoutDashboardIcon,
         isActive: true,
       },
       {
-        title: "Registrations",
+        title: t('nav.registrations'),
         url: "/admin/registrations",
         icon: UserPlus,
         badge: pendingCount > 0 ? pendingCount : undefined,
       },
       {
-        title: "Products",
+        title: t('nav.products'),
         url: "/admin/products",
         icon: Package,
         items: [
           {
-            title: "All Products",
+            title: t('nav.allProducts'),
             url: "/admin/products",
           },
           {
-            title: "MONOFOCALES FUTURE-X",
+            title: t('nav.monofocalesFutureX'),
             url: "/admin/monofocales-future-x",
           },
           {
-            title: "MONOFOCALES TERMINADOS",
+            title: t('nav.monofocalesTerminados'),
             url: "/admin/monofocales-terminados",
           },
         ],
       },
       {
-        title: "Clients",
+        title: t('nav.clients'),
         url: "/admin/clients",
         icon: Users,
         items: [
           {
-            title: "All Clients",
+            title: t('nav.allClients'),
             url: "/admin/clients",
           },
           {
-            title: "Pre-authorize Client",
+            title: t('nav.preAuthorizeClient'),
             url: "/admin/clients/authorize",
           },
         ],
@@ -93,8 +95,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   <Package className="size-4" />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">Altavista Optics</span>
-                  <span className="truncate text-xs">B2B Portal</span>
+                  <span className="truncate font-semibold">{t('header.altavistaOptics')}</span>
+                  <span className="truncate text-xs">{t('header.b2bPortal')}</span>
                 </div>
               </a>
             </SidebarMenuButton>

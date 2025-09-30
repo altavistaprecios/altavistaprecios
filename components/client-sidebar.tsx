@@ -8,6 +8,7 @@ import {
   History,
   TrendingUp,
 } from "lucide-react"
+import { useTranslations } from "next-intl"
 
 import { NavMain } from "@/components/nav-main"
 import { NavUser } from "@/components/nav-user"
@@ -24,6 +25,7 @@ import { useAuth } from "@/components/providers/auth-provider"
 
 export function ClientSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { user } = useAuth()
+  const t = useTranslations()
 
   const data = {
     user: {
@@ -33,46 +35,46 @@ export function ClientSidebar({ ...props }: React.ComponentProps<typeof Sidebar>
     },
     navMain: [
       {
-        title: "Dashboard",
+        title: t('nav.dashboard'),
         url: "/client",
         icon: LayoutDashboardIcon,
         isActive: true,
       },
       {
-        title: "Products",
+        title: t('nav.products'),
         url: "/client/products",
         icon: Package,
         items: [
           {
-            title: "All Products",
+            title: t('nav.allProducts'),
             url: "/client/products",
           },
           {
-            title: "MONOFOCALES FUTURE-X",
+            title: t('nav.monofocalesFutureX'),
             url: "/client/monofocales-future-x",
           },
           {
-            title: "MONOFOCALES TERMINADOS",
+            title: t('nav.monofocalesTerminados'),
             url: "/client/monofocales-terminados",
           },
         ],
       },
       {
-        title: "Pricing",
+        title: t('nav.pricing'),
         url: "/client/pricing",
         icon: DollarSign,
       },
       {
-        title: "Price History",
+        title: t('nav.history'),
         url: "/client/history",
         icon: History,
         items: [
           {
-            title: "View All History",
+            title: t('history.title'),
             url: "/client/history",
           },
           {
-            title: "Recent Changes",
+            title: t('dashboard.recentActivity'),
             url: "/client/history?filter=recent",
           },
         ],
@@ -91,8 +93,8 @@ export function ClientSidebar({ ...props }: React.ComponentProps<typeof Sidebar>
                   <TrendingUp className="size-4" />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">Altavista Optics</span>
-                  <span className="truncate text-xs">Client Portal</span>
+                  <span className="truncate font-semibold">{t('header.altavistaOptics')}</span>
+                  <span className="truncate text-xs">{t('header.b2bPortal')}</span>
                 </div>
               </a>
             </SidebarMenuButton>

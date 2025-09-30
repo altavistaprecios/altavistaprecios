@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
+import { useTranslations } from "next-intl"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -23,6 +24,7 @@ export function LoginForm({
   const router = useRouter()
   const searchParams = useSearchParams()
   const { signIn } = useAuth()
+  const t = useTranslations()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState<string | null>(null)
@@ -31,9 +33,9 @@ export function LoginForm({
   useEffect(() => {
     const errorParam = searchParams.get('error')
     if (errorParam === 'account_disabled') {
-      setError('Your account has been disabled. Please contact support for assistance.')
+      setError(t('auth.accountDisabled'))
     }
-  }, [searchParams])
+  }, [searchParams, t])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -54,16 +56,16 @@ export function LoginForm({
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader>
-          <CardTitle className="text-2xl">Login</CardTitle>
+          <CardTitle className="text-2xl">{t('auth.loginTitle')}</CardTitle>
           <CardDescription>
-            Enter your email below to login to your account
+            {t('auth.loginDescription')}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">{t('auth.email')}</Label>
                 <Input
                   id="email"
                   type="email"
@@ -76,12 +78,12 @@ export function LoginForm({
               </div>
               <div className="grid gap-2">
                 <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
+                  <Label htmlFor="password">{t('auth.password')}</Label>
                   <Link
                     href="/reset-password"
                     className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
                   >
-                    Forgot your password?
+                    {t('auth.forgotPassword')}
                   </Link>
                 </div>
                 <Input
@@ -99,13 +101,13 @@ export function LoginForm({
                 </div>
               )}
               <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? "Logging in..." : "Login"}
+                {loading ? t('auth.loggingIn') : t('auth.login')}
               </Button>
             </div>
             <div className="mt-4 text-center text-sm">
-              Don&apos;t have an account?{" "}
+              {t('auth.dontHaveAccount')}{" "}
               <Link href="/signup" className="underline underline-offset-4">
-                Sign up
+                {t('auth.signup')}
               </Link>
             </div>
           </form>

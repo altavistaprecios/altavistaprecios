@@ -77,9 +77,17 @@ export async function middleware(request: NextRequest) {
     // Check user status from database
     const { data: profile } = await supabase
       .from('user_profiles')
-      .select('status')
+      .select('status, preferred_language')
       .eq('id', user.id)
       .single()
+
+    // Set locale cookie based on user preference
+    if (profile?.preferred_language && !request.cookies.get('NEXT_LOCALE')) {
+      response.cookies.set('NEXT_LOCALE', profile.preferred_language, {
+        path: '/',
+        maxAge: 60 * 60 * 24 * 365, // 1 year
+      })
+    }
 
     // If user is pending, redirect to pending approval page
     if (profile?.status === 'pending' && !isPendingPath) {

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import { Package, Sparkles } from "lucide-react"
 import Link from "next/link"
+import { useTranslations } from "next-intl"
 
 import {
   Card,
@@ -20,6 +21,7 @@ interface AdminStats {
 }
 
 export function AdminStats() {
+  const t = useTranslations()
   const [stats, setStats] = useState<AdminStats>({
     stockLenses: 0,
     laboratoryLenses: 0,
@@ -92,11 +94,11 @@ export function AdminStats() {
       <Link href="/admin/monofocales-future-x" className="transition-transform hover:scale-[1.02]">
         <Card className="cursor-pointer hover:shadow-lg transition-shadow">
           <CardHeader className="relative">
-            <CardDescription>MONOFOCALES FUTURE-X</CardDescription>
+            <CardDescription>{t('nav.monofocalesFutureX')}</CardDescription>
             <CardTitle className="text-3xl font-semibold tabular-nums">
               {stats.stockLenses + stats.laboratoryLenses}
               <span className="text-sm font-normal text-muted-foreground ml-2">
-                products
+                {t('products.title').toLowerCase()}
               </span>
             </CardTitle>
             <div className="absolute right-4 top-4">
@@ -105,12 +107,12 @@ export function AdminStats() {
           </CardHeader>
           <CardFooter className="flex-col items-start gap-1 text-sm">
             <div className="flex gap-4 font-medium">
-              <span>{stats.stockLenses} Stock Lenses</span>
+              <span>{stats.stockLenses} {t('dashboard.stockLenses')}</span>
               <span className="text-muted-foreground">•</span>
-              <span>{stats.laboratoryLenses} Laboratory Lenses</span>
+              <span>{stats.laboratoryLenses} {t('dashboard.laboratoryLenses')}</span>
             </div>
             <div className="text-muted-foreground">
-              Click to manage Future-X products
+              {t('dashboard.clickToManageFutureX')}
             </div>
           </CardFooter>
         </Card>
@@ -119,11 +121,11 @@ export function AdminStats() {
       <Link href="/admin/monofocales-terminados" className="transition-transform hover:scale-[1.02]">
         <Card className="cursor-pointer hover:shadow-lg transition-shadow">
           <CardHeader className="relative">
-            <CardDescription>MONOFOCALES TERMINADOS</CardDescription>
+            <CardDescription>{t('nav.monofocalesTerminados')}</CardDescription>
             <CardTitle className="text-3xl font-semibold tabular-nums">
               {stats.clearViewProducts}
               <span className="text-sm font-normal text-muted-foreground ml-2">
-                products
+                {t('products.title').toLowerCase()}
               </span>
             </CardTitle>
             <div className="absolute right-4 top-4">
@@ -135,7 +137,7 @@ export function AdminStats() {
               ClearView 1.60 DuraVision
             </div>
             <div className="text-muted-foreground">
-              Click to manage finished products
+              {t('dashboard.clickToManageFinished')}
             </div>
           </CardFooter>
         </Card>
