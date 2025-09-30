@@ -24,7 +24,9 @@ import {
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { CheckCircle, XCircle, Clock, RefreshCw, Mail } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
+import { useLocale, useTranslations } from 'next-intl'
 
 type RegistrationRequest = {
   id: string
@@ -38,6 +40,12 @@ type RegistrationRequest = {
   created_at: string
 }
 
+type StatusConfig = {
+  variant: 'default' | 'secondary' | 'destructive'
+  icon: LucideIcon
+  label: string
+}
+
 export default function RegistrationsPage() {
   const [requests, setRequests] = useState<RegistrationRequest[]>([])
   const [loading, setLoading] = useState(true)
@@ -48,6 +56,9 @@ export default function RegistrationsPage() {
   const [processing, setProcessing] = useState(false)
   const { toast } = useToast()
   const supabase = createClient()
+  const locale = useLocale()
+  const t = useTranslations('adminRegistrations')
+  const commonT = useTranslations('common')
 
   useEffect(() => {
     fetchRequests()
@@ -61,8 +72,8 @@ export default function RegistrationsPage() {
 
     if (error) {
       toast({
-        title: 'Error',
-        description: 'Failed to fetch registration requests',
+        title: t('toast.errorTitle'),
+        description: t('toast.fetchError'),
         variant: 'destructive',
       })
       console.error('Error fetching requests:', error)
@@ -100,14 +111,14 @@ export default function RegistrationsPage() {
 
       if (data.warning) {
         toast({
-          title: 'Partial Success',
+          title: t('toast.partialSuccessTitle'),
           description: data.warning,
           variant: 'default',
         })
       } else {
         toast({
-          title: 'Success',
-          description: 'Registration approved! The user will receive an email to set up their password.',
+          title: t('toast.successTitle'),
+          description: t('toast.approveSuccess'),
         })
       }
 
@@ -119,8 +130,8 @@ export default function RegistrationsPage() {
     } catch (error) {
       console.error('Error approving registration:', error)
       toast({
-        title: 'Error',
-        description: error instanceof Error ? error.message : 'Failed to approve registration',
+        title: t('toast.errorTitle'),
+        description: error instanceof Error ? error.message : t('toast.approveError'),
         variant: 'destructive',
       })
     } finally {
@@ -144,14 +155,14 @@ export default function RegistrationsPage() {
 
     if (error) {
       toast({
-        title: 'Error',
-        description: 'Failed to reject request',
+        title: t('toast.errorTitle'),
+        description: t('toast.rejectError'),
         variant: 'destructive',
       })
     } else {
       toast({
-        title: 'Success',
-        description: 'Registration request rejected',
+        title: t('toast.successTitle'),
+        description: t('toast.rejectSuccess'),
       })
       fetchRequests()
       setSelectedRequest(null)
@@ -167,6 +178,8 @@ export default function RegistrationsPage() {
     return request.status === activeTab
   })
 
+  const formatDate = (value: string) => new Date(value).toLocaleDateString(locale)
+
   const getStatusBadge = (status: string, approvedAt?: string | null) => {
     // For approved status, check if it was approved recently (within last 24 hours)
     // and show "Email Sent" badge instead
@@ -180,16 +193,16 @@ export default function RegistrationsPage() {
         return (
           <Badge variant="default" className="gap-1">
             <Mail className="h-3 w-3" />
-            Email Sent
+            {t('status.emailSent')}
           </Badge>
         )
       }
     }
 
-    const variants: Record<string, { variant: any; icon: any; label: string }> = {
-      pending: { variant: 'secondary', icon: Clock, label: 'Pending' },
-      approved: { variant: 'default', icon: CheckCircle, label: 'Approved' },
-      rejected: { variant: 'destructive', icon: XCircle, label: 'Rejected' },
+    const variants: Record<string, StatusConfig> = {
+      pending: { variant: 'secondary', icon: Clock, label: t('status.pending') },
+      approved: { variant: 'default', icon: CheckCircle, label: t('status.approved') },
+      rejected: { variant: 'destructive', icon: XCircle, label: t('status.rejected') },
     }
 
     const config = variants[status] || variants.pending
@@ -207,14 +220,14 @@ export default function RegistrationsPage() {
     <div className="flex flex-1 flex-col">
       <div className="flex items-center justify-between px-4 lg:px-6 pb-4">
         <div>
-          <h1 className="text-2xl font-bold">Registration Requests</h1>
+          <h1 className="text-2xl font-bold">{t('title')}</h1>
           <p className="text-muted-foreground">
-            Review and approve new client registration requests
+            {t('description')}
           </p>
         </div>
         <Button onClick={fetchRequests} variant="outline" size="sm">
           <RefreshCw className="h-4 w-4 mr-2" />
-          Refresh
+          {commonT('refresh')}
         </Button>
       </div>
 
@@ -222,15 +235,15 @@ export default function RegistrationsPage() {
         <div className="flex items-center justify-between mb-4">
           <TabsList>
             <TabsTrigger value="pending">
-              Pending ({requests.filter(r => r.status === 'pending').length})
+              {t('tabs.pending', { count: requests.filter(r => r.status === 'pending').length })}
             </TabsTrigger>
             <TabsTrigger value="approved">
-              Approved ({requests.filter(r => r.status === 'approved').length})
+              {t('tabs.approved', { count: requests.filter(r => r.status === 'approved').length })}
             </TabsTrigger>
             <TabsTrigger value="rejected">
-              Rejected ({requests.filter(r => r.status === 'rejected').length})
+              {t('tabs.rejected', { count: requests.filter(r => r.status === 'rejected').length })}
             </TabsTrigger>
-            <TabsTrigger value="all">All Requests</TabsTrigger>
+            <TabsTrigger value="all">{t('tabs.all')}</TabsTrigger>
           </TabsList>
         </div>
 
@@ -239,25 +252,25 @@ export default function RegistrationsPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Company</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Phone</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Requested</TableHead>
-                  <TableHead>Actions</TableHead>
+                  <TableHead>{t('table.company')}</TableHead>
+                  <TableHead>{t('table.email')}</TableHead>
+                  <TableHead>{t('table.phone')}</TableHead>
+                  <TableHead>{t('table.status')}</TableHead>
+                  <TableHead>{t('table.requested')}</TableHead>
+                  <TableHead>{t('table.actions')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {loading ? (
                   <TableRow>
                     <TableCell colSpan={6} className="text-center py-8">
-                      Loading registration requests...
+                      {t('table.loading')}
                     </TableCell>
                   </TableRow>
                 ) : filteredRequests.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
-                      No registration requests found
+                      {t('table.empty')}
                     </TableCell>
                   </TableRow>
                 ) : (
@@ -267,10 +280,10 @@ export default function RegistrationsPage() {
                         {request.company_name}
                       </TableCell>
                       <TableCell>{request.email}</TableCell>
-                      <TableCell>{request.phone || 'N/A'}</TableCell>
+                      <TableCell>{request.phone || t('table.notAvailable')}</TableCell>
                       <TableCell>{getStatusBadge(request.status, request.approved_at)}</TableCell>
                       <TableCell>
-                        {new Date(request.created_at).toLocaleDateString()}
+                        {formatDate(request.created_at)}
                       </TableCell>
                       <TableCell>
                         <div className="flex gap-2">
@@ -285,23 +298,25 @@ export default function RegistrationsPage() {
                                 }}
                               >
                                 <Mail className="h-3 w-3 mr-1" />
-                                Approve & Invite
+                                {t('actions.approveInvite')}
                               </Button>
                               <Button
                                 size="sm"
-                                variant="destructive"
+                                variant="outline"
                                 onClick={() => {
                                   setSelectedRequest(request)
                                   setActionType('reject')
                                 }}
                               >
-                                Reject
+                                {t('actions.reject')}
                               </Button>
                             </>
                           )}
                           {request.status === 'approved' && (
                             <span className="text-sm text-muted-foreground">
-                              Approved {request.approved_at && `on ${new Date(request.approved_at).toLocaleDateString()}`}
+                              {request.approved_at
+                                ? t('status.approvedOn', { date: formatDate(request.approved_at) })
+                                : t('status.approved')}
                             </span>
                           )}
                           {request.status === 'rejected' && request.rejected_reason && (
@@ -331,22 +346,28 @@ export default function RegistrationsPage() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              {actionType === 'approve' && 'Approve Registration & Send Invite'}
-              {actionType === 'reject' && 'Reject Registration'}
+              {actionType === 'approve' && t('dialog.approveTitle')}
+              {actionType === 'reject' && t('dialog.rejectTitle')}
             </DialogTitle>
             <DialogDescription>
               {selectedRequest && (
                 <>
                   {actionType === 'approve' && (
                     <>
-                      Approving registration for <strong>{selectedRequest.email}</strong>
-                      ({selectedRequest.company_name}). They will receive an email to set up their password.
+                      {t.rich('dialog.approveDescription', {
+                        email: selectedRequest.email,
+                        company: selectedRequest.company_name,
+                        strong: (chunks) => <strong>{chunks}</strong>,
+                      })}
                     </>
                   )}
                   {actionType === 'reject' && (
                     <>
-                      Please provide a reason for rejecting the registration from{' '}
-                      <strong>{selectedRequest.email}</strong> ({selectedRequest.company_name}).
+                      {t.rich('dialog.rejectDescription', {
+                        email: selectedRequest.email,
+                        company: selectedRequest.company_name,
+                        strong: (chunks) => <strong>{chunks}</strong>,
+                      })}
                     </>
                   )}
                 </>
@@ -357,12 +378,12 @@ export default function RegistrationsPage() {
           {actionType === 'reject' && (
             <div className="grid gap-4 py-4">
               <div className="grid gap-2">
-                <Label htmlFor="reason">Reason for rejection</Label>
+                <Label htmlFor="reason">{t('dialog.rejectLabel')}</Label>
                 <Textarea
                   id="reason"
                   value={rejectReason}
                   onChange={(e) => setRejectReason(e.target.value)}
-                  placeholder="Enter reason for rejection..."
+                  placeholder={t('dialog.rejectPlaceholder')}
                   className="min-h-[100px]"
                 />
               </div>
@@ -379,17 +400,17 @@ export default function RegistrationsPage() {
               }}
               disabled={processing}
             >
-              Cancel
+              {commonT('cancel')}
             </Button>
             <Button
-              variant={actionType === 'approve' ? 'default' : 'destructive'}
+              variant={actionType === 'approve' ? 'default' : 'outline'}
               onClick={actionType === 'approve' ? handleApprove : handleReject}
               disabled={(actionType === 'reject' && !rejectReason) || processing}
             >
-              {processing ? 'Processing...' : (
+              {processing ? commonT('processing') : (
                 <>
-                  {actionType === 'approve' && 'Approve & Send Invite'}
-                  {actionType === 'reject' && 'Reject'}
+                  {actionType === 'approve' && t('actions.approveInviteDialog')}
+                  {actionType === 'reject' && t('actions.reject')}
                 </>
               )}
             </Button>

@@ -17,7 +17,8 @@
     "submit": "Submit",
     "confirm": "Confirm",
     "yes": "Yes",
-    "no": "No"
+    "no": "No",
+    "processing": "Processing..."
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -89,6 +90,57 @@
     "laboratoryLenses": "Laboratory Lenses",
     "clickToManageFutureX": "Click to manage Future-X products",
     "clickToManageFinished": "Click to manage finished products"
+  },
+  "adminRegistrations": {
+    "title": "Registration Requests",
+    "description": "Review and approve new client registration requests",
+    "tabs": {
+      "pending": "Pending ({count})",
+      "approved": "Approved ({count})",
+      "rejected": "Rejected ({count})",
+      "all": "All Requests"
+    },
+    "table": {
+      "company": "Company",
+      "email": "Email",
+      "phone": "Phone",
+      "status": "Status",
+      "requested": "Requested",
+      "actions": "Actions",
+      "loading": "Loading registration requests...",
+      "empty": "No registration requests found",
+      "notAvailable": "N/A"
+    },
+    "status": {
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "emailSent": "Email Sent",
+      "approvedOn": "Approved on {date}"
+    },
+    "actions": {
+      "approveInvite": "Approve & Invite",
+      "reject": "Reject",
+      "approveInviteDialog": "Approve & Send Invite"
+    },
+    "dialog": {
+      "approveTitle": "Approve Registration & Send Invite",
+      "rejectTitle": "Reject Registration",
+      "approveDescription": "Approving registration for <strong>{email}</strong> ({company}). They will receive an email to set up their password.",
+      "rejectDescription": "Please provide a reason for rejecting the registration from <strong>{email}</strong> ({company}).",
+      "rejectLabel": "Reason for rejection",
+      "rejectPlaceholder": "Enter reason for rejection..."
+    },
+    "toast": {
+      "errorTitle": "Error",
+      "fetchError": "Failed to fetch registration requests",
+      "partialSuccessTitle": "Partial Success",
+      "successTitle": "Success",
+      "approveSuccess": "Registration approved! The user will receive an email to set up their password.",
+      "approveError": "Failed to approve registration",
+      "rejectError": "Failed to reject request",
+      "rejectSuccess": "Registration request rejected"
+    }
   },
   "products": {
     "title": "Products",

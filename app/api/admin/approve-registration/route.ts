@@ -256,10 +256,29 @@ export async function POST(request: NextRequest) {
       })
       .eq('id', requestId)
 
+    let statusUpdateFailed = false
     if (updateError) {
-      console.error('Error updating registration request:', updateError)
-      // Don't fail the whole process if this update fails
-      // The user is already created at this point
+      console.error('Error updating registration request status:', updateError)
+      console.error('Request ID:', requestId, 'User ID:', user.id)
+      statusUpdateFailed = true
+
+      // Try one more time with a direct query
+      const { error: retryError } = await supabase
+        .from('registration_requests')
+        .update({
+          status: 'approved',
+          approved_by: user.id,
+          approved_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', requestId)
+
+      if (!retryError) {
+        console.log('Status update succeeded on retry')
+        statusUpdateFailed = false
+      } else {
+        console.error('Status update failed on retry:', retryError)
+      }
     }
 
     // Generate a magic link for password setup
@@ -274,9 +293,13 @@ export async function POST(request: NextRequest) {
     if (magicLinkError || !magicLink) {
       console.error('Error generating magic link:', magicLinkError)
       // User is created but they'll need to use forgot password
+      const warnings = ['User created but email could not be sent. User should use forgot password.']
+      if (statusUpdateFailed) {
+        warnings.push('Warning: Registration status may not have updated correctly. Please refresh the page.')
+      }
       return NextResponse.json({
         success: true,
-        warning: 'User created but email could not be sent. User should use forgot password.',
+        warning: warnings.join(' '),
       })
     }
 
@@ -376,9 +399,13 @@ Altavista
 
         if (fallbackError) {
           console.error('Fallback email also failed:', fallbackError)
+          const warnings = ['User approved but email could not be sent. User can use "Forgot Password" to set up their account.']
+          if (statusUpdateFailed) {
+            warnings.push('Warning: Registration status may not have updated correctly. Please refresh the page.')
+          }
           return NextResponse.json({
             success: true,
-            warning: 'User approved but email could not be sent. User can use "Forgot Password" to set up their account.',
+            warning: warnings.join(' '),
             email: registrationRequest.email
           })
         }
@@ -386,6 +413,7 @@ Altavista
         return NextResponse.json({
           success: true,
           message: 'Registration approved and invitation email sent (via backup service)',
+          warning: statusUpdateFailed ? 'Registration status may not have updated correctly. Please refresh the page.' : undefined,
           email: registrationRequest.email
         })
       }
@@ -405,9 +433,13 @@ Altavista
 
       if (fallbackError) {
         console.error('Fallback email also failed:', fallbackError)
+        const warnings = ['User approved but email could not be sent. User can use "Forgot Password" to set up their account.']
+        if (statusUpdateFailed) {
+          warnings.push('Warning: Registration status may not have updated correctly. Please refresh the page.')
+        }
         return NextResponse.json({
           success: true,
-          warning: 'User approved but email could not be sent. User can use "Forgot Password" to set up their account.',
+          warning: warnings.join(' '),
           email: registrationRequest.email
         })
       }
@@ -415,6 +447,7 @@ Altavista
       return NextResponse.json({
         success: true,
         message: 'Registration approved and invitation email sent (via backup service)',
+        warning: statusUpdateFailed ? 'Registration status may not have updated correctly. Please refresh the page.' : undefined,
         email: registrationRequest.email
       })
     }
@@ -422,6 +455,7 @@ Altavista
     return NextResponse.json({
       success: true,
       message: 'Registration approved and invitation email sent',
+      warning: statusUpdateFailed ? 'Registration status may not have updated correctly. Please refresh the page.' : undefined,
       email: registrationRequest.email
     })
 

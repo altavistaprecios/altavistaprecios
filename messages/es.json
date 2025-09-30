@@ -17,7 +17,8 @@
     "submit": "Enviar",
     "confirm": "Confirmar",
     "yes": "Sí",
-    "no": "No"
+    "no": "No",
+    "processing": "Procesando..."
   },
   "nav": {
     "dashboard": "Panel de Control",
@@ -89,6 +90,57 @@
     "laboratoryLenses": "Lentes de Laboratorio",
     "clickToManageFutureX": "Haz clic para gestionar productos Future-X",
     "clickToManageFinished": "Haz clic para gestionar productos terminados"
+  },
+  "adminRegistrations": {
+    "title": "Solicitudes de Registro",
+    "description": "Revisa y aprueba nuevas solicitudes de registro de clientes",
+    "tabs": {
+      "pending": "Pendientes ({count})",
+      "approved": "Aprobadas ({count})",
+      "rejected": "Rechazadas ({count})",
+      "all": "Todas las solicitudes"
+    },
+    "table": {
+      "company": "Empresa",
+      "email": "Correo electrónico",
+      "phone": "Teléfono",
+      "status": "Estado",
+      "requested": "Solicitado",
+      "actions": "Acciones",
+      "loading": "Cargando solicitudes de registro...",
+      "empty": "No se encontraron solicitudes de registro",
+      "notAvailable": "N/D"
+    },
+    "status": {
+      "pending": "Pendiente",
+      "approved": "Aprobada",
+      "rejected": "Rechazada",
+      "emailSent": "Correo enviado",
+      "approvedOn": "Aprobada el {date}"
+    },
+    "actions": {
+      "approveInvite": "Aprobar e invitar",
+      "reject": "Rechazar",
+      "approveInviteDialog": "Aprobar y enviar invitación"
+    },
+    "dialog": {
+      "approveTitle": "Aprobar registro y enviar invitación",
+      "rejectTitle": "Rechazar registro",
+      "approveDescription": "Aprobando la solicitud de registro de <strong>{email}</strong> ({company}). Recibirá un correo electrónico para configurar su contraseña.",
+      "rejectDescription": "Por favor, indica un motivo para rechazar la solicitud de <strong>{email}</strong> ({company}).",
+      "rejectLabel": "Motivo del rechazo",
+      "rejectPlaceholder": "Ingresa el motivo del rechazo..."
+    },
+    "toast": {
+      "errorTitle": "Error",
+      "fetchError": "No se pudieron obtener las solicitudes de registro",
+      "partialSuccessTitle": "Éxito parcial",
+      "successTitle": "Éxito",
+      "approveSuccess": "¡Solicitud aprobada! El usuario recibirá un correo para configurar su contraseña.",
+      "approveError": "No se pudo aprobar la solicitud de registro",
+      "rejectError": "No se pudo rechazar la solicitud",
+      "rejectSuccess": "Solicitud de registro rechazada"
+    }
   },
   "products": {
     "title": "Productos",
