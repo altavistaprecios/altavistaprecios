@@ -7,8 +7,8 @@ import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { DataTableShell } from '@/components/ui/data-table-shell'
 import { PriceHistory } from '@/lib/models/price-history'
-import { format } from 'date-fns'
 import { Search, TrendingUp, TrendingDown, Minus } from 'lucide-react'
+import { useTranslations, useFormatter } from 'next-intl'
 
 interface PriceHistoryTableProps {
   history: PriceHistory[]
@@ -17,6 +17,8 @@ interface PriceHistoryTableProps {
 export function PriceHistoryTable({ history }: PriceHistoryTableProps) {
   const [searchTerm, setSearchTerm] = useState('')
   const [filterType, setFilterType] = useState<'all' | 'increase' | 'decrease' | 'no-change'>('all')
+  const t = useTranslations('clientHistoryTable')
+  const formatter = useFormatter()
 
   const filteredHistory = history.filter(item => {
     const matchesSearch =
@@ -56,18 +58,24 @@ export function PriceHistoryTable({ history }: PriceHistoryTableProps) {
     if (diff > 0) {
       return (
         <Badge variant="destructive" className="ml-2">
-          +${diff.toFixed(2)} ({percentChange}%)
+          {t('changeIncrease', {
+            amount: formatter.number(diff, { style: 'currency', currency: 'USD' }),
+            percent: percentChange,
+          })}
         </Badge>
       )
     }
     if (diff < 0) {
       return (
         <Badge className="ml-2 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-300 dark:bg-emerald-900 dark:bg-emerald-950 dark:text-emerald-100 dark:text-emerald-200">
-          -${Math.abs(diff).toFixed(2)} ({percentChange}%)
+          {t('changeDecrease', {
+            amount: formatter.number(Math.abs(diff), { style: 'currency', currency: 'USD' }),
+            percent: percentChange,
+          })}
         </Badge>
       )
     }
-    return <Badge variant="secondary" className="ml-2">No change</Badge>
+    return <Badge variant="secondary" className="ml-2">{t('changeNone')}</Badge>
   }
 
   return (
@@ -77,7 +85,7 @@ export function PriceHistoryTable({ history }: PriceHistoryTableProps) {
           <div className="relative flex-1 max-w-sm">
             <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
-              placeholder="Search by product or client..."
+              placeholder={t('searchPlaceholder')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="h-9 pl-9"
@@ -85,48 +93,50 @@ export function PriceHistoryTable({ history }: PriceHistoryTableProps) {
           </div>
           <Select value={filterType} onValueChange={(value: any) => setFilterType(value)}>
             <SelectTrigger className="h-9 w-[180px]">
-              <SelectValue placeholder="Filter by change" />
+              <SelectValue placeholder={t('filterPlaceholder')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Changes</SelectItem>
-              <SelectItem value="increase">Price Increases</SelectItem>
-              <SelectItem value="decrease">Price Decreases</SelectItem>
-              <SelectItem value="no-change">No Change</SelectItem>
+              <SelectItem value="all">{t('filters.all')}</SelectItem>
+              <SelectItem value="increase">{t('filters.increase')}</SelectItem>
+              <SelectItem value="decrease">{t('filters.decrease')}</SelectItem>
+              <SelectItem value="no-change">{t('filters.none')}</SelectItem>
             </SelectContent>
           </Select>
         </>
       }
       footerLeft={
         <span>
-          Showing {filteredHistory.length} of {history.length} change
-          {history.length === 1 ? '' : 's'}
+          {t('footerShowing', {
+            filtered: filteredHistory.length,
+            total: history.length,
+          })}
         </span>
       }
     >
       <Table>
         <TableHeader className="sticky top-0 z-10 bg-muted/60 backdrop-blur supports-[backdrop-filter]:bg-muted/80">
           <TableRow>
-            <TableHead>Date</TableHead>
-            <TableHead>Product</TableHead>
-            <TableHead>Client</TableHead>
-            <TableHead className="text-right">Old Price</TableHead>
-            <TableHead className="text-right">New Price</TableHead>
-            <TableHead>Change</TableHead>
-            <TableHead>Changed By</TableHead>
+            <TableHead>{t('columns.date')}</TableHead>
+            <TableHead>{t('columns.product')}</TableHead>
+            <TableHead>{t('columns.client')}</TableHead>
+            <TableHead className="text-right">{t('columns.oldPrice')}</TableHead>
+            <TableHead className="text-right">{t('columns.newPrice')}</TableHead>
+            <TableHead>{t('columns.change')}</TableHead>
+            <TableHead>{t('columns.changedBy')}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {filteredHistory.length === 0 ? (
             <TableRow>
               <TableCell colSpan={7} className="h-24 text-center text-muted-foreground">
-                No price history found
+                {t('empty')}
               </TableCell>
             </TableRow>
           ) : (
             filteredHistory.map((item) => (
               <TableRow key={item.id}>
                 <TableCell>
-                  {format(new Date(item.changed_at), 'MMM d, yyyy')}
+                  {formatter.dateTime(new Date(item.changed_at), { dateStyle: 'medium' })}
                 </TableCell>
                 <TableCell>
                   <div>
@@ -136,12 +146,12 @@ export function PriceHistoryTable({ history }: PriceHistoryTableProps) {
                     </p>
                   </div>
                 </TableCell>
-                <TableCell>{item.client_name || '-'}</TableCell>
+                <TableCell>{item.client_name || t('unknownClient')}</TableCell>
                 <TableCell className="text-right">
-                  ${item.old_price.toFixed(2)}
+                  {formatter.number(item.old_price, { style: 'currency', currency: 'USD' })}
                 </TableCell>
                 <TableCell className="text-right">
-                  ${item.new_price.toFixed(2)}
+                  {formatter.number(item.new_price, { style: 'currency', currency: 'USD' })}
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center">
