@@ -10,18 +10,21 @@ import { Search, Download } from 'lucide-react'
 import { toast } from 'sonner'
 import { generateCatalogPDF, prepareProductsForPDF } from '@/lib/pdf/generate-catalog-pdf'
 import { useAuth } from '@/lib/hooks/use-auth'
+import { useTranslations } from 'next-intl'
 
 interface ClientSiteHeaderProps {
   title?: string
 }
 
-function ClientSiteHeaderContent({ title = "Client Portal" }: ClientSiteHeaderProps) {
+function ClientSiteHeaderContent({ title }: ClientSiteHeaderProps) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const [searchValue, setSearchValue] = useState(searchParams.get('q') || '')
   const [isExporting, setIsExporting] = useState(false)
   const { user } = useAuth()
+  const t = useTranslations('clientHeader')
+  const resolvedTitle = title ?? t('defaultTitle')
 
   // Update search value when URL params change
   useEffect(() => {
@@ -57,16 +60,16 @@ function ClientSiteHeaderContent({ title = "Client Portal" }: ClientSiteHeaderPr
 
       // Determine which products to export based on current page
       let categoryFilter = ''
-      let categoryTitle = 'Product Catalog'
+      let categoryTitle = t('pdf.defaultTitle')
 
       if (pathname.includes('monofocales-future-x')) {
         categoryFilter = 'future-x'
-        categoryTitle = 'Monofocales Future-X'
+        categoryTitle = t('pdf.futureX')
       } else if (pathname.includes('monofocales-terminados')) {
         categoryFilter = 'terminados'
-        categoryTitle = 'Monofocales Terminados'
+        categoryTitle = t('pdf.terminados')
       } else if (pathname.includes('/client/products')) {
-        categoryTitle = 'All Products'
+        categoryTitle = t('pdf.allProducts')
       }
 
       // Fetch products and client prices
@@ -82,7 +85,7 @@ function ClientSiteHeaderContent({ title = "Client Portal" }: ClientSiteHeaderPr
       const clientPrices = pricesData.data || []
 
       if (products.length === 0) {
-        toast.error('No products to export')
+        toast.error(t('export.empty'))
         return
       }
 
@@ -99,10 +102,10 @@ function ClientSiteHeaderContent({ title = "Client Portal" }: ClientSiteHeaderPr
         categoryTitle,
       })
 
-      toast.success('Catalog exported successfully')
+      toast.success(t('export.success'))
     } catch (error) {
       console.error('Failed to export catalog:', error)
-      toast.error('Failed to export catalog')
+      toast.error(t('export.error'))
     } finally {
       setIsExporting(false)
     }
@@ -116,7 +119,7 @@ function ClientSiteHeaderContent({ title = "Client Portal" }: ClientSiteHeaderPr
           orientation="vertical"
           className="mx-2 data-[orientation=vertical]:h-4"
         />
-        <h1 className="text-base font-medium">{title}</h1>
+        <h1 className="text-base font-medium">{resolvedTitle}</h1>
 
         {/* Global Search and Export - only show on product pages */}
         {(pathname.includes('/client/products') ||
@@ -127,7 +130,7 @@ function ClientSiteHeaderContent({ title = "Client Portal" }: ClientSiteHeaderPr
               <div className="relative">
                 <Search className="absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
-                  placeholder="Filter products..."
+                  placeholder={t('searchPlaceholder')}
                   value={searchValue}
                   onChange={(e) => handleSearchChange(e.target.value)}
                   className="h-9 w-full pl-8"
@@ -143,7 +146,7 @@ function ClientSiteHeaderContent({ title = "Client Portal" }: ClientSiteHeaderPr
                 className="h-9"
               >
                 <Download className="h-4 w-4 mr-2" />
-                {isExporting ? 'Generating...' : 'Export Catalog'}
+                {isExporting ? t('export.generating') : t('export.cta')}
               </Button>
             </div>
           </>
@@ -156,19 +159,26 @@ function ClientSiteHeaderContent({ title = "Client Portal" }: ClientSiteHeaderPr
 // Export wrapper component with Suspense boundary
 export function ClientSiteHeader(props: ClientSiteHeaderProps) {
   return (
-    <Suspense fallback={
-      <header className="group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 flex h-12 shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear">
-        <div className="flex w-full items-center gap-1 px-4 lg:gap-2 lg:px-6">
-          <SidebarTrigger className="-ml-1" />
-          <Separator
-            orientation="vertical"
-            className="mx-2 data-[orientation=vertical]:h-4"
-          />
-          <h1 className="text-base font-medium">{props.title || "Client Portal"}</h1>
-        </div>
-      </header>
-    }>
+    <Suspense fallback={<ClientSiteHeaderFallback {...props} />}>
       <ClientSiteHeaderContent {...props} />
     </Suspense>
+  )
+}
+
+function ClientSiteHeaderFallback({ title }: ClientSiteHeaderProps) {
+  const t = useTranslations('clientHeader')
+  const resolvedTitle = title ?? t('defaultTitle')
+
+  return (
+    <header className="group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 flex h-12 shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear">
+      <div className="flex w-full items-center gap-1 px-4 lg:gap-2 lg:px-6">
+        <SidebarTrigger className="-ml-1" />
+        <Separator
+          orientation="vertical"
+          className="mx-2 data-[orientation=vertical]:h-4"
+        />
+        <h1 className="text-base font-medium">{resolvedTitle}</h1>
+      </div>
+    </header>
   )
 }

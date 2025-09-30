@@ -15,6 +15,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { CheckCircle2, AlertCircle } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
+import { useTranslations } from 'next-intl'
 
 export default function SetupPasswordPage() {
   const router = useRouter()
@@ -26,6 +27,7 @@ export default function SetupPasswordPage() {
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
   const [isValidToken, setIsValidToken] = useState(true)
+  const t = useTranslations('setupPassword')
 
   useEffect(() => {
     // Check if we have a valid session/token
@@ -65,12 +67,12 @@ export default function SetupPasswordPage() {
     setError(null)
 
     if (password !== confirmPassword) {
-      setError('Passwords do not match')
+      setError(t('errors.mismatch'))
       return
     }
 
     if (password.length < 8) {
-      setError('Password must be at least 8 characters long')
+      setError(t('errors.minLength'))
       return
     }
 
@@ -112,8 +114,8 @@ export default function SetupPasswordPage() {
 
       setSuccess(true)
       toast({
-        title: 'Success',
-        description: 'Your password has been set successfully! Logging you in...',
+        title: t('toast.title'),
+        description: t('toast.description'),
       })
 
       // Determine the redirect path based on user role
@@ -135,10 +137,9 @@ export default function SetupPasswordPage() {
             <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-destructive/10">
               <AlertCircle className="h-6 w-6 text-destructive" />
             </div>
-            <CardTitle>Invalid or Expired Link</CardTitle>
+            <CardTitle>{t('invalid.title')}</CardTitle>
             <CardDescription className="mt-2">
-              This password setup link is invalid or has expired.
-              Please contact your administrator for assistance.
+              {t('invalid.description')}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -147,7 +148,7 @@ export default function SetupPasswordPage() {
               variant="outline"
               onClick={() => router.push('/login')}
             >
-              Return to Login
+              {t('invalid.action')}
             </Button>
           </CardContent>
         </Card>
@@ -163,10 +164,8 @@ export default function SetupPasswordPage() {
             <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
               <CheckCircle2 className="h-6 w-6 text-primary" />
             </div>
-            <CardTitle>Password Set Successfully!</CardTitle>
-            <CardDescription className="mt-2">
-              Your account is now active. Redirecting to your dashboard...
-            </CardDescription>
+            <CardTitle>{t('success.title')}</CardTitle>
+            <CardDescription className="mt-2">{t('success.description')}</CardDescription>
           </CardHeader>
         </Card>
       </div>
@@ -177,39 +176,37 @@ export default function SetupPasswordPage() {
     <div className="min-h-screen flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle>Welcome to AltaVista Optics!</CardTitle>
-          <CardDescription>
-            Your registration has been approved. Please create a secure password to activate your account.
-          </CardDescription>
+          <CardTitle>{t('intro.title')}</CardTitle>
+          <CardDescription>{t('intro.description')}</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit}>
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="password">New Password</Label>
+                <Label htmlFor="password">{t('form.passwordLabel')}</Label>
                 <Input
                   id="password"
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter your password"
+                  placeholder={t('form.passwordPlaceholder')}
                   required
                   disabled={loading}
                   minLength={8}
                 />
                 <p className="text-xs text-muted-foreground">
-                  Must be at least 8 characters long
+                  {t('form.passwordHelper')}
                 </p>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="confirm-password">Confirm Password</Label>
+                <Label htmlFor="confirm-password">{t('form.confirmLabel')}</Label>
                 <Input
                   id="confirm-password"
                   type="password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="Confirm your password"
+                  placeholder={t('form.confirmPlaceholder')}
                   required
                   disabled={loading}
                   minLength={8}
@@ -223,7 +220,7 @@ export default function SetupPasswordPage() {
               )}
 
               <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? 'Setting Password...' : 'Set Password & Continue'}
+                {loading ? t('form.submitting') : t('form.submit')}
               </Button>
             </div>
           </form>

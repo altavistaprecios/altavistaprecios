@@ -19,9 +19,10 @@ import {
 } from 'lucide-react'
 import { useAuth } from '@/lib/hooks/use-auth'
 import { useRouter } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 
 interface SidebarItem {
-  title: string
+  titleKey: string
   href: string
   icon: React.ElementType
   adminOnly?: boolean
@@ -30,42 +31,42 @@ interface SidebarItem {
 
 const sidebarItems: SidebarItem[] = [
   {
-    title: 'Dashboard',
+    titleKey: 'dashboard',
     href: '/dashboard',
     icon: Home,
   },
   {
-    title: 'Products',
+    titleKey: 'products',
     href: '/admin/products',
     icon: Package,
     adminOnly: true,
   },
   {
-    title: 'Products',
+    titleKey: 'products',
     href: '/client/products',
     icon: Package,
     clientOnly: true,
   },
   {
-    title: 'Clients',
+    titleKey: 'clients',
     href: '/admin/clients',
     icon: Users,
     adminOnly: true,
   },
   {
-    title: 'Pricing',
+    titleKey: 'pricing',
     href: '/client/pricing',
     icon: DollarSign,
     clientOnly: true,
   },
   {
-    title: 'Price History',
+    titleKey: 'priceHistory',
     href: '/admin/history',
     icon: History,
     adminOnly: true,
   },
   {
-    title: 'History',
+    titleKey: 'history',
     href: '/client/history',
     icon: History,
     clientOnly: true,
@@ -95,12 +96,16 @@ export default function DashboardLayout({
     router.push('/login')
   }
 
+  const navT = useTranslations('nav')
+  const sidebarT = useTranslations('sidebar')
+  const commonT = useTranslations('common')
+
   const SidebarContent = () => (
     <>
       <div className="px-6 py-4">
-        <h2 className="text-lg font-semibold">Optics Factory</h2>
+        <h2 className="text-lg font-semibold">{sidebarT('brand')}</h2>
         <p className="text-sm text-muted-foreground">
-          {isAdmin ? 'Admin Portal' : 'Client Portal'}
+          {isAdmin ? sidebarT('adminPortal') : sidebarT('clientPortal')}
         </p>
       </div>
       <nav className="flex-1 space-y-1 px-2 py-4">
@@ -128,7 +133,7 @@ export default function DashboardLayout({
                     : 'text-zinc-500 group-hover:text-zinc-700 dark:text-zinc-400 dark:group-hover:text-zinc-300'
                 )}
               />
-              {item.title}
+              {navT(item.titleKey)}
             </Link>
           )
         })}
@@ -141,7 +146,7 @@ export default function DashboardLayout({
           onClick={() => router.push('/settings')}
         >
           <Settings className="mr-3 h-5 w-5" />
-          Settings
+          {sidebarT('settings')}
         </Button>
         <Button
           variant="ghost"
@@ -150,7 +155,7 @@ export default function DashboardLayout({
           onClick={handleSignOut}
         >
           <LogOut className="mr-3 h-5 w-5" />
-          Sign Out
+          {sidebarT('signOut')}
         </Button>
       </div>
     </>
@@ -186,7 +191,7 @@ export default function DashboardLayout({
             onClick={() => setSidebarOpen(true)}
           >
             <Menu className="h-6 w-6" />
-            <span className="sr-only">Toggle sidebar</span>
+            <span className="sr-only">{commonT('toggleSidebar')}</span>
           </Button>
           <div className="flex flex-1 items-center justify-between">
             <h1 className="text-lg font-semibold">{user?.email}</h1>

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import { Package, Sparkles } from "lucide-react"
 import Link from "next/link"
+import { useTranslations } from "next-intl"
 
 import {
   Card,
@@ -27,6 +28,7 @@ export function ClientStats() {
     laboratoryLenses: 0,
   })
   const [loading, setLoading] = useState(true)
+  const t = useTranslations("clientStats")
 
   useEffect(() => {
     fetchClientStats()
@@ -92,11 +94,11 @@ export function ClientStats() {
       <Link href="/client/monofocales-future-x" className="transition-transform hover:scale-[1.02]">
         <Card className="cursor-pointer hover:shadow-lg transition-shadow bg-gradient-to-t from-primary/5 to-card">
           <CardHeader className="relative">
-            <CardDescription>MONOFOCALES FUTURE-X</CardDescription>
+            <CardDescription>{t("futureX.title")}</CardDescription>
             <CardTitle className="text-3xl font-semibold tabular-nums">
               {stats.futureXProducts}
               <span className="text-sm font-normal text-muted-foreground ml-2">
-                available products
+                {t("futureX.availableLabel", { count: stats.futureXProducts })}
               </span>
             </CardTitle>
             <div className="absolute right-4 top-4">
@@ -105,12 +107,12 @@ export function ClientStats() {
           </CardHeader>
           <CardFooter className="flex-col items-start gap-1 text-sm">
             <div className="flex gap-4 font-medium">
-              <span>{stats.stockLenses} Stock Lenses</span>
+              <span>{t("futureX.stockLabel", { count: stats.stockLenses })}</span>
               <span className="text-muted-foreground">•</span>
-              <span>{stats.laboratoryLenses} Laboratory Lenses</span>
+              <span>{t("futureX.labLabel", { count: stats.laboratoryLenses })}</span>
             </div>
             <div className="text-muted-foreground">
-              Click to view available Future-X products
+              {t("futureX.cta")}
             </div>
           </CardFooter>
         </Card>
@@ -119,11 +121,11 @@ export function ClientStats() {
       <Link href="/client/monofocales-terminados" className="transition-transform hover:scale-[1.02]">
         <Card className="cursor-pointer hover:shadow-lg transition-shadow bg-gradient-to-t from-primary/5 to-card">
           <CardHeader className="relative">
-            <CardDescription>MONOFOCALES TERMINADOS</CardDescription>
+            <CardDescription>{t("terminados.title")}</CardDescription>
             <CardTitle className="text-3xl font-semibold tabular-nums">
               {stats.terminadosProducts}
               <span className="text-sm font-normal text-muted-foreground ml-2">
-                available products
+                {t("terminados.availableLabel", { count: stats.terminadosProducts })}
               </span>
             </CardTitle>
             <div className="absolute right-4 top-4">
@@ -132,10 +134,10 @@ export function ClientStats() {
           </CardHeader>
           <CardFooter className="flex-col items-start gap-1 text-sm">
             <div className="flex gap-2 font-medium">
-              ClearView 1.60 DuraVision
+              {t("terminados.highlight")}
             </div>
             <div className="text-muted-foreground">
-              Click to view available finished products
+              {t("terminados.cta")}
             </div>
           </CardFooter>
         </Card>
