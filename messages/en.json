@@ -396,6 +396,32 @@
     "emptySearch": "No products found matching your search",
     "emptyDefault": "No products available at the moment"
   },
+  "clientFutureX": {
+    "breadcrumbDashboard": "Dashboard",
+    "breadcrumbProducts": "Products",
+    "title": "Monofocales Future-X",
+    "subtitle": "Premium single vision lenses - Stock and Laboratory options",
+    "badgeLoading": "Loading...",
+    "badgeCount": "{count, plural, one {# product} other {# products}}",
+    "emptyDefault": "No Future-X products available at the moment",
+    "aria": {
+      "grid": "Grid view",
+      "list": "List view"
+    }
+  },
+  "clientTerminados": {
+    "breadcrumbDashboard": "Dashboard",
+    "breadcrumbProducts": "Products",
+    "title": "Monofocales Terminados",
+    "subtitle": "Finished single vision lenses ready for immediate delivery",
+    "badgeLoading": "Loading...",
+    "badgeCount": "{count, plural, one {# product} other {# products}}",
+    "emptyDefault": "No Terminados products available at the moment",
+    "aria": {
+      "grid": "Grid view",
+      "list": "List view"
+    }
+  },
   "productTable": {
     "emptyTitle": "No products found",
     "emptyDescription": "Add your first product to get started",

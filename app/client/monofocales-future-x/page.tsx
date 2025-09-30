@@ -38,7 +38,9 @@ function ClientMonofocalesFutureXPageContent() {
   const { user } = useAuth()
   const searchParams = useSearchParams()
   const searchQuery = searchParams.get('q') || ''
-  const t = useTranslations('clientProducts')
+  const tProducts = useTranslations('clientProducts')
+  const tFutureX = useTranslations('clientFutureX')
+  const tHeader = useTranslations('clientHeader')
 
   useEffect(() => {
     fetchProducts()
@@ -75,7 +77,7 @@ function ClientMonofocalesFutureXPageContent() {
       setProducts(futureXProducts)
     } catch (error) {
       console.error('Failed to fetch products:', error)
-      toast.error(t('toastLoadError'))
+      toast.error(tProducts('toastLoadError'))
     } finally {
       setLoading(false)
     }
@@ -124,14 +126,14 @@ function ClientMonofocalesFutureXPageContent() {
         <div className="px-6 pt-6">
           <div className="flex items-center gap-3">
             <h1 className="text-3xl font-bold tracking-tight">
-              Monofocales Future-X
+              {tFutureX('title')}
             </h1>
             <Badge variant="secondary" className="px-2.5 py-0.5">
-              Loading...
+              {tFutureX('badgeLoading')}
             </Badge>
           </div>
           <p className="text-muted-foreground">
-            Premium single vision lenses - Stock and Laboratory options
+            {tFutureX('subtitle')}
           </p>
         </div>
         <div className="px-6">
@@ -143,161 +145,164 @@ function ClientMonofocalesFutureXPageContent() {
 
   return (
     <div className="flex flex-1 flex-col space-y-6">
-        {/* Breadcrumb Navigation */}
-        <div className="px-6 pt-6">
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink href="/client">Dashboard</BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbLink href="/client/products">Products</BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbPage>Monofocales Future-X</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
-        </div>
+      {/* Breadcrumb Navigation */}
+      <div className="px-6 pt-6">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/client">{tFutureX('breadcrumbDashboard')}</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/client/products">{tFutureX('breadcrumbProducts')}</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>{tFutureX('title')}</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+      </div>
 
-        {/* Enhanced Header */}
-        <div className="px-6 space-y-1">
-          <div className="flex items-center gap-3">
-            <h1 className="text-3xl font-bold tracking-tight">
-              Monofocales Future-X
-            </h1>
-            <Badge variant="secondary" className="px-2.5 py-0.5">
-              {filteredProducts.length} products
-            </Badge>
+      {/* Enhanced Header */}
+      <div className="px-6 space-y-1">
+        <div className="flex items-center gap-3">
+          <h1 className="text-3xl font-bold tracking-tight">
+            {tFutureX('title')}
+          </h1>
+          <Badge variant="secondary" className="px-2.5 py-0.5">
+            {tFutureX('badgeCount', { count: filteredProducts.length })}
+          </Badge>
+        </div>
+        <p className="text-muted-foreground">
+          {tFutureX('subtitle')}
+        </p>
+      </div>
+
+      <Separator className="mx-6" />
+
+      {/* Main Content */}
+      <div className="px-6 pb-6 space-y-4">
+        {/* Toolbar for grid view only */}
+        {viewMode === 'grid' && (
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="relative flex-1 max-w-sm">
+              <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                placeholder={tHeader('searchPlaceholder')}
+                value={searchQuery}
+                onChange={(e) => {
+                  const params = new URLSearchParams(window.location.search)
+                  if (e.target.value) {
+                    params.set('q', e.target.value)
+                  } else {
+                    params.delete('q')
+                  }
+                  const newUrl = `${window.location.pathname}${params.toString() ? `?${params.toString()}` : ''}`
+                  window.history.replaceState(null, '', newUrl)
+                }}
+                className="h-9 w-full pl-8"
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <ToggleGroup
+                type="single"
+                value={viewMode}
+                onValueChange={(v) => v && setViewMode(v as 'grid' | 'list')}
+                className="h-9"
+              >
+                <ToggleGroupItem value="grid" aria-label={tFutureX('aria.grid')} className="h-9 px-3">
+                  <Grid3x3 className="h-4 w-4" />
+                </ToggleGroupItem>
+                <ToggleGroupItem value="list" aria-label={tFutureX('aria.list')} className="h-9 px-3">
+                  <List className="h-4 w-4" />
+                </ToggleGroupItem>
+              </ToggleGroup>
+            </div>
           </div>
-          <p className="text-muted-foreground">
-            Premium single vision lenses - Stock and Laboratory options
-          </p>
-        </div>
+        )}
 
-        <Separator className="mx-6" />
-
-        {/* Main Content */}
-        <div className="px-6 pb-6 space-y-4">
-          {/* Toolbar for grid view only */}
-          {viewMode === 'grid' && (
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <div className="relative flex-1 max-w-sm">
-                <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <Input
-                  placeholder="Filter products..."
-                  value={searchQuery}
-                  onChange={(e) => {
-                    const params = new URLSearchParams(window.location.search)
-                    if (e.target.value) {
-                      params.set('q', e.target.value)
-                    } else {
-                      params.delete('q')
-                    }
-                    const newUrl = `${window.location.pathname}${params.toString() ? `?${params.toString()}` : ''}`
-                    window.history.replaceState(null, '', newUrl)
-                  }}
-                  className="h-9 w-full pl-8"
-                />
+        {/* Product Display */}
+        {filteredProducts.length === 0 ? (
+          <Card>
+            <CardContent className="flex items-center justify-center h-32">
+              <div className="text-center text-muted-foreground">
+                {searchQuery ? tProducts('emptySearch') : tFutureX('emptyDefault')}
               </div>
-              <div className="flex items-center gap-2">
+            </CardContent>
+          </Card>
+        ) : viewMode === 'grid' ? (
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {filteredProducts.map((product) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                categories={categories}
+                onView={handleViewProduct}
+                isAdmin={false}
+              />
+            ))}
+          </div>
+        ) : (
+          <Card>
+            <ProductTable
+              products={filteredProducts}
+              categories={categories}
+              onEdit={handleEditPrice}
+              showExportButton={false}
+              viewToggle={
                 <ToggleGroup
                   type="single"
                   value={viewMode}
                   onValueChange={(v) => v && setViewMode(v as 'grid' | 'list')}
                   className="h-9"
                 >
-                  <ToggleGroupItem value="grid" aria-label="Grid view" className="h-9 px-3">
+                  <ToggleGroupItem value="grid" aria-label={tFutureX('aria.grid')} className="h-9 px-3">
                     <Grid3x3 className="h-4 w-4" />
                   </ToggleGroupItem>
-                  <ToggleGroupItem value="list" aria-label="List view" className="h-9 px-3">
+                  <ToggleGroupItem value="list" aria-label={tFutureX('aria.list')} className="h-9 px-3">
                     <List className="h-4 w-4" />
                   </ToggleGroupItem>
                 </ToggleGroup>
-              </div>
-            </div>
-          )}
+              }
+            />
+          </Card>
+        )}
+      </div>
 
-          {/* Product Display */}
-          {filteredProducts.length === 0 ? (
-            <Card>
-              <CardContent className="flex items-center justify-center h-32">
-                <div className="text-center text-muted-foreground">
-                  {searchQuery ? 'No products found matching your search' : 'No Future-X products available at the moment'}
-                </div>
-              </CardContent>
-            </Card>
-          ) : viewMode === 'grid' ? (
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {filteredProducts.map((product) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  categories={categories}
-                  onView={handleViewProduct}
-                  isAdmin={false}
-                />
-              ))}
-            </div>
-          ) : (
-            <Card>
-              <ProductTable
-                products={filteredProducts}
-                categories={categories}
-                onEdit={handleEditPrice}
-                showExportButton={false}
-                viewToggle={
-                  <ToggleGroup
-                    type="single"
-                    value={viewMode}
-                    onValueChange={(v) => v && setViewMode(v as 'grid' | 'list')}
-                    className="h-9"
-                  >
-                    <ToggleGroupItem value="grid" aria-label="Grid view" className="h-9 px-3">
-                      <Grid3x3 className="h-4 w-4" />
-                    </ToggleGroupItem>
-                    <ToggleGroupItem value="list" aria-label="List view" className="h-9 px-3">
-                      <List className="h-4 w-4" />
-                    </ToggleGroupItem>
-                  </ToggleGroup>
-                }
-              />
-            </Card>
-          )}
-        </div>
+      <PriceEditDialog
+        open={!!editingProduct}
+        onClose={() => setEditingProduct(null)}
+        product={editingProduct}
+        currentPrice={editingProduct ? getCurrentPrice(editingProduct.id) : null}
+        onSave={handlePriceSaved}
+      />
 
-        <PriceEditDialog
-          open={!!editingProduct}
-          onClose={() => setEditingProduct(null)}
-          product={editingProduct}
-          currentPrice={editingProduct ? getCurrentPrice(editingProduct.id) : null}
-          onSave={handlePriceSaved}
-        />
-
-        <ProductSpecificationsDialog
-          product={viewingProduct}
-          open={!!viewingProduct}
-          onOpenChange={(open) => !open && setViewingProduct(null)}
-        />
+      <ProductSpecificationsDialog
+        product={viewingProduct}
+        open={!!viewingProduct}
+        onOpenChange={(open) => !open && setViewingProduct(null)}
+      />
     </div>
   )
 }
 
 // Export default component with Suspense boundary
 export default function ClientMonofocalesFutureXPage() {
+  const tProducts = useTranslations('clientProducts')
+  const tFutureX = useTranslations('clientFutureX')
+
   return (
     <Suspense fallback={
       <div className="flex flex-1 flex-col space-y-6">
         <div className="px-6 pt-6">
           <div className="flex items-center gap-3">
             <h1 className="text-3xl font-bold tracking-tight">
-              Monofocales Future-X
+              {tFutureX('title')}
             </h1>
           </div>
           <p className="text-muted-foreground">
-            Loading products...
+            {tProducts('loading')}
           </p>
         </div>
       </div>

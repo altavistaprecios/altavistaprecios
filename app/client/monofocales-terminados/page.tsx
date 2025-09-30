@@ -38,7 +38,9 @@ function ClientMonofocalesTerminadosPageContent() {
   const { user } = useAuth()
   const searchParams = useSearchParams()
   const searchQuery = searchParams.get('q') || ''
-  const t = useTranslations('clientProducts')
+  const tProducts = useTranslations('clientProducts')
+  const tTerminados = useTranslations('clientTerminados')
+  const tHeader = useTranslations('clientHeader')
 
   useEffect(() => {
     fetchProducts()
@@ -75,7 +77,7 @@ function ClientMonofocalesTerminadosPageContent() {
       }
     } catch (error) {
       console.error('Failed to fetch products:', error)
-      toast.error(t('toastLoadError'))
+      toast.error(tProducts('toastLoadError'))
     } finally {
       setLoading(false)
     }
@@ -124,14 +126,14 @@ function ClientMonofocalesTerminadosPageContent() {
         <div className="px-6 pt-6">
           <div className="flex items-center gap-3">
             <h1 className="text-3xl font-bold tracking-tight">
-              Monofocales Terminados
+              {tTerminados('title')}
             </h1>
             <Badge variant="secondary" className="px-2.5 py-0.5">
-              Loading...
+              {tTerminados('badgeLoading')}
             </Badge>
           </div>
           <p className="text-muted-foreground">
-            Finished single vision lenses ready for immediate delivery
+            {tTerminados('subtitle')}
           </p>
         </div>
         <div className="px-6">
@@ -148,15 +150,15 @@ function ClientMonofocalesTerminadosPageContent() {
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
-              <BreadcrumbLink href="/client">Dashboard</BreadcrumbLink>
+              <BreadcrumbLink href="/client">{tTerminados('breadcrumbDashboard')}</BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink href="/client/products">Products</BreadcrumbLink>
+              <BreadcrumbLink href="/client/products">{tTerminados('breadcrumbProducts')}</BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>Monofocales Terminados</BreadcrumbPage>
+              <BreadcrumbPage>{tTerminados('title')}</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
@@ -166,14 +168,14 @@ function ClientMonofocalesTerminadosPageContent() {
       <div className="px-6 space-y-1">
         <div className="flex items-center gap-3">
           <h1 className="text-3xl font-bold tracking-tight">
-            Monofocales Terminados
+            {tTerminados('title')}
           </h1>
           <Badge variant="secondary" className="px-2.5 py-0.5">
-            {filteredProducts.length} products
+            {tTerminados('badgeCount', { count: filteredProducts.length })}
           </Badge>
         </div>
         <p className="text-muted-foreground">
-          Finished single vision lenses ready for immediate delivery
+          {tTerminados('subtitle')}
         </p>
       </div>
 
@@ -187,7 +189,7 @@ function ClientMonofocalesTerminadosPageContent() {
             <div className="relative flex-1 max-w-sm">
               <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
-                placeholder="Filter products..."
+                placeholder={tHeader('searchPlaceholder')}
                 value={searchQuery}
                 onChange={(e) => {
                   const params = new URLSearchParams(window.location.search)
@@ -209,10 +211,10 @@ function ClientMonofocalesTerminadosPageContent() {
                 onValueChange={(v) => v && setViewMode(v as 'grid' | 'list')}
                 className="h-9"
               >
-                <ToggleGroupItem value="grid" aria-label="Grid view" className="h-9 px-3">
+                <ToggleGroupItem value="grid" aria-label={tTerminados('aria.grid')} className="h-9 px-3">
                   <Grid3x3 className="h-4 w-4" />
                 </ToggleGroupItem>
-                <ToggleGroupItem value="list" aria-label="List view" className="h-9 px-3">
+                <ToggleGroupItem value="list" aria-label={tTerminados('aria.list')} className="h-9 px-3">
                   <List className="h-4 w-4" />
                 </ToggleGroupItem>
               </ToggleGroup>
@@ -225,7 +227,7 @@ function ClientMonofocalesTerminadosPageContent() {
           <Card>
             <CardContent className="flex items-center justify-center h-32">
               <div className="text-center text-muted-foreground">
-                {searchQuery ? 'No products found matching your search' : 'No Terminados products available at the moment'}
+                {searchQuery ? tProducts('emptySearch') : tTerminados('emptyDefault')}
               </div>
             </CardContent>
           </Card>
@@ -255,10 +257,10 @@ function ClientMonofocalesTerminadosPageContent() {
                   onValueChange={(v) => v && setViewMode(v as 'grid' | 'list')}
                   className="h-9"
                 >
-                  <ToggleGroupItem value="grid" aria-label="Grid view" className="h-9 px-3">
+                  <ToggleGroupItem value="grid" aria-label={tTerminados('aria.grid')} className="h-9 px-3">
                     <Grid3x3 className="h-4 w-4" />
                   </ToggleGroupItem>
-                  <ToggleGroupItem value="list" aria-label="List view" className="h-9 px-3">
+                  <ToggleGroupItem value="list" aria-label={tTerminados('aria.list')} className="h-9 px-3">
                     <List className="h-4 w-4" />
                   </ToggleGroupItem>
                 </ToggleGroup>
@@ -287,17 +289,20 @@ function ClientMonofocalesTerminadosPageContent() {
 
 // Export default component with Suspense boundary
 export default function ClientMonofocalesTerminadosPage() {
+  const tProducts = useTranslations('clientProducts')
+  const tTerminados = useTranslations('clientTerminados')
+
   return (
     <Suspense fallback={
       <div className="flex flex-1 flex-col space-y-6">
         <div className="px-6 pt-6">
           <div className="flex items-center gap-3">
             <h1 className="text-3xl font-bold tracking-tight">
-              Monofocales Terminados
+              {tTerminados('title')}
             </h1>
           </div>
           <p className="text-muted-foreground">
-            Loading products...
+            {tProducts('loading')}
           </p>
         </div>
       </div>
