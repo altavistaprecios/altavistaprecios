@@ -289,7 +289,8 @@
   "clientDashboard": {
     "title": "¡Bienvenido de nuevo!",
     "subtitle": "{company} - Consulta tus precios personalizados y realiza pedidos",
-    "defaultCompany": "Tu empresa"
+    "defaultCompany": "Tu empresa",
+    "adPlaceholder": "Espacio publicitario"
   },
   "clientStats": {
     "futureX": {

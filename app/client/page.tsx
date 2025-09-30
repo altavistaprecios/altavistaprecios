@@ -4,6 +4,7 @@ import { useTranslations } from 'next-intl'
 
 import { useAuth } from '@/components/providers/auth-provider'
 import { ClientStats } from '@/components/client-stats'
+import { Card, CardContent } from '@/components/ui/card'
 
 export default function ClientDashboardPage() {
   const { user } = useAuth()
@@ -21,6 +22,16 @@ export default function ClientDashboardPage() {
 
       <div className="px-4 lg:px-6">
         <ClientStats />
+      </div>
+
+      <div className="px-4 lg:px-6 mt-6">
+        <Card className="border-dashed bg-muted/20">
+          <CardContent className="flex items-center justify-center py-12">
+            <p className="text-sm text-muted-foreground">
+              {t('adPlaceholder')}
+            </p>
+          </CardContent>
+        </Card>
       </div>
     </div>
   )
