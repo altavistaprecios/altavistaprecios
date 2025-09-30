@@ -395,6 +395,51 @@
     "emptySearch": "No products found matching your search",
     "emptyDefault": "No products available at the moment"
   },
+  "productTable": {
+    "emptyTitle": "No products found",
+    "emptyDescription": "Add your first product to get started",
+    "emptyAction": "Add Product",
+    "filterPlaceholder": "Filter products...",
+    "bulkSelected": "{count, plural, one {# product selected} other {# products selected}}",
+    "bulkEdit": "Bulk Edit",
+    "bulkEditAria": "Bulk edit",
+    "bulkDelete": "Bulk Delete",
+    "bulkDeleteAria": "Bulk delete",
+    "import": "Import Products",
+    "export": "Export Catalog",
+    "addProduct": "Add Product",
+    "rowsPerPage": "Rows per page",
+    "paginationLabel": "Page {page} of {total}",
+    "footerSelected": "{selected} of {total} row(s) selected.",
+    "columns": {
+      "code": "Product Code",
+      "name": "Product Name",
+      "basePrice": "Base Price",
+      "category": "Category",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "emptyTable": "No products found",
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "aria": {
+      "first": "Go to first page",
+      "previous": "Go to previous page",
+      "next": "Go to next page",
+      "last": "Go to last page",
+      "selectAll": "Select all",
+      "selectProduct": "Select {product}",
+      "openRowMenu": "Open menu"
+    },
+    "menu": {
+      "title": "Actions",
+      "edit": "Edit",
+      "setPrice": "Set Price",
+      "delete": "Delete"
+    }
+  },
   "clientHeader": {
     "defaultTitle": "Client Portal",
     "searchPlaceholder": "Filter products...",

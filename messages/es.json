@@ -395,6 +395,51 @@
     "emptySearch": "No se encontraron productos que coincidan con tu búsqueda",
     "emptyDefault": "No hay productos disponibles por el momento"
   },
+  "productTable": {
+    "emptyTitle": "No se encontraron productos",
+    "emptyDescription": "Agrega tu primer producto para comenzar",
+    "emptyAction": "Agregar producto",
+    "filterPlaceholder": "Filtrar productos...",
+    "bulkSelected": "{count, plural, one {# producto seleccionado} other {# productos seleccionados}}",
+    "bulkEdit": "Edición masiva",
+    "bulkEditAria": "Edición masiva",
+    "bulkDelete": "Eliminar masivo",
+    "bulkDeleteAria": "Eliminar masivo",
+    "import": "Importar productos",
+    "export": "Exportar catálogo",
+    "addProduct": "Agregar producto",
+    "rowsPerPage": "Filas por página",
+    "paginationLabel": "Página {page} de {total}",
+    "footerSelected": "{selected} de {total} fila(s) seleccionadas.",
+    "columns": {
+      "code": "Código de producto",
+      "name": "Nombre del producto",
+      "basePrice": "Precio base",
+      "category": "Categoría",
+      "status": "Estado",
+      "actions": "Acciones"
+    },
+    "emptyTable": "No se encontraron productos",
+    "status": {
+      "active": "Activo",
+      "inactive": "Inactivo"
+    },
+    "aria": {
+      "first": "Ir a la primera página",
+      "previous": "Ir a la página anterior",
+      "next": "Ir a la página siguiente",
+      "last": "Ir a la última página",
+      "selectAll": "Seleccionar todo",
+      "selectProduct": "Seleccionar {product}",
+      "openRowMenu": "Abrir menú"
+    },
+    "menu": {
+      "title": "Acciones",
+      "edit": "Editar",
+      "setPrice": "Establecer precio",
+      "delete": "Eliminar"
+    }
+  },
   "clientHeader": {
     "defaultTitle": "Portal de Clientes",
     "searchPlaceholder": "Filtrar productos...",
