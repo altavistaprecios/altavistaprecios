@@ -18,7 +18,8 @@
     "confirm": "Confirmar",
     "yes": "Sí",
     "no": "No",
-    "processing": "Procesando..."
+    "processing": "Procesando...",
+    "toggleSidebar": "Mostrar/ocultar barra lateral"
   },
   "nav": {
     "dashboard": "Panel de Control",
@@ -75,7 +76,23 @@
     "contactName": "Nombre de contacto",
     "accountDisabled": "Tu cuenta ha sido deshabilitada. Por favor contacta a soporte para asistencia.",
     "pendingApproval": "Aprobación pendiente",
-    "pendingApprovalMessage": "Tu cuenta está esperando aprobación. Serás notificado una vez que haya sido revisada."
+    "pendingApprovalMessage": "Tu cuenta está esperando aprobación. Serás notificado una vez que haya sido revisada.",
+    "signupRequestTitle": "Solicitar acceso",
+    "signupRequestDescription": "Envía tu información para solicitar acceso a precios de clientes",
+    "signupRequestError": "No se pudo enviar la solicitud",
+    "signupRequestSubmitting": "Enviando solicitud...",
+    "signupRequestCta": "Solicitar acceso",
+    "companyNamePlaceholder": "Nombre de tu empresa",
+    "businessEmail": "Correo empresarial",
+    "businessEmailPlaceholder": "tu@empresa.com",
+    "businessEmailHelper": "Utiliza tu correo corporativo",
+    "phoneNumber": "Número de teléfono",
+    "phoneNumberPlaceholder": "+54 11 1234-5678",
+    "signupSuccessTitle": "¡Solicitud de registro recibida!",
+    "signupSuccessSubtitle": "Gracias por tu interés en AltaVista Optics.",
+    "signupSuccessBody": "Tu solicitud de registro ha sido enviada para revisión. Una vez aprobada por nuestro equipo, recibirás un correo con instrucciones para configurar tu contraseña y acceder a tu cuenta.",
+    "signupSuccessTimeline": "Esto suele demorar 1-2 días hábiles. Te avisaremos en <strong>{email}</strong>",
+    "signupSuccessReturn": "Volver al inicio de sesión"
   },
   "dashboard": {
     "title": "Panel de Control",
@@ -90,6 +107,38 @@
     "laboratoryLenses": "Lentes de Laboratorio",
     "clickToManageFutureX": "Haz clic para gestionar productos Future-X",
     "clickToManageFinished": "Haz clic para gestionar productos terminados"
+  },
+  "setupPassword": {
+    "intro": {
+      "title": "¡Bienvenido a AltaVista Optics!",
+      "description": "Tu registro ha sido aprobado. Crea una contraseña segura para activar tu cuenta."
+    },
+    "form": {
+      "passwordLabel": "Nueva contraseña",
+      "passwordPlaceholder": "Ingresa tu contraseña",
+      "passwordHelper": "Debe tener al menos 8 caracteres",
+      "confirmLabel": "Confirmar contraseña",
+      "confirmPlaceholder": "Confirma tu contraseña",
+      "submit": "Crear contraseña y continuar",
+      "submitting": "Creando contraseña..."
+    },
+    "errors": {
+      "mismatch": "Las contraseñas no coinciden",
+      "minLength": "La contraseña debe tener al menos 8 caracteres"
+    },
+    "toast": {
+      "title": "Éxito",
+      "description": "¡Tu contraseña se guardó correctamente! Iniciando sesión..."
+    },
+    "success": {
+      "title": "¡Contraseña creada!",
+      "description": "Tu cuenta ya está activa. Te redireccionaremos a tu panel..."
+    },
+    "invalid": {
+      "title": "Enlace inválido o vencido",
+      "description": "Este enlace para configurar la contraseña es inválido o ya venció. Contacta a tu administrador para recibir ayuda.",
+      "action": "Volver al inicio de sesión"
+    }
   },
   "adminRegistrations": {
     "title": "Solicitudes de Registro",
@@ -242,6 +291,21 @@
     "subtitle": "{company} - Consulta tus precios personalizados y realiza pedidos",
     "defaultCompany": "Tu empresa"
   },
+  "clientStats": {
+    "futureX": {
+      "title": "MONOFOCALES FUTURE-X",
+      "availableLabel": "{count, plural, one {producto disponible} other {productos disponibles}}",
+      "stockLabel": "{count, plural, one {# lente de stock} other {# lentes de stock}}",
+      "labLabel": "{count, plural, one {# lente de laboratorio} other {# lentes de laboratorio}}",
+      "cta": "Haz clic para ver los productos Future-X disponibles"
+    },
+    "terminados": {
+      "title": "MONOFOCALES TERMINADOS",
+      "availableLabel": "{count, plural, one {producto disponible} other {productos disponibles}}",
+      "highlight": "ClearView 1.60 DuraVision",
+      "cta": "Haz clic para ver los productos terminados disponibles"
+    }
+  },
   "clientHistory": {
     "title": "Historial de Precios",
     "description": "Sigue los cambios en tus precios personalizados con el tiempo",
@@ -306,10 +370,30 @@
     "emptySearch": "No se encontraron productos que coincidan con tu búsqueda",
     "emptyDefault": "No hay productos disponibles por el momento"
   },
+  "clientHeader": {
+    "defaultTitle": "Portal de Clientes",
+    "searchPlaceholder": "Filtrar productos...",
+    "export": {
+      "cta": "Exportar catálogo",
+      "generating": "Generando...",
+      "empty": "No hay productos para exportar",
+      "success": "Catálogo exportado correctamente",
+      "error": "No se pudo exportar el catálogo"
+    },
+    "pdf": {
+      "defaultTitle": "Catálogo de productos",
+      "futureX": "Monofocales Future-X",
+      "terminados": "Monofocales Terminados",
+      "allProducts": "Todos los productos"
+    }
+  },
   "sidebar": {
     "settings": "Configuración",
     "signOut": "Cerrar sesión",
-    "administration": "Administración"
+    "administration": "Administración",
+    "brand": "Altavista",
+    "adminPortal": "Portal de Administración",
+    "clientPortal": "Portal de Clientes"
   },
   "status": {
     "active": "Activo"

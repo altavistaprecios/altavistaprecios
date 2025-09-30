@@ -18,7 +18,8 @@
     "confirm": "Confirm",
     "yes": "Yes",
     "no": "No",
-    "processing": "Processing..."
+    "processing": "Processing...",
+    "toggleSidebar": "Toggle sidebar"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -75,7 +76,23 @@
     "contactName": "Contact Name",
     "accountDisabled": "Your account has been disabled. Please contact support for assistance.",
     "pendingApproval": "Pending Approval",
-    "pendingApprovalMessage": "Your account is awaiting approval. You will be notified once it has been reviewed."
+    "pendingApprovalMessage": "Your account is awaiting approval. You will be notified once it has been reviewed.",
+    "signupRequestTitle": "Request Access",
+    "signupRequestDescription": "Submit your information to request client pricing access",
+    "signupRequestError": "Failed to submit registration",
+    "signupRequestSubmitting": "Submitting Request...",
+    "signupRequestCta": "Request Access",
+    "companyNamePlaceholder": "Your Company Name",
+    "businessEmail": "Business Email",
+    "businessEmailPlaceholder": "you@company.com",
+    "businessEmailHelper": "Please use your company email address",
+    "phoneNumber": "Phone Number",
+    "phoneNumberPlaceholder": "+1 (555) 123-4567",
+    "signupSuccessTitle": "Registration Request Received!",
+    "signupSuccessSubtitle": "Thank you for your interest in AltaVista Optics.",
+    "signupSuccessBody": "Your registration request has been submitted for review. Once approved by our team, you'll receive an email with instructions to set up your password and access your account.",
+    "signupSuccessTimeline": "This typically takes 1-2 business days. We'll notify you at <strong>{email}</strong>",
+    "signupSuccessReturn": "Return to Login"
   },
   "dashboard": {
     "title": "Dashboard",
@@ -90,6 +107,38 @@
     "laboratoryLenses": "Laboratory Lenses",
     "clickToManageFutureX": "Click to manage Future-X products",
     "clickToManageFinished": "Click to manage finished products"
+  },
+  "setupPassword": {
+    "intro": {
+      "title": "Welcome to AltaVista Optics!",
+      "description": "Your registration has been approved. Please create a secure password to activate your account."
+    },
+    "form": {
+      "passwordLabel": "New Password",
+      "passwordPlaceholder": "Enter your password",
+      "passwordHelper": "Must be at least 8 characters long",
+      "confirmLabel": "Confirm Password",
+      "confirmPlaceholder": "Confirm your password",
+      "submit": "Set Password & Continue",
+      "submitting": "Setting Password..."
+    },
+    "errors": {
+      "mismatch": "Passwords do not match",
+      "minLength": "Password must be at least 8 characters long"
+    },
+    "toast": {
+      "title": "Success",
+      "description": "Your password has been set successfully! Logging you in..."
+    },
+    "success": {
+      "title": "Password Set Successfully!",
+      "description": "Your account is now active. Redirecting to your dashboard..."
+    },
+    "invalid": {
+      "title": "Invalid or Expired Link",
+      "description": "This password setup link is invalid or has expired. Please contact your administrator for assistance.",
+      "action": "Return to Login"
+    }
   },
   "adminRegistrations": {
     "title": "Registration Requests",
@@ -242,6 +291,21 @@
     "subtitle": "{company} - View your custom pricing and place orders",
     "defaultCompany": "Your company"
   },
+  "clientStats": {
+    "futureX": {
+      "title": "MONOFOCALES FUTURE-X",
+      "availableLabel": "{count, plural, one {product available} other {products available}}",
+      "stockLabel": "{count, plural, one {# Stock Lens} other {# Stock Lenses}}",
+      "labLabel": "{count, plural, one {# Laboratory Lens} other {# Laboratory Lenses}}",
+      "cta": "Click to view available Future-X products"
+    },
+    "terminados": {
+      "title": "MONOFOCALES TERMINADOS",
+      "availableLabel": "{count, plural, one {product available} other {products available}}",
+      "highlight": "ClearView 1.60 DuraVision",
+      "cta": "Click to view available finished products"
+    }
+  },
   "clientHistory": {
     "title": "Price History",
     "description": "Track changes to your custom pricing over time",
@@ -306,10 +370,30 @@
     "emptySearch": "No products found matching your search",
     "emptyDefault": "No products available at the moment"
   },
+  "clientHeader": {
+    "defaultTitle": "Client Portal",
+    "searchPlaceholder": "Filter products...",
+    "export": {
+      "cta": "Export Catalog",
+      "generating": "Generating...",
+      "empty": "No products to export",
+      "success": "Catalog exported successfully",
+      "error": "Failed to export catalog"
+    },
+    "pdf": {
+      "defaultTitle": "Product Catalog",
+      "futureX": "Monofocales Future-X",
+      "terminados": "Monofocales Terminados",
+      "allProducts": "All Products"
+    }
+  },
   "sidebar": {
     "settings": "Settings",
     "signOut": "Sign Out",
-    "administration": "Administration"
+    "administration": "Administration",
+    "brand": "Altavista",
+    "adminPortal": "Admin Portal",
+    "clientPortal": "Client Portal"
   },
   "status": {
     "active": "Active"
