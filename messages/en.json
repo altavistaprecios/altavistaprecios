@@ -496,6 +496,12 @@
       "title": "AltaVista Optics",
       "subtitle": "{categoryTitle}",
       "generatedOn": "Generated on {date}",
+      "header": {
+        "client": "Client",
+        "category": "Category",
+        "generated": "Generated",
+        "general": "General catalog"
+      },
       "statsTotalProducts": "Total Products",
       "statsTotalSavings": "Total Savings",
       "statsAvgDiscount": "Avg. Discount",
@@ -505,6 +511,15 @@
         "custom": "Your Price",
         "discount": "Discount",
         "savings": "Savings"
+      },
+      "table": {
+        "code": "Code",
+        "product": "Product",
+        "status": "Status"
+      },
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive"
       },
       "footer": {
         "brand": "AltaVista Optics B2B Platform",

@@ -1,3 +1,4 @@
+import React from 'react'
 import { pdf } from '@react-pdf/renderer'
 import { CatalogPDFTemplate } from '@/components/pdf/catalog-pdf-template'
 
@@ -44,7 +45,7 @@ export async function generateCatalogPDF({
 
     // Create the PDF document
     const pdfDoc = pdf(
-      CatalogPDFTemplate({
+      React.createElement(CatalogPDFTemplate, {
         products,
         clientName,
         categoryTitle: resolvedCategoryTitle,
@@ -98,12 +99,15 @@ export function prepareProductsForPDF(
 
     if (clientPrice) {
       if (clientPrice.custom_price > 0) {
-        customPrice = clientPrice.custom_price
-        savings = product.base_price_usd - customPrice
+        const price = clientPrice.custom_price
+        customPrice = price
+        savings = product.base_price_usd - price
       } else if (clientPrice.discount_percentage > 0) {
-        discountPercentage = clientPrice.discount_percentage
-        customPrice = product.base_price_usd * (1 - discountPercentage / 100)
-        savings = product.base_price_usd - customPrice
+        const percentage = clientPrice.discount_percentage
+        discountPercentage = percentage
+        const computedCustomPrice = product.base_price_usd * (1 - percentage / 100)
+        customPrice = computedCustomPrice
+        savings = product.base_price_usd - computedCustomPrice
       }
     }
 
