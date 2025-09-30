@@ -94,7 +94,7 @@ export function ClientSidebar({ ...props }: React.ComponentProps<typeof Sidebar>
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">{t('header.altavistaOptics')}</span>
-                  <span className="truncate text-xs">{t('header.b2bPortal')}</span>
+                  <span className="truncate text-xs">{t('sidebar.clientPortal')}</span>
                 </div>
               </a>
             </SidebarMenuButton>
