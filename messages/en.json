@@ -321,6 +321,31 @@
     "tableTitle": "Your Price Change Log",
     "tableDescription": "All pricing adjustments made to your account"
   },
+  "clientHistoryTable": {
+    "searchPlaceholder": "Search by product or client...",
+    "filterPlaceholder": "Filter by change",
+    "filters": {
+      "all": "All Changes",
+      "increase": "Price Increases",
+      "decrease": "Price Decreases",
+      "none": "No Change"
+    },
+    "footerShowing": "Showing {filtered} of {total} changes",
+    "columns": {
+      "date": "Date",
+      "product": "Product",
+      "client": "Client",
+      "oldPrice": "Old Price",
+      "newPrice": "New Price",
+      "change": "Change",
+      "changedBy": "Changed By"
+    },
+    "empty": "No price history found",
+    "unknownClient": "-",
+    "changeIncrease": "+{amount} ({percent}%)",
+    "changeDecrease": "-{amount} ({percent}%)",
+    "changeNone": "No change"
+  },
   "clientPricing": {
     "title": "Your Custom Pricing",
     "description": "View your negotiated prices and discounts",

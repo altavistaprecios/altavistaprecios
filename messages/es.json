@@ -321,6 +321,31 @@
     "tableTitle": "Tu Registro de Cambios de Precio",
     "tableDescription": "Todos los ajustes de precios realizados en tu cuenta"
   },
+  "clientHistoryTable": {
+    "searchPlaceholder": "Buscar por producto o cliente...",
+    "filterPlaceholder": "Filtrar por cambio",
+    "filters": {
+      "all": "Todos los cambios",
+      "increase": "Aumentos de precio",
+      "decrease": "Reducciones de precio",
+      "none": "Sin cambio"
+    },
+    "footerShowing": "Mostrando {filtered} de {total} cambios",
+    "columns": {
+      "date": "Fecha",
+      "product": "Producto",
+      "client": "Cliente",
+      "oldPrice": "Precio anterior",
+      "newPrice": "Precio nuevo",
+      "change": "Cambio",
+      "changedBy": "Modificado por"
+    },
+    "empty": "No se encontraron cambios de precio",
+    "unknownClient": "-",
+    "changeIncrease": "+{amount} ({percent}%)",
+    "changeDecrease": "-{amount} ({percent}%)",
+    "changeNone": "Sin cambio"
+  },
   "clientPricing": {
     "title": "Tus Precios Personalizados",
     "description": "Consulta tus precios negociados y descuentos",
