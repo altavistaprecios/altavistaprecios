@@ -353,11 +353,18 @@ export const CatalogPDFTemplate: React.FC<CatalogPDFProps> = ({
           <Text style={styles.footerText}>{translations.footer.brand}</Text>
           <Text
             style={styles.footerText}
-            render={({ pageNumber, totalPages }) =>
-              translations.footer.pagination
-                .replace('{page}', pageNumber.toString())
-                .replace('{total}', totalPages.toString())
-            }
+            render={({ pageNumber, totalPages }) => {
+              const currentPage =
+                typeof pageNumber === 'number' && Number.isFinite(pageNumber) && pageNumber > 0 ? pageNumber : 1
+              const totalPageCount =
+                typeof totalPages === 'number' && Number.isFinite(totalPages) && totalPages > 0
+                  ? totalPages
+                  : currentPage
+
+              return translations.footer.pagination
+                .replace('{page}', currentPage.toString())
+                .replace('{total}', totalPageCount.toString())
+            }}
             fixed
           />
         </View>
