@@ -181,27 +181,18 @@ export default function RegistrationsPage() {
   const formatDate = (value: string) => new Date(value).toLocaleDateString(locale)
 
   const getStatusBadge = (status: string, approvedAt?: string | null) => {
-    // For approved status, check if it was approved recently (within last 24 hours)
-    // and show "Email Sent" badge instead
-    if (status === 'approved' && approvedAt) {
-      const approvedDate = new Date(approvedAt)
-      const now = new Date()
-      const hoursSinceApproval = (now.getTime() - approvedDate.getTime()) / (1000 * 60 * 60)
-
-      // Show "Email Sent" for recently approved registrations
-      if (hoursSinceApproval < 24) {
-        return (
-          <Badge variant="default" className="gap-1">
-            <Mail className="h-3 w-3" />
-            {t('status.emailSent')}
-          </Badge>
-        )
-      }
+    // For approved status, always show "Email Sent" since approval triggers email
+    if (status === 'approved') {
+      return (
+        <Badge variant="default" className="gap-1">
+          <Mail className="h-3 w-3" />
+          {t('status.emailSent')}
+        </Badge>
+      )
     }
 
     const variants: Record<string, StatusConfig> = {
       pending: { variant: 'secondary', icon: Clock, label: t('status.pending') },
-      approved: { variant: 'default', icon: CheckCircle, label: t('status.approved') },
       rejected: { variant: 'destructive', icon: XCircle, label: t('status.rejected') },
     }
 
