@@ -32,6 +32,10 @@
     "users": "Users",
     "pricing": "Pricing",
     "history": "History",
+    "priceHistory": "Price History",
+    "productCatalog": "Product Catalog",
+    "myPricing": "My Pricing",
+    "myHistory": "My History",
     "specifications": "Specifications"
   },
   "user": {
@@ -180,6 +184,126 @@
     "deleted": "Deleted successfully",
     "updated": "Updated successfully",
     "created": "Created successfully"
+  },
+  "clientDashboard": {
+    "title": "Welcome back!",
+    "subtitle": "{company} - View your custom pricing and place orders",
+    "defaultCompany": "Your company"
+  },
+  "clientHistory": {
+    "title": "Price History",
+    "description": "Track changes to your custom pricing over time",
+    "loading": "Loading price history...",
+    "toastError": "Failed to load price history",
+    "metricsTotalChangesTitle": "Total Changes",
+    "metricsTotalChangesDescription": "Price updates",
+    "metricsAvgReductionTitle": "Avg. Reduction",
+    "metricsAvgReductionDescription": "Average price decrease",
+    "metricsLastUpdateTitle": "Last Update",
+    "metricsLastUpdateDescription": "Most recent change",
+    "notAvailable": "N/A",
+    "tableTitle": "Your Price Change Log",
+    "tableDescription": "All pricing adjustments made to your account"
+  },
+  "clientPricing": {
+    "title": "Your Custom Pricing",
+    "description": "View your negotiated prices and discounts",
+    "loading": "Loading pricing...",
+    "toastLoadError": "Failed to load pricing",
+    "toastInvalidPercentage": "Please enter a valid percentage",
+    "toastApplySuccess": "Applied {percentage}% {action} to all prices",
+    "toastApplyError": "Failed to apply adjustment",
+    "toastBelowBasePrice": "Price cannot be below base price of {basePrice}",
+    "toastPriceInvalid": "Please enter a valid price or discount",
+    "toastPriceUpdateError": "Failed to save price",
+    "toastPriceUpdateSuccess": "Price updated successfully",
+    "actionDiscount": "discount",
+    "actionMarkup": "markup",
+    "globalAdjustmentTitle": "Global Price Adjustment",
+    "globalAdjustmentLabel": "Bulk adjust all prices by percentage",
+    "globalAdjustmentPlaceholder": "e.g., -10 for 10% increase or 5 for 5% discount",
+    "globalAdjustmentHelp": "Enter a negative number to increase prices (markup) or positive to decrease (discount)",
+    "globalAdjustmentApplying": "Applying...",
+    "globalAdjustmentApply": "Apply to All",
+    "tableTitle": "Product Pricing Details",
+    "tableDescription": "Your custom pricing compared to standard rates. Click edit to modify individual prices.",
+    "tableFooter": "Showing {count, plural, one {# product} other {# products}}",
+    "tableEmpty": "No custom pricing configured yet",
+    "discountBadge": "Custom",
+    "statusActive": "Active",
+    "inputPricePlaceholder": "Price",
+    "inputDiscountPlaceholder": "Discount",
+    "columnProduct": "Product",
+    "columnCategory": "Category",
+    "columnBasePrice": "Base Price",
+    "columnYourPrice": "Your Price",
+    "columnDiscount": "Discount",
+    "columnSavings": "Savings",
+    "columnStatus": "Status",
+    "columnActions": "Actions"
+  },
+  "clientProducts": {
+    "title": "Product Catalog",
+    "description": "Browse available products and view your custom pricing",
+    "loading": "Loading products...",
+    "toastLoadError": "Failed to load products",
+    "cardTitle": "Available Products",
+    "cardDescription": "{count, plural, one {# product available for ordering} other {# products available for ordering}}",
+    "viewModeGrid": "Grid",
+    "viewModeList": "List",
+    "emptySearch": "No products found matching your search",
+    "emptyDefault": "No products available at the moment"
+  },
+  "sidebar": {
+    "settings": "Settings",
+    "signOut": "Sign Out",
+    "administration": "Administration"
+  },
+  "status": {
+    "active": "Active"
+  },
+  "pdf": {
+    "invoice": {
+      "title": "Invoice",
+      "number": "Invoice Number",
+      "date": "Invoice Date",
+      "dueDate": "Due Date",
+      "from": "From",
+      "to": "To",
+      "description": "Description",
+      "quantity": "Quantity",
+      "amount": "Amount",
+      "total": "Total",
+      "subtotal": "Subtotal",
+      "discount": "Discount",
+      "vat": "VAT ({percentage}%)",
+      "paymentDetails": "Payment Details",
+      "note": "Note",
+      "status": {
+        "paid": "Paid",
+        "pending": "Pending",
+        "overdue": "Overdue"
+      }
+    },
+    "catalog": {
+      "title": "AltaVista Optics",
+      "subtitle": "{categoryTitle}",
+      "generatedOn": "Generated on {date}",
+      "statsTotalProducts": "Total Products",
+      "statsTotalSavings": "Total Savings",
+      "statsAvgDiscount": "Avg. Discount",
+      "empty": "No products available in this catalog",
+      "price": {
+        "base": "Base Price",
+        "custom": "Your Price",
+        "discount": "Discount",
+        "savings": "Savings"
+      },
+      "footer": {
+        "brand": "AltaVista Optics B2B Platform",
+        "pagination": "Page {page} of {total}"
+      }
+    }
   },
   "header": {
     "altavistaOptics": "Altavista Optics",

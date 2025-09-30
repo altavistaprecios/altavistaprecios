@@ -2,6 +2,7 @@
 
 import { useEffect, useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
@@ -37,6 +38,7 @@ function ClientMonofocalesFutureXPageContent() {
   const { user } = useAuth()
   const searchParams = useSearchParams()
   const searchQuery = searchParams.get('q') || ''
+  const t = useTranslations('clientProducts')
 
   useEffect(() => {
     fetchProducts()
@@ -73,7 +75,7 @@ function ClientMonofocalesFutureXPageContent() {
       setProducts(futureXProducts)
     } catch (error) {
       console.error('Failed to fetch products:', error)
-      toast.error('Failed to load Future-X products')
+      toast.error(t('toastLoadError'))
     } finally {
       setLoading(false)
     }

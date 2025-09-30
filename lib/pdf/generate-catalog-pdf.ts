@@ -19,6 +19,7 @@ export interface GenerateCatalogPDFOptions {
   clientName?: string
   categoryTitle?: string
   filename?: string
+  locale?: string
 }
 
 /**
@@ -29,14 +30,26 @@ export async function generateCatalogPDF({
   clientName,
   categoryTitle,
   filename,
+  locale,
 }: GenerateCatalogPDFOptions): Promise<void> {
   try {
+    const documentLocale = locale || document.documentElement.lang || 'en'
+    const normalizedLocale = documentLocale.startsWith('es') ? 'es' : 'en'
+    const messages =
+      normalizedLocale === 'es'
+        ? (await import('@/messages/es.json')).default
+        : (await import('@/messages/en.json')).default
+    const pdfMessages = messages.pdf.catalog
+    const resolvedCategoryTitle = categoryTitle ?? messages.nav.productCatalog
+
     // Create the PDF document
     const pdfDoc = pdf(
       CatalogPDFTemplate({
         products,
         clientName,
-        categoryTitle,
+        categoryTitle: resolvedCategoryTitle,
+        locale: normalizedLocale,
+        translations: pdfMessages,
       })
     )
 

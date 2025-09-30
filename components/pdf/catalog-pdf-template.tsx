@@ -1,25 +1,7 @@
 import React from 'react'
 import { Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer'
 
-// Define types for our data
-interface ProductData {
-  id: string
-  code: string
-  name: string
-  category_name?: string
-  base_price_usd: number
-  custom_price?: number
-  discount_percentage?: number
-  savings?: number
-  image_url?: string | null
-  is_active: boolean
-}
-
-interface CatalogPDFProps {
-  products: ProductData[]
-  clientName?: string
-  categoryTitle?: string
-}
+import type { ProductForPDF } from '@/lib/pdf/generate-catalog-pdf'
 
 // Create styles inspired by zinc theme
 const styles = StyleSheet.create({
@@ -198,16 +180,58 @@ const styles = StyleSheet.create({
   },
 })
 
+interface CatalogPdfTranslations {
+  title: string
+  subtitle: string
+  generatedOn: string
+  statsTotalProducts: string
+  statsTotalSavings: string
+  statsAvgDiscount: string
+  empty: string
+  price: {
+    base: string
+    custom: string
+    discount: string
+    savings: string
+  }
+  footer: {
+    brand: string
+    pagination: string
+  }
+}
+
+interface CatalogPDFProps {
+  products: ProductForPDF[]
+  clientName?: string
+  categoryTitle?: string
+  locale?: string
+  translations: CatalogPdfTranslations
+}
+
 export const CatalogPDFTemplate: React.FC<CatalogPDFProps> = ({
   products,
   clientName,
-  categoryTitle = 'Product Catalog',
+  categoryTitle,
+  locale = 'en',
+  translations,
 }) => {
-  const currentDate = new Date().toLocaleDateString('en-US', {
+  const dateLocale = locale === 'es' ? 'es-ES' : 'en-US'
+  const formattedDate = new Intl.DateTimeFormat(dateLocale, {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
+  }).format(new Date())
+  const numberLocale = dateLocale
+  const currencyFormatter = new Intl.NumberFormat(numberLocale, {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
   })
+  const resolvedCategoryTitle = categoryTitle ?? ''
+  const subtitleText = translations.subtitle.replace('{categoryTitle}', resolvedCategoryTitle || translations.title)
+  const generatedText = translations.generatedOn.replace('{date}', formattedDate)
+  const formatCurrency = (value: number) => currencyFormatter.format(value)
 
   // Calculate summary statistics
   const totalProducts = products.length
@@ -223,13 +247,13 @@ export const CatalogPDFTemplate: React.FC<CatalogPDFProps> = ({
       <Page size="A4" style={styles.page}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>AltaVista Optics</Text>
-          <Text style={styles.headerSubtitle}>{categoryTitle}</Text>
+          <Text style={styles.headerTitle}>{translations.title}</Text>
+          <Text style={styles.headerSubtitle}>{subtitleText}</Text>
 
           {clientName && (
             <View style={styles.clientInfo}>
               <Text style={styles.clientName}>{clientName}</Text>
-              <Text style={styles.generatedDate}>Generated on {currentDate}</Text>
+              <Text style={styles.generatedDate}>{generatedText}</Text>
             </View>
           )}
         </View>
@@ -238,18 +262,18 @@ export const CatalogPDFTemplate: React.FC<CatalogPDFProps> = ({
         {totalProducts > 0 && (
           <View style={styles.statsBar}>
             <View style={styles.statItem}>
-              <Text style={styles.statLabel}>Total Products</Text>
+              <Text style={styles.statLabel}>{translations.statsTotalProducts}</Text>
               <Text style={styles.statValue}>{totalProducts}</Text>
             </View>
             {totalSavings > 0 && (
               <View style={styles.statItem}>
-                <Text style={styles.statLabel}>Total Savings</Text>
-                <Text style={styles.statValue}>${totalSavings.toFixed(2)}</Text>
+                <Text style={styles.statLabel}>{translations.statsTotalSavings}</Text>
+                <Text style={styles.statValue}>{formatCurrency(totalSavings)}</Text>
               </View>
             )}
             {avgDiscount > 0 && (
               <View style={styles.statItem}>
-                <Text style={styles.statLabel}>Avg. Discount</Text>
+                <Text style={styles.statLabel}>{translations.statsAvgDiscount}</Text>
                 <Text style={styles.statValue}>{avgDiscount.toFixed(1)}%</Text>
               </View>
             )}
@@ -259,7 +283,7 @@ export const CatalogPDFTemplate: React.FC<CatalogPDFProps> = ({
         {/* Product Grid */}
         <View style={styles.productGrid}>
           {products.length === 0 ? (
-            <Text style={styles.emptyState}>No products available in this catalog</Text>
+            <Text style={styles.emptyState}>{translations.empty}</Text>
           ) : (
             products.map((product, index) => (
               <View key={product.id || index} style={styles.productCard}>
@@ -283,17 +307,17 @@ export const CatalogPDFTemplate: React.FC<CatalogPDFProps> = ({
 
                 <View style={styles.pricingSection}>
                   <View style={styles.priceColumn}>
-                    <Text style={styles.priceLabel}>Base Price</Text>
+                    <Text style={styles.priceLabel}>{translations.price.base}</Text>
                     <Text style={styles.priceValue}>
-                      ${product.base_price_usd.toFixed(2)}
+                      {formatCurrency(product.base_price_usd)}
                     </Text>
                   </View>
 
                   {product.custom_price !== undefined && product.custom_price > 0 && (
                     <View style={styles.priceColumn}>
-                      <Text style={styles.priceLabel}>Your Price</Text>
+                      <Text style={styles.priceLabel}>{translations.price.custom}</Text>
                       <Text style={styles.customPrice}>
-                        ${product.custom_price.toFixed(2)}
+                        {formatCurrency(product.custom_price)}
                       </Text>
                     </View>
                   )}
@@ -301,7 +325,7 @@ export const CatalogPDFTemplate: React.FC<CatalogPDFProps> = ({
                   {product.discount_percentage !== undefined &&
                     product.discount_percentage > 0 && (
                       <View style={styles.priceColumn}>
-                        <Text style={styles.priceLabel}>Discount</Text>
+                        <Text style={styles.priceLabel}>{translations.price.discount}</Text>
                         <View style={styles.discountBadge}>
                           <Text style={styles.discountText}>
                             {product.discount_percentage.toFixed(1)}%
@@ -312,9 +336,9 @@ export const CatalogPDFTemplate: React.FC<CatalogPDFProps> = ({
 
                   {product.savings !== undefined && product.savings > 0 && (
                     <View style={styles.priceColumn}>
-                      <Text style={styles.priceLabel}>Savings</Text>
+                      <Text style={styles.priceLabel}>{translations.price.savings}</Text>
                       <Text style={styles.savingsText}>
-                        ${product.savings.toFixed(2)}
+                        {formatCurrency(product.savings)}
                       </Text>
                     </View>
                   )}
@@ -326,11 +350,13 @@ export const CatalogPDFTemplate: React.FC<CatalogPDFProps> = ({
 
         {/* Footer */}
         <View style={styles.footer}>
-          <Text style={styles.footerText}>AltaVista Optics B2B Platform</Text>
+          <Text style={styles.footerText}>{translations.footer.brand}</Text>
           <Text
             style={styles.footerText}
             render={({ pageNumber, totalPages }) =>
-              `Page ${pageNumber} of ${totalPages}`
+              translations.footer.pagination
+                .replace('{page}', pageNumber.toString())
+                .replace('{total}', totalPages.toString())
             }
             fixed
           />

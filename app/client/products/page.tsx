@@ -2,6 +2,7 @@
 
 import { useEffect, useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ProductCard } from '@/components/products/product-card'
@@ -26,6 +27,7 @@ function ClientProductsPageContent() {
   const { user } = useAuth()
   const searchParams = useSearchParams()
   const searchQuery = searchParams.get('q') || ''
+  const t = useTranslations('clientProducts')
 
   useEffect(() => {
     fetchProducts()
@@ -51,7 +53,7 @@ function ClientProductsPageContent() {
       setProducts(activeProducts)
     } catch (error) {
       console.error('Failed to fetch products:', error)
-      toast.error('Failed to load products')
+      toast.error(t('toastLoadError'))
     } finally {
       setLoading(false)
     }
@@ -98,10 +100,8 @@ function ClientProductsPageContent() {
     return (
       <div className="flex flex-1 flex-col">
         <div className="px-4 lg:px-6 pb-4">
-          <h1 className="text-2xl font-bold">Product Catalog</h1>
-          <p className="text-muted-foreground">
-            Browse available products and view your custom pricing
-          </p>
+          <h1 className="text-2xl font-bold">{t('title')}</h1>
+          <p className="text-muted-foreground">{t('description')}</p>
         </div>
         <div className="px-4 lg:px-6">
           <DataTableSkeleton />
@@ -113,10 +113,8 @@ function ClientProductsPageContent() {
   return (
     <div className="flex flex-1 flex-col">
       <div className="px-4 lg:px-6 pb-4">
-        <h1 className="text-2xl font-bold">Product Catalog</h1>
-        <p className="text-muted-foreground">
-          Browse available products and view your custom pricing
-        </p>
+        <h1 className="text-2xl font-bold">{t('title')}</h1>
+        <p className="text-muted-foreground">{t('description')}</p>
       </div>
 
       <div className="px-4 lg:px-6">
@@ -124,20 +122,20 @@ function ClientProductsPageContent() {
           <CardHeader>
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle>Available Products</CardTitle>
+                <CardTitle>{t('cardTitle')}</CardTitle>
                 <CardDescription>
-                  {filteredProducts.length} products available for ordering
+                  {t('cardDescription', { count: filteredProducts.length })}
                 </CardDescription>
               </div>
               <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as 'grid' | 'list')}>
                 <TabsList>
                   <TabsTrigger value="grid">
                     <Grid className="h-4 w-4 mr-2" />
-                    Grid
+                    {t('viewModeGrid')}
                   </TabsTrigger>
                   <TabsTrigger value="list">
                     <List className="h-4 w-4 mr-2" />
-                    List
+                    {t('viewModeList')}
                   </TabsTrigger>
                 </TabsList>
               </Tabs>
@@ -146,7 +144,7 @@ function ClientProductsPageContent() {
           <CardContent>
             {filteredProducts.length === 0 ? (
               <div className="text-center py-8 text-muted-foreground">
-                {searchQuery ? 'No products found matching your search' : 'No products available at the moment'}
+                {searchQuery ? t('emptySearch') : t('emptyDefault')}
               </div>
             ) : viewMode === 'grid' ? (
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">

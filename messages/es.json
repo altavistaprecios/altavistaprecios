@@ -32,6 +32,10 @@
     "users": "Usuarios",
     "pricing": "Precios",
     "history": "Historial",
+    "priceHistory": "Historial de Precios",
+    "productCatalog": "Catálogo de Productos",
+    "myPricing": "Mis Precios",
+    "myHistory": "Mi Historial",
     "specifications": "Especificaciones"
   },
   "user": {
@@ -180,6 +184,126 @@
     "deleted": "Eliminado exitosamente",
     "updated": "Actualizado exitosamente",
     "created": "Creado exitosamente"
+  },
+  "clientDashboard": {
+    "title": "¡Bienvenido de nuevo!",
+    "subtitle": "{company} - Consulta tus precios personalizados y realiza pedidos",
+    "defaultCompany": "Tu empresa"
+  },
+  "clientHistory": {
+    "title": "Historial de Precios",
+    "description": "Sigue los cambios en tus precios personalizados con el tiempo",
+    "loading": "Cargando historial de precios...",
+    "toastError": "No se pudo cargar el historial de precios",
+    "metricsTotalChangesTitle": "Cambios Totales",
+    "metricsTotalChangesDescription": "Actualizaciones de precios",
+    "metricsAvgReductionTitle": "Reducción Prom.",
+    "metricsAvgReductionDescription": "Disminución promedio de precio",
+    "metricsLastUpdateTitle": "Última Actualización",
+    "metricsLastUpdateDescription": "Cambio más reciente",
+    "notAvailable": "N/D",
+    "tableTitle": "Tu Registro de Cambios de Precio",
+    "tableDescription": "Todos los ajustes de precios realizados en tu cuenta"
+  },
+  "clientPricing": {
+    "title": "Tus Precios Personalizados",
+    "description": "Consulta tus precios negociados y descuentos",
+    "loading": "Cargando precios...",
+    "toastLoadError": "No se pudieron cargar los precios",
+    "toastInvalidPercentage": "Ingresa un porcentaje válido",
+    "toastApplySuccess": "Se aplicó {percentage}% de {action} a todos los precios",
+    "toastApplyError": "No se pudo aplicar el ajuste",
+    "toastBelowBasePrice": "El precio no puede estar por debajo del precio base de {basePrice}",
+    "toastPriceInvalid": "Ingresa un precio o descuento válido",
+    "toastPriceUpdateError": "No se pudo guardar el precio",
+    "toastPriceUpdateSuccess": "Precio actualizado correctamente",
+    "actionDiscount": "descuento",
+    "actionMarkup": "incremento",
+    "globalAdjustmentTitle": "Ajuste Global de Precios",
+    "globalAdjustmentLabel": "Ajusta todos los precios por porcentaje",
+    "globalAdjustmentPlaceholder": "p. ej., -10 para aumento del 10% o 5 para descuento del 5%",
+    "globalAdjustmentHelp": "Ingresa un número negativo para aumentar precios (markup) o positivo para disminuir (descuento)",
+    "globalAdjustmentApplying": "Aplicando...",
+    "globalAdjustmentApply": "Aplicar a todos",
+    "tableTitle": "Detalle de Precios",
+    "tableDescription": "Compara tus precios personalizados con las tarifas estándar. Haz clic en editar para modificar precios individuales.",
+    "tableFooter": "Mostrando {count, plural, one {# producto} other {# productos}}",
+    "tableEmpty": "Aún no hay precios personalizados configurados",
+    "discountBadge": "Personalizado",
+    "statusActive": "Activo",
+    "inputPricePlaceholder": "Precio",
+    "inputDiscountPlaceholder": "Descuento",
+    "columnProduct": "Producto",
+    "columnCategory": "Categoría",
+    "columnBasePrice": "Precio Base",
+    "columnYourPrice": "Tu Precio",
+    "columnDiscount": "Descuento",
+    "columnSavings": "Ahorro",
+    "columnStatus": "Estado",
+    "columnActions": "Acciones"
+  },
+  "clientProducts": {
+    "title": "Catálogo de Productos",
+    "description": "Explora los productos disponibles y revisa tus precios personalizados",
+    "loading": "Cargando productos...",
+    "toastLoadError": "No se pudieron cargar los productos",
+    "cardTitle": "Productos Disponibles",
+    "cardDescription": "{count, plural, one {# producto disponible para ordenar} other {# productos disponibles para ordenar}}",
+    "viewModeGrid": "Cuadrícula",
+    "viewModeList": "Lista",
+    "emptySearch": "No se encontraron productos que coincidan con tu búsqueda",
+    "emptyDefault": "No hay productos disponibles por el momento"
+  },
+  "sidebar": {
+    "settings": "Configuración",
+    "signOut": "Cerrar sesión",
+    "administration": "Administración"
+  },
+  "status": {
+    "active": "Activo"
+  },
+  "pdf": {
+    "invoice": {
+      "title": "Factura",
+      "number": "Número de factura",
+      "date": "Fecha de factura",
+      "dueDate": "Fecha de vencimiento",
+      "from": "De",
+      "to": "Para",
+      "description": "Descripción",
+      "quantity": "Cantidad",
+      "amount": "Importe",
+      "total": "Total",
+      "subtotal": "Subtotal",
+      "discount": "Descuento",
+      "vat": "IVA ({percentage}%)",
+      "paymentDetails": "Datos de pago",
+      "note": "Nota",
+      "status": {
+        "paid": "Pagada",
+        "pending": "Pendiente",
+        "overdue": "Vencida"
+      }
+    },
+    "catalog": {
+      "title": "AltaVista Optics",
+      "subtitle": "{categoryTitle}",
+      "generatedOn": "Generado el {date}",
+      "statsTotalProducts": "Productos Totales",
+      "statsTotalSavings": "Ahorros Totales",
+      "statsAvgDiscount": "Descuento Prom.",
+      "empty": "No hay productos disponibles en este catálogo",
+      "price": {
+        "base": "Precio Base",
+        "custom": "Tu Precio",
+        "discount": "Descuento",
+        "savings": "Ahorro"
+      },
+      "footer": {
+        "brand": "Plataforma B2B de AltaVista Optics",
+        "pagination": "Página {page} de {total}"
+      }
+    }
   },
   "header": {
     "altavistaOptics": "Altavista Optics",

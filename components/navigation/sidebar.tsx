@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { usePathname } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -24,7 +25,7 @@ import { useAuth } from '@/lib/hooks/use-auth'
 import { useRouter } from 'next/navigation'
 
 interface NavItem {
-  title: string
+  titleKey: string
   href: string
   icon: React.ElementType
   adminOnly?: boolean
@@ -33,48 +34,48 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   {
-    title: 'Dashboard',
+    titleKey: 'dashboard',
     href: '/dashboard',
     icon: Home,
   },
   {
-    title: 'MONOFOCALES FUTURE-X',
+    titleKey: 'monofocalesFutureX',
     href: '/admin/monofocales-future-x',
     icon: Glasses,
     adminOnly: true,
   },
   {
-    title: 'MONOFOCALES TERMINADOS',
+    titleKey: 'monofocalesTerminados',
     href: '/admin/monofocales-terminados',
     icon: Sparkles,
     adminOnly: true,
   },
   {
-    title: 'Clients',
+    titleKey: 'clients',
     href: '/admin/clients',
     icon: Users,
     adminOnly: true,
   },
   {
-    title: 'Product Catalog',
+    titleKey: 'productCatalog',
     href: '/client/products',
     icon: Package,
     clientOnly: true,
   },
   {
-    title: 'My Pricing',
+    titleKey: 'myPricing',
     href: '/client/pricing',
     icon: DollarSign,
     clientOnly: true,
   },
   {
-    title: 'Price History',
+    titleKey: 'priceHistory',
     href: '/admin/history',
     icon: History,
     adminOnly: true,
   },
   {
-    title: 'My History',
+    titleKey: 'myHistory',
     href: '/client/history',
     icon: History,
     clientOnly: true,
@@ -97,6 +98,9 @@ export function Sidebar({
   const pathname = usePathname()
   const { user, signOut } = useAuth()
   const router = useRouter()
+  const navT = useTranslations('nav')
+  const headerT = useTranslations('header')
+  const sidebarT = useTranslations('sidebar')
 
   const isAdmin = user?.role === 'admin'
   const collapsed = controlledCollapsed !== undefined ? controlledCollapsed : localCollapsed
@@ -155,9 +159,9 @@ export function Sidebar({
           <div className="flex h-16 items-center justify-between px-4 border-b">
             {!collapsed && (
               <div>
-                <h2 className="text-lg font-semibold">Altavista Optics</h2>
+                <h2 className="text-lg font-semibold">{headerT('altavistaOptics')}</h2>
                 <p className="text-xs text-muted-foreground">
-                  {isAdmin ? 'Administration' : 'B2B Portal'}
+                  {isAdmin ? sidebarT('administration') : headerT('b2bPortal')}
                 </p>
               </div>
             )}
@@ -176,56 +180,57 @@ export function Sidebar({
             {filteredItems.map((item) => {
               const Icon = item.icon
               const isActive = pathname === item.href || pathname.startsWith(item.href + '/')
+              const label = navT(item.titleKey)
 
               return (
                 <Link
                   key={item.href}
                   href={item.href}
                   onClick={() => setMobileOpen(false)}
-                  className={cn(
-                    'flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors',
-                    isActive
-                      ? 'bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-100'
-                      : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-50 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100'
-                  )}
-                  title={collapsed ? item.title : undefined}
-                >
-                  <Icon className="h-5 w-5 flex-shrink-0" />
-                  {!collapsed && <span>{item.title}</span>}
-                </Link>
-              )
-            })}
-          </nav>
+              className={cn(
+                'flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors',
+                isActive
+                  ? 'bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-100'
+                  : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-50 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100'
+              )}
+              title={collapsed ? label : undefined}
+            >
+              <Icon className="h-5 w-5 flex-shrink-0" />
+              {!collapsed && <span>{label}</span>}
+            </Link>
+          )
+        })}
+      </nav>
 
-          {/* Footer */}
-          <div className="border-t p-2 space-y-1">
-            <Button
-              variant="ghost"
-              size="sm"
-              className={cn(
-                'w-full justify-start gap-3',
-                collapsed && 'justify-center'
-              )}
-              onClick={() => router.push('/settings')}
-              title={collapsed ? 'Settings' : undefined}
-            >
-              <Settings className="h-5 w-5 flex-shrink-0" />
-              {!collapsed && <span>Settings</span>}
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className={cn(
-                'w-full justify-start gap-3',
-                collapsed && 'justify-center'
-              )}
-              onClick={handleSignOut}
-              title={collapsed ? 'Sign Out' : undefined}
-            >
-              <LogOut className="h-5 w-5 flex-shrink-0" />
-              {!collapsed && <span>Sign Out</span>}
-            </Button>
-          </div>
+      {/* Footer */}
+      <div className="border-t p-2 space-y-1">
+        <Button
+          variant="ghost"
+          size="sm"
+          className={cn(
+            'w-full justify-start gap-3',
+            collapsed && 'justify-center'
+          )}
+          onClick={() => router.push('/settings')}
+          title={collapsed ? sidebarT('settings') : undefined}
+        >
+          <Settings className="h-5 w-5 flex-shrink-0" />
+          {!collapsed && <span>{sidebarT('settings')}</span>}
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          className={cn(
+            'w-full justify-start gap-3',
+            collapsed && 'justify-center'
+          )}
+          onClick={handleSignOut}
+          title={collapsed ? sidebarT('signOut') : undefined}
+        >
+          <LogOut className="h-5 w-5 flex-shrink-0" />
+          {!collapsed && <span>{sidebarT('signOut')}</span>}
+        </Button>
+      </div>
 
           {/* User info */}
           {!collapsed && user && (

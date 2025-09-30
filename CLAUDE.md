@@ -36,3 +36,4 @@ tests/
 <!-- MANUAL ADDITIONS END -->
 - when using chrome mcp do not add a new localhost port, use the running one. If you find you need to ran be sure to kill all localhost 300X ports instead of addning a new one.
 - recall that all changes made now you should push and commit to the repo
+- do not use emojies on claude code and on the project, if need be use lucide react icons on the project or markdown on the claude code

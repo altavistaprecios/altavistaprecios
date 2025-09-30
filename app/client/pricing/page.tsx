@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { useLocale, useTranslations } from 'next-intl'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
@@ -29,6 +30,20 @@ export default function ClientPricingPage() {
     custom_price: string
     discount_percentage: string
   }>({ custom_price: '', discount_percentage: '' })
+  const t = useTranslations('clientPricing')
+  const statusT = useTranslations('status')
+  const locale = useLocale()
+  const currencyLocale = locale === 'es' ? 'es-ES' : 'en-US'
+  const currencyFormatter = useMemo(
+    () =>
+      new Intl.NumberFormat(currencyLocale, {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }),
+    [currencyLocale]
+  )
   useEffect(() => {
     fetchPricingData()
   }, [])
@@ -74,7 +89,7 @@ export default function ClientPricingPage() {
       setPricingData(combinedData)
     } catch (error) {
       console.error('Failed to fetch pricing data:', error)
-      toast.error('Failed to load pricing')
+      toast.error(t('toastLoadError'))
     } finally {
       setLoading(false)
     }
@@ -83,7 +98,7 @@ export default function ClientPricingPage() {
   const handleGlobalAdjustment = async () => {
     const percentage = parseFloat(globalAdjustment)
     if (isNaN(percentage)) {
-      toast.error('Please enter a valid percentage')
+      toast.error(t('toastInvalidPercentage'))
       return
     }
 
@@ -97,16 +112,23 @@ export default function ClientPricingPage() {
 
       if (!response.ok) {
         const error = await response.json()
-        throw new Error(error.error || 'Failed to apply adjustment')
+        throw new Error(error.error || t('toastApplyError'))
       }
 
-      const action = percentage > 0 ? 'discount' : 'markup'
-      toast.success(`Applied ${Math.abs(percentage)}% ${action} to all prices`)
+      const actionLabel = percentage > 0 ? t('actionDiscount') : t('actionMarkup')
+      toast.success(
+        t('toastApplySuccess', {
+          percentage: Math.abs(percentage),
+          action: actionLabel,
+        })
+      )
       setGlobalAdjustment('')
       await fetchPricingData()
     } catch (error) {
       console.error('Failed to apply global adjustment:', error)
-      toast.error(error instanceof Error ? error.message : 'Failed to apply adjustment')
+      toast.error(
+        error instanceof Error && error.message ? error.message : t('toastApplyError')
+      )
     } finally {
       setApplyingGlobal(false)
     }
@@ -131,7 +153,11 @@ export default function ClientPricingPage() {
       const discountPercentage = parseFloat(editValues.discount_percentage)
 
       if (!isNaN(customPrice) && item.product && customPrice < item.product.base_price) {
-        toast.error(`Price cannot be below base price of $${item.product.base_price.toFixed(2)}`)
+        toast.error(
+          t('toastBelowBasePrice', {
+            basePrice: currencyFormatter.format(item.product.base_price),
+          })
+        )
         return
       }
 
@@ -144,7 +170,7 @@ export default function ClientPricingPage() {
         body.discount_percentage = discountPercentage
         body.custom_price = 0
       } else {
-        toast.error('Please enter a valid price or discount')
+        toast.error(t('toastPriceInvalid'))
         return
       }
 
@@ -156,15 +182,17 @@ export default function ClientPricingPage() {
 
       if (!response.ok) {
         const error = await response.json()
-        throw new Error(error.error || 'Failed to update price')
+        throw new Error(error.error || t('toastPriceUpdateError'))
       }
 
-      toast.success('Price updated successfully')
+      toast.success(t('toastPriceUpdateSuccess'))
       cancelEditing()
       await fetchPricingData()
     } catch (error) {
       console.error('Failed to save price:', error)
-      toast.error(error instanceof Error ? error.message : 'Failed to save price')
+      toast.error(
+        error instanceof Error && error.message ? error.message : t('toastPriceUpdateError')
+      )
     }
   }
 
@@ -172,13 +200,11 @@ export default function ClientPricingPage() {
     return (
       <div className="flex flex-1 flex-col">
         <div className="px-4 lg:px-6 pb-4">
-          <h1 className="text-2xl font-bold">Your Custom Pricing</h1>
-          <p className="text-muted-foreground">
-            View your negotiated prices and discounts
-          </p>
+          <h1 className="text-2xl font-bold">{t('title')}</h1>
+          <p className="text-muted-foreground">{t('description')}</p>
         </div>
         <div className="flex items-center justify-center h-96 px-4 lg:px-6">
-          <p className="text-muted-foreground">Loading pricing...</p>
+          <p className="text-muted-foreground">{t('loading')}</p>
         </div>
       </div>
     )
@@ -187,21 +213,19 @@ export default function ClientPricingPage() {
   return (
     <div className="flex flex-1 flex-col">
       <div className="px-4 lg:px-6 pb-4">
-        <h1 className="text-2xl font-bold">Your Custom Pricing</h1>
-        <p className="text-muted-foreground">
-          View your negotiated prices and discounts
-        </p>
+        <h1 className="text-2xl font-bold">{t('title')}</h1>
+        <p className="text-muted-foreground">{t('description')}</p>
       </div>
 
       <div className="px-4 lg:px-6 space-y-6">
       <Card className="mb-6">
         <CardHeader>
-          <CardTitle>Global Price Adjustment</CardTitle>
+          <CardTitle>{t('globalAdjustmentTitle')}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex items-end gap-4">
             <div className="flex-1 max-w-sm">
-              <Label htmlFor="global-adjustment">Bulk adjust all prices by percentage</Label>
+              <Label htmlFor="global-adjustment">{t('globalAdjustmentLabel')}</Label>
               <div className="flex gap-2 mt-2">
                 <div className="relative flex-1">
                   <Input
@@ -209,7 +233,7 @@ export default function ClientPricingPage() {
                     type="number"
                     value={globalAdjustment}
                     onChange={(e) => setGlobalAdjustment(e.target.value)}
-                    placeholder="e.g., -10 for 10% increase or 5 for 5% discount"
+                    placeholder={t('globalAdjustmentPlaceholder')}
                     className="pr-8"
                   />
                   <Percent className="absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -218,11 +242,11 @@ export default function ClientPricingPage() {
                   onClick={handleGlobalAdjustment}
                   disabled={applyingGlobal || !globalAdjustment}
                 >
-                  {applyingGlobal ? 'Applying...' : 'Apply to All'}
+                  {applyingGlobal ? t('globalAdjustmentApplying') : t('globalAdjustmentApply')}
                 </Button>
               </div>
               <p className="text-sm text-muted-foreground mt-2">
-                Enter a negative number to increase prices (markup) or positive to decrease (discount)
+                {t('globalAdjustmentHelp')}
               </p>
             </div>
           </div>
@@ -230,12 +254,12 @@ export default function ClientPricingPage() {
       </Card>
 
         <DataTableShell
-          title="Product Pricing Details"
-          description="Your custom pricing compared to standard rates. Click edit to modify individual prices."
+          title={t('tableTitle')}
+          description={t('tableDescription')}
           footerLeft={
             pricingData.length > 0 ? (
               <span className="text-sm text-muted-foreground">
-                Showing {pricingData.length} product{pricingData.length === 1 ? '' : 's'}
+                {t('tableFooter', { count: pricingData.length })}
               </span>
             ) : undefined
           }
@@ -243,21 +267,21 @@ export default function ClientPricingPage() {
         <Table>
           <TableHeader className="sticky top-0 z-10 bg-muted/60 backdrop-blur supports-[backdrop-filter]:bg-muted/80">
             <TableRow>
-              <TableHead>Product</TableHead>
-              <TableHead>Category</TableHead>
-              <TableHead className="text-right">Base Price</TableHead>
-              <TableHead className="text-right">Your Price</TableHead>
-              <TableHead className="text-right">Discount</TableHead>
-              <TableHead className="text-right">Savings</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Actions</TableHead>
+              <TableHead>{t('columnProduct')}</TableHead>
+              <TableHead>{t('columnCategory')}</TableHead>
+              <TableHead className="text-right">{t('columnBasePrice')}</TableHead>
+              <TableHead className="text-right">{t('columnYourPrice')}</TableHead>
+              <TableHead className="text-right">{t('columnDiscount')}</TableHead>
+              <TableHead className="text-right">{t('columnSavings')}</TableHead>
+              <TableHead>{t('columnStatus')}</TableHead>
+              <TableHead>{t('columnActions')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {pricingData.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={8} className="h-24 text-center text-muted-foreground">
-                  No custom pricing configured yet
+                  {t('tableEmpty')}
                 </TableCell>
               </TableRow>
             ) : (
@@ -275,7 +299,7 @@ export default function ClientPricingPage() {
                     <Badge variant="secondary">{item.product?.category}</Badge>
                   </TableCell>
                   <TableCell className="text-right">
-                    ${item.product?.base_price.toFixed(2)}
+                    {item.product ? currencyFormatter.format(item.product.base_price) : '--'}
                   </TableCell>
                   <TableCell className="text-right font-medium">
                     {editingId === item.id ? (
@@ -284,10 +308,12 @@ export default function ClientPricingPage() {
                         value={editValues.custom_price}
                         onChange={(e) => setEditValues({ ...editValues, custom_price: e.target.value })}
                         className="w-24 text-right"
-                        placeholder="Price"
+                        placeholder={t('inputPricePlaceholder')}
                       />
                     ) : (
-                      `$${item.final_price?.toFixed(2)}`
+                      item.final_price != null
+                        ? currencyFormatter.format(item.final_price)
+                        : '--'
                     )}
                   </TableCell>
                   <TableCell className="text-right">
@@ -308,17 +334,17 @@ export default function ClientPricingPage() {
                           {item.discount_percentage}%
                         </Badge>
                       ) : item.custom_price > 0 ? (
-                        <Badge variant="secondary">Custom</Badge>
+                        <Badge variant="secondary">{t('discountBadge')}</Badge>
                       ) : (
                         '-'
                       )
                     )}
                   </TableCell>
                   <TableCell className="text-right text-emerald-600 dark:text-emerald-400 dark:text-emerald-500 dark:text-emerald-400">
-                    ${item.savings?.toFixed(2)}
+                    {item.savings != null ? currencyFormatter.format(item.savings) : '--'}
                   </TableCell>
                   <TableCell>
-                    <Badge variant="default">Active</Badge>
+                    <Badge variant="default">{statusT('active')}</Badge>
                   </TableCell>
                   <TableCell>
                     {editingId === item.id ? (

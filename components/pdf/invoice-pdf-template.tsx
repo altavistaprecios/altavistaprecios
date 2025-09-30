@@ -35,6 +35,27 @@ interface InvoiceData {
 
 interface InvoicePDFProps {
   invoice: InvoiceData
+  locale?: string
+  translations: InvoicePdfTranslations
+}
+
+interface InvoicePdfTranslations {
+  title: string
+  number: string
+  date: string
+  dueDate: string
+  from: string
+  to: string
+  description: string
+  quantity: string
+  amount: string
+  total: string
+  subtotal: string
+  discount: string
+  vat: string
+  paymentDetails: string
+  note: string
+  status: Record<'paid' | 'pending' | 'overdue', string>
 }
 
 // Compact, space-efficient styles with Geist Mono for numbers
@@ -206,7 +227,11 @@ const styles = StyleSheet.create({
   },
 })
 
-export const InvoicePDFTemplate: React.FC<InvoicePDFProps> = ({ invoice }) => {
+export const InvoicePDFTemplate: React.FC<InvoicePDFProps> = ({
+  invoice,
+  locale = 'en',
+  translations,
+}) => {
   const getStatusColor = (status?: string) => {
     switch (status) {
       case 'paid':
@@ -219,6 +244,19 @@ export const InvoicePDFTemplate: React.FC<InvoicePDFProps> = ({ invoice }) => {
     }
   }
 
+  const numberLocale = locale === 'es' ? 'es-ES' : 'en-US'
+  const currencyFormatter = new Intl.NumberFormat(numberLocale, {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })
+
+  const formatCurrency = (value: number) => currencyFormatter.format(value)
+
+  const statusLabel = invoice.status ? translations.status[invoice.status] ?? invoice.status : undefined
+  const vatLabel = translations.vat.replace('{percentage}', invoice.vatRate.toString())
+
   return (
     <Document>
       <Page size="A4" style={styles.page}>
@@ -229,31 +267,31 @@ export const InvoicePDFTemplate: React.FC<InvoicePDFProps> = ({ invoice }) => {
           </View>
           {invoice.status && (
             <View style={[styles.statusBadge, { backgroundColor: getStatusColor(invoice.status) }]}>
-              <Text style={styles.statusText}>{invoice.status}</Text>
+              <Text style={styles.statusText}>{statusLabel ?? invoice.status}</Text>
             </View>
           )}
         </View>
 
         {/* Invoice Title & Details */}
-        <Text style={styles.invoiceTitle}>Faktura</Text>
+        <Text style={styles.invoiceTitle}>{translations.title}</Text>
 
         <View style={styles.invoiceDetails}>
-          <Text style={styles.label}>Fakturanummer:</Text>
+          <Text style={styles.label}>{translations.number}:</Text>
           <Text style={styles.value}>{invoice.invoiceNumber}</Text>
         </View>
         <View style={styles.invoiceDetails}>
-          <Text style={styles.label}>Fakturadatum:</Text>
+          <Text style={styles.label}>{translations.date}:</Text>
           <Text style={styles.value}>{invoice.invoiceDate}</Text>
         </View>
         <View style={styles.invoiceDetails}>
-          <Text style={styles.label}>Förfallodatum:</Text>
+          <Text style={styles.label}>{translations.dueDate}:</Text>
           <Text style={styles.value}>{invoice.dueDate}</Text>
         </View>
 
         {/* Addresses */}
         <View style={styles.addressSection}>
           <View style={styles.addressBlock}>
-            <Text style={styles.addressLabel}>Från</Text>
+            <Text style={styles.addressLabel}>{translations.from}</Text>
             <Text style={styles.addressName}>{invoice.fromName}</Text>
             <Text style={styles.addressLine}>{invoice.fromEmail}</Text>
             <Text style={styles.addressLine}>{invoice.fromAddress}</Text>
@@ -262,7 +300,7 @@ export const InvoicePDFTemplate: React.FC<InvoicePDFProps> = ({ invoice }) => {
           </View>
 
           <View style={styles.addressBlock}>
-            <Text style={styles.addressLabel}>Till</Text>
+            <Text style={styles.addressLabel}>{translations.to}</Text>
             <Text style={styles.addressName}>{invoice.toName}</Text>
             {invoice.toEmail && <Text style={styles.addressLine}>{invoice.toEmail}</Text>}
             <Text style={styles.addressLine}>{invoice.toAddress}</Text>
@@ -274,18 +312,18 @@ export const InvoicePDFTemplate: React.FC<InvoicePDFProps> = ({ invoice }) => {
         {/* Items Table */}
         <View style={styles.table}>
           <View style={styles.tableHeader}>
-            <Text style={[styles.tableColDesc, styles.tableHeaderText]}>Beskrivning</Text>
-            <Text style={[styles.tableColQty, styles.tableHeaderText]}>Antal</Text>
-            <Text style={[styles.tableColAmount, styles.tableHeaderText]}>Amount</Text>
-            <Text style={[styles.tableColTotal, styles.tableHeaderText]}>Total</Text>
+            <Text style={[styles.tableColDesc, styles.tableHeaderText]}>{translations.description}</Text>
+            <Text style={[styles.tableColQty, styles.tableHeaderText]}>{translations.quantity}</Text>
+            <Text style={[styles.tableColAmount, styles.tableHeaderText]}>{translations.amount}</Text>
+            <Text style={[styles.tableColTotal, styles.tableHeaderText]}>{translations.total}</Text>
           </View>
 
           {invoice.items.map((item, index) => (
             <View key={index} style={styles.tableRow}>
               <Text style={styles.tableColDesc}>{item.description}</Text>
               <Text style={styles.tableColQty}>{item.quantity}</Text>
-              <Text style={styles.tableColAmount}>{item.amount.toLocaleString('sv-SE')} kr</Text>
-              <Text style={styles.tableColTotal}>{item.total.toLocaleString('sv-SE')} kr</Text>
+              <Text style={styles.tableColAmount}>{formatCurrency(item.amount)}</Text>
+              <Text style={styles.tableColTotal}>{formatCurrency(item.total)}</Text>
             </View>
           ))}
         </View>
@@ -293,25 +331,25 @@ export const InvoicePDFTemplate: React.FC<InvoicePDFProps> = ({ invoice }) => {
         {/* Summary */}
         <View style={styles.summarySection}>
           <View style={styles.summaryRow}>
-            <Text style={styles.summaryLabel}>Subtotal</Text>
-            <Text style={styles.summaryValue}>{invoice.subtotal.toLocaleString('sv-SE')} kr</Text>
+            <Text style={styles.summaryLabel}>{translations.subtotal}</Text>
+            <Text style={styles.summaryValue}>{formatCurrency(invoice.subtotal)}</Text>
           </View>
 
           {invoice.discount > 0 && (
             <View style={styles.summaryRow}>
-              <Text style={styles.summaryLabel}>Discount</Text>
-              <Text style={styles.summaryValue}>{invoice.discount.toLocaleString('sv-SE')} kr</Text>
+              <Text style={styles.summaryLabel}>{translations.discount}</Text>
+              <Text style={styles.summaryValue}>{formatCurrency(invoice.discount)}</Text>
             </View>
           )}
 
           <View style={styles.summaryRow}>
-            <Text style={styles.summaryLabel}>VAT ({invoice.vatRate}%)</Text>
-            <Text style={styles.summaryValue}>{invoice.vatAmount.toLocaleString('sv-SE')} kr</Text>
+            <Text style={styles.summaryLabel}>{vatLabel}</Text>
+            <Text style={styles.summaryValue}>{formatCurrency(invoice.vatAmount)}</Text>
           </View>
 
           <View style={styles.totalRow}>
-            <Text style={styles.totalLabel}>Total</Text>
-            <Text style={styles.totalValue}>{invoice.total.toLocaleString('sv-SE')} kr</Text>
+            <Text style={styles.totalLabel}>{translations.total}</Text>
+            <Text style={styles.totalValue}>{formatCurrency(invoice.total)}</Text>
           </View>
         </View>
 
@@ -319,14 +357,14 @@ export const InvoicePDFTemplate: React.FC<InvoicePDFProps> = ({ invoice }) => {
         <View style={styles.footer}>
           {invoice.paymentDetails && (
             <View style={styles.footerSection}>
-              <Text style={styles.footerLabel}>Payment Details</Text>
+              <Text style={styles.footerLabel}>{translations.paymentDetails}</Text>
               <Text style={styles.footerText}>{invoice.paymentDetails}</Text>
             </View>
           )}
 
           {invoice.note && (
             <View style={styles.footerSection}>
-              <Text style={styles.footerLabel}>Note</Text>
+              <Text style={styles.footerLabel}>{translations.note}</Text>
               <Text style={styles.footerText}>{invoice.note}</Text>
             </View>
           )}

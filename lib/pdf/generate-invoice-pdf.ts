@@ -36,6 +36,7 @@ export interface InvoiceData {
 export interface GenerateInvoicePDFOptions {
   invoice: InvoiceData
   filename?: string
+  locale?: string
 }
 
 /**
@@ -44,10 +45,24 @@ export interface GenerateInvoicePDFOptions {
 export async function generateInvoicePDF({
   invoice,
   filename,
+  locale,
 }: GenerateInvoicePDFOptions): Promise<void> {
   try {
+    const documentLocale = locale || document.documentElement.lang || 'en'
+    const normalizedLocale = documentLocale.startsWith('es') ? 'es' : 'en'
+    const messages =
+      normalizedLocale === 'es'
+        ? (await import('@/messages/es.json')).default
+        : (await import('@/messages/en.json')).default
+
     // Create the PDF document
-    const pdfDoc = pdf(InvoicePDFTemplate({ invoice }))
+    const pdfDoc = pdf(
+      InvoicePDFTemplate({
+        invoice,
+        locale: normalizedLocale,
+        translations: messages.pdf.invoice,
+      })
+    )
 
     // Generate the blob
     const blob = await pdfDoc.toBlob()

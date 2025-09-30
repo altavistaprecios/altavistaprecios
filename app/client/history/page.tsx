@@ -1,6 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useLocale, useTranslations } from 'next-intl'
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { PriceHistoryTable } from '@/components/pricing/price-history-table'
 import { PriceHistory } from '@/lib/models/price-history'
@@ -11,6 +13,8 @@ export default function ClientHistoryPage() {
   const [history, setHistory] = useState<PriceHistory[]>([])
   const [loading, setLoading] = useState(true)
   const { user } = useAuth()
+  const locale = useLocale()
+  const t = useTranslations('clientHistory')
 
   useEffect(() => {
     fetchPriceHistory()
@@ -79,7 +83,7 @@ export default function ClientHistoryPage() {
       setHistory(clientHistory)
     } catch (error) {
       console.error('Failed to fetch price history:', error)
-      toast.error('Failed to load price history')
+      toast.error(t('toastError'))
     } finally {
       setLoading(false)
     }
@@ -89,13 +93,11 @@ export default function ClientHistoryPage() {
     return (
       <div className="flex flex-1 flex-col">
         <div className="px-4 lg:px-6 pb-4">
-          <h1 className="text-2xl font-bold">Price History</h1>
-          <p className="text-muted-foreground">
-            Track changes to your custom pricing over time
-          </p>
+          <h1 className="text-2xl font-bold">{t('title')}</h1>
+          <p className="text-muted-foreground">{t('description')}</p>
         </div>
         <div className="flex items-center justify-center h-96 px-4 lg:px-6">
-          <p className="text-muted-foreground">Loading price history...</p>
+          <p className="text-muted-foreground">{t('loading')}</p>
         </div>
       </div>
     )
@@ -104,10 +106,8 @@ export default function ClientHistoryPage() {
   return (
     <div className="flex flex-1 flex-col">
       <div className="px-4 lg:px-6 pb-4">
-        <h1 className="text-2xl font-bold">Price History</h1>
-        <p className="text-muted-foreground">
-          Track changes to your custom pricing over time
-        </p>
+        <h1 className="text-2xl font-bold">{t('title')}</h1>
+        <p className="text-muted-foreground">{t('description')}</p>
       </div>
 
       <div className="px-4 lg:px-6 space-y-6">
@@ -115,17 +115,17 @@ export default function ClientHistoryPage() {
       <div className="grid gap-4 md:grid-cols-3">
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">Total Changes</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('metricsTotalChangesTitle')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{history.length}</div>
-              <p className="text-xs text-muted-foreground">Price updates</p>
+              <p className="text-xs text-muted-foreground">{t('metricsTotalChangesDescription')}</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">Avg. Reduction</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('metricsAvgReductionTitle')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 dark:text-emerald-500 dark:text-emerald-400">
@@ -133,31 +133,29 @@ export default function ClientHistoryPage() {
                   (history.reduce((acc, h) => acc + ((h.old_price - h.new_price) / h.old_price * 100), 0) / history.length).toFixed(1)
                 ) : 0}%
               </div>
-              <p className="text-xs text-muted-foreground">Average price decrease</p>
+              <p className="text-xs text-muted-foreground">{t('metricsAvgReductionDescription')}</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">Last Update</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('metricsLastUpdateTitle')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
                 {history.length > 0 ? (
-                  new Date(history[0].changed_at).toLocaleDateString()
-                ) : 'N/A'}
+                  new Intl.DateTimeFormat(locale).format(new Date(history[0].changed_at))
+                ) : t('notAvailable')}
               </div>
-              <p className="text-xs text-muted-foreground">Most recent change</p>
+              <p className="text-xs text-muted-foreground">{t('metricsLastUpdateDescription')}</p>
             </CardContent>
           </Card>
         </div>
 
         <Card>
           <CardHeader>
-            <CardTitle>Your Price Change Log</CardTitle>
-            <CardDescription>
-              All pricing adjustments made to your account
-            </CardDescription>
+            <CardTitle>{t('tableTitle')}</CardTitle>
+            <CardDescription>{t('tableDescription')}</CardDescription>
           </CardHeader>
           <CardContent>
             <PriceHistoryTable history={history} />
